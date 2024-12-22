@@ -1,0 +1,46 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.FoodSecurityItemVM>
+
+@{ var index = 0; }
+
+@foreach (var item in Model)
+{
+    index++;
+
+    <div class="card FoodSecurityChild" data-id="@index">
+        <input class="Id" type="hidden" value="@item.Id" />
+        <div class="card-body mt-3">
+            <h5 class="d-inline-block">@index</h5>
+            <button type="button" class="remove-item btn btn-danger btn-sm float-right" onclick="RemoveFoodSecurity(@index, @item.Id)">x</button>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Food Items (Requirment met for own consumption)
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control FoodItemId" name="FoodItemId" required>
+                        <option value="">Choose..</option>
+                        @foreach (var itemValue in ViewBag.FoodItemId)
+                        {
+                            <!option value="@itemValue.Id" @(item.FoodItemId == itemValue.Id ? "selected" : "")>@itemValue.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Remarks
+                    </label>
+                    <input type="text" class="form-control Remarks" value="@item.Remarks" name="Remarks" placeholder="Enter remarks" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Availability (month in a year)
+                        <span style="color:red;">*</span>
+                    </label>
+					<input type="number" class="form-control FoodAvilableMonthInYear" name="FoodAvilableMonthInYear" value="@(item.Id == 0 ? "" : item.FoodAvilableMonthInYear)" min="0" placeholder="Availability (month in a year)" required />
+                </div>
+            </div>
+        </div> <!-- card body end -->
+    </div>
+}

@@ -1,0 +1,235 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<style>
+    select[multiple] + div div.ms-options li label input {
+        margin-right: 8px !important;
+        margin-top: 5px !important;
+    }
+    .hidden {
+        visibility: hidden;
+    }
+    .shown {
+        visibility: visible;
+    }
+</style>
+
+<form id="HouseholdsMembers" class="collapse">
+    <div id="HouseholdsMemberList"></div>
+    <div class="text-center">
+        <button id="AddMoreHouseholdsMembers" type="button" class="btn btn-outline-dark btn-sm">Add More Household Member <i class="fa fa-plus"></i></button>
+    </div>
+</form>
+
+<script>
+    let partialHouseholdMemberBase = null;
+    var HouseholdsMemberList = $("#HouseholdsMemberList");
+    $("#HouseholdsMembers").validate();
+
+    //$("[href='#HouseholdsMembers']").one("click", function () {
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadHouseholdMemberBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialHouseholdMemberBase = data;
+
+                if (!@Model.Id) {
+                    AddHouseholdsMemberInUI();
+                    hasDisabilityChangeEvent();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadHouseholdMemberBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    HouseholdsMemberList.append(data);
+                    addHouseholdsMembersChildValidation();
+                    runHouseholdsMemberIndex();
+                    handleMultiselectHouseholdMember();
+                    hasDisabilityChangeEvent();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+    //});
+
+    function hasDisabilityChangeEvent() {
+        $(document).on("change", ".HasDisability", function () {
+            const current = $(this);
+            const select = current.parent().parent().find(".DisabilitySelect");
+
+            if (current.is(':checked')) {
+                select.removeClass("hidden").addClass("shown");
+            } else {
+                select.removeClass("shown").addClass("hidden");
+            }
+        });
+        $(".HasDisability").trigger("change");
+    }
+</script>
+
+<!-- Add new Household Memeber -->
+<script>
+    function addHouseholdsMembersChildValidation() {
+        $("#HouseholdsMembers .FullName").each(function (i, e) {
+            var fieldName = "FullName_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                minlength: 2,
+            });
+        });
+        $("#HouseholdsMembers .RelationWithHeadHouseHoldTypeId").each(function (i, e) {
+            var fieldName = "RelationWithHeadHouseHoldTypeId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .Gender").each(function (i, e) {
+            var fieldName = "Gender_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .Age").each(function (i, e) {
+            var fieldName = "Age_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .MaritalSatus").each(function (i, e) {
+            var fieldName = "MaritalSatus_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .EducationLevel").each(function (i, e) {
+            var fieldName = "EducationLevel_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .MainOccupationId").each(function (i, e) {
+            var fieldName = "MainOccupationId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .SecondaryOccupationId").each(function (i, e) {
+            var fieldName = "SecondaryOccupationId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#HouseholdsMembers .SafetyNetTypeId").each(function (i, e) {
+            var fieldName = "SafetyNetTypeId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+    }
+
+    function AddHouseholdsMemberInUI() {
+        if (!HouseholdsMemberList.has('div')?.length) {
+            HouseholdsMemberList.append(partialHouseholdMemberBase);
+            addHouseholdsMembersChildValidation();
+            runHouseholdsMemberIndex();
+            handleMultiselectHouseholdMember();
+        }
+    }
+
+    $("#AddMoreHouseholdsMembers").on("click", function () {
+        if (!partialHouseholdMemberBase) return null;
+
+        HouseholdsMemberList.append(partialHouseholdMemberBase);
+        addHouseholdsMembersChildValidation();
+        runHouseholdsMemberIndex();
+        handleMultiselectHouseholdMember();
+    });
+
+    function runHouseholdsMemberIndex() {
+        $("#HouseholdsMemberList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveHouseholdsMembers(${id}, ${dbId ?? 0})`);
+        });
+    }
+
+    function handleMultiselectHouseholdMember() {
+        // bfd multiselect
+        $(".BFDAssociationHouseholdMembers").each(function () {
+            $(this).multiselect({
+                search: true,
+                selectAll: true
+            });
+        });
+
+        // disability type
+        $(".DisabilityTypeHouseholdMembers").each(function () {
+            $(this).multiselect({
+                search: true,
+                selectAll: true
+            });
+        });
+    }
+
+    // Remove Land occupancy item
+    function RemoveHouseholdsMembers(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedHouseholdMembers.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#HouseholdsMemberList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runHouseholdsMemberIndex();
+            });
+        }
+    }
+</script>

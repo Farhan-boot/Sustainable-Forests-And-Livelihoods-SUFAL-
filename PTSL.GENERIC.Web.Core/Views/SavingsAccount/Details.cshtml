@@ -1,0 +1,181 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.BeneficiarySavingsAccount.SavingsAccountVM
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/SavingsAccount/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Savings Account Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Forest Administrative Unit</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Circle: <b>@Model.ForestCircle.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Division: <b>@Model.ForestDivision.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Range: <b>@Model.ForestRange.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Range: <b>@Model.ForestBeat.Name</b></label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5>Civil Administrative Unit</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Division: <b>@Model.Division.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">District: <b>@Model.District.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Upazilla: <b>@Model.Upazilla.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Union: <b>@Model.Union.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">NGO: <b>@Model.Ngos.Name</b></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="">
+            <div class="form-horizontal">
+
+                @*  <div class="form-group">
+                <label style="font-size:15px;">Id: <b>@Model.Id</b></label>
+                </div>*@
+                <h5>Basic Information</h5>
+                <div class="form-group">
+                    <label style="font-size:15px;">Name: <b>@Model.Survey.BeneficiaryName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Gender: <b>@Model.Survey.BeneficiaryGender</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">NID: <b>@Model.Survey.BeneficiaryNid</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Mobile Number: <b>@Model.Survey.BeneficiaryPhone</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Instalment Amount: <b>@Model.AmountLimit</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Type:</label>
+                    <label style="font-size:15px;"><b> @Html.DropDownList("AccountTypeId", null, "Choose..", htmlAttributes: new { @class = "form-control col-md-12", @readonly = "true" })</b></label>
+                </div>
+
+            </div>
+
+
+            <div class="row" style="padding-top: 25px;">
+                <div class="col-md-6">
+                    <h5 style="text-align: center;">Savings Amount Information</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Savings Date</th>
+                                <th scope="col">Savings Amount(Tk)</th>
+                                 <th scope="col">Document</th>
+                                <th scope="col">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var savingsAmount in Model.SavingsAmountInformations.OrderByDescending(x=>x.Id))
+                            {
+                                <tr>
+                                    <th scope="row">@savingsAmount.SavingsDate.Value.ToString("dd/MM/yyyy")</th>
+                                    <td>@savingsAmount.SavingsAmount</td>
+                                    <td><a href="@savingsAmount.DocumentFileUrl" download="Download"> Download</a></td>
+                                    <td>@savingsAmount.Remark</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div>Total Savings Amount: <b> @Model.SavingsAmountInformations.Select(x=>x.SavingsAmount).Sum() </b> Taka Only</div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 style="text-align: center;">Withdrawal Amount Information</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Withdrawal Date</th>
+                                <th scope="col">Withdrawal Amount(Tk)</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Document</th>
+                                <th scope="col">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var withdrawAmount in Model.WithdrawAmountInformations.OrderByDescending(x=>x.Id))
+                            {
+                                <tr>
+                                    <th scope="row">@withdrawAmount.WithdrawDate.Value.ToString("dd/MM/yyyy")</th>
+                                    <td>@withdrawAmount.WithdrawAmount</td>
+                                    @if (@withdrawAmount.DfoStatusId == 1)
+                                    {
+                                        <td>Pending</td>
+                                    }
+                                    @if (@withdrawAmount.DfoStatusId == 2)
+                                    {
+                                        <td>Approved </td>
+                                    }
+                                    @if (@withdrawAmount.DfoStatusId == 3)
+                                    {
+                                        <td>Rejected </td>
+                                    }
+                                    <td><a href="@withdrawAmount.DocumentFileUrl" download="Download"> Download</a></td>
+                                    <td>@withdrawAmount.Remark</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div>Total Withdrawal Amount: <b> @Model.WithdrawAmountInformations.Where(x=>x.DfoStatusId != 3).Select(x=>x.WithdrawAmount).Sum() </b> Taka Only</div>
+                </div>
+            </div>
+            @{
+                var TotalSaving = @Model.SavingsAmountInformations.Select(x => x.SavingsAmount).Sum();
+                var TotalWithdraw = @Model.WithdrawAmountInformations.Where(x=>x.DfoStatusId != 3).Select(x => x.WithdrawAmount).Sum();
+                var Amount = TotalSaving - TotalWithdraw;
+            }
+
+            <div class="row" style="padding-top: 30px;">
+                <div class="col-md-12" style="font-size: 15px;">
+                    <span style="font-weight:bold;">Current Balance : </span> <b style="color:black">@Amount Taka Only</b>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+    <script>
+        $('#AccountTypeId').attr("style", "pointer-events: none;");
+    </script>

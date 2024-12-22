@@ -1,0 +1,158 @@
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Inspection Details</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Name of the official
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="NewReplantationInspectionMaps.InspectionDetails.OfficialName"
+                    placeholder="Enter name of the official" name="Inspection_OfficialName" required />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Designation
+                    <span style="color:red;">*</span>
+                </label>
+                <select name="Inspection_Designation"
+                    x-model="NewReplantationInspectionMaps.InspectionDetails.SocialForestryDesignationId"
+                    x-on:change="SetInspectionDetailsMapDesignation" required>
+                    <!option value="">Select Designation</!option>
+                    <template x-for="data in InspectionDetailsMapDropdowns.designation">
+                        <!option :selected="data.Id == NewReplantationInspectionMaps.designation" :value="data.Id"
+                            x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Comments
+                </label>
+                <input x-model="NewReplantationInspectionMaps.InspectionDetails.Comments" placeholder="Enter comments"
+                    name="Inspection_Comments" required />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Unload inspection file
+                </label>
+                <input x-on:change="SetInspectionDetailsMapFileName" id="new_inspection_file_id"
+                    name="Inspection_Attachment" type="file" required />
+            </div>
+        </div>
+        <div class="mt-2 text-right">
+            <button x-on:click="add_inspection_details_information"
+                x-text="NewReplantationInspectionMaps.InspectionDetails.IsUpdating ? 'Update' : 'Add Information'"
+                type="button" class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Inspection details</p>
+    <p x-show="ReplantationInspectionMaps.length == 0">No details added yet</p>
+    <table class="table table-sm" x-show="ReplantationInspectionMaps.length > 0">
+        <tr>
+            <th>SL</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Inspection File</th>
+            <th>Comments</th>
+            <th>Action</th>
+        </tr>
+        <tbody>
+            <template x-for="(data, index) in ReplantationInspectionMaps" :key="index">
+                <tr class="">
+                    <td x-text="++index"></td>
+                    <td x-text="data.InspectionDetails.OfficialName"></td>
+                    <td x-text="data.InspectionDetails.DesignationDisplay"></td>
+                    <td x-text="data.InspectionDetails.InspectionFileDisplay"></td>
+                    <td x-text="data.InspectionDetails.Comments"></td>
+                    <td>
+                        <button @@click="remove_inspection_details_information(data)" type="button"
+                            class="btn btn-sm btn-remove">Remove</button>
+                        <button @@click="edit_inspection_details_information(data, index - 1)" type="button"
+                            class="btn btn-sm btn-primary">Edit</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</fieldset>
+
+
+<script>
+    function addInspectionDetailsMap() {
+        return {
+            // Inspection details
+            ReplantationInspectionMaps: [],
+            InitialInspectionDetailsMap: {
+                InspectionDetails: {},
+            },
+            InitialInspectionDetails: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+
+                OfficialName: "",
+                SocialForestryDesignationId: "",
+                Comments: "",
+                InspectionFile: "",
+
+                // Display
+                InspectionFileDisplay: "",
+                DesignationDisplay: "",
+            },
+            NewReplantationInspectionMaps: {},
+            InitializeInspectionDetails() {
+                this.NewReplantationInspectionMaps = {
+                    ...this.InitialInspectionDetailsMap, InspectionDetails: { ...this.InitialInspectionDetails }
+                };
+            },
+            SetInspectionDetailsMapFileName(event) {
+                const name = getFileName(event.target);
+                this.NewReplantationInspectionMaps.InspectionDetails.InspectionFileDisplay = name;
+            },
+            SetInspectionDetailsMapDesignation() {
+                const data = this.InspectionDetailsMapDropdowns.designation.find(x => x.Id == this.NewReplantationInspectionMaps.InspectionDetails.SocialForestryDesignationId);
+                const display = data?.Name ?? "";
+
+                this.NewReplantationInspectionMaps.InspectionDetails.DesignationDisplay = display;
+            },
+            InspectionDetailsMapDropdowns: {
+                designation: [],
+            },
+
+            add_inspection_details_information() {
+                let hasError = 0;
+
+                for (const key of Object.keys(InspectionDetailsMapFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+
+                if (this.NewReplantationInspectionMaps.InspectionDetails.IsUpdating) {
+                    this.ReplantationInspectionMaps[this.NewReplantationInspectionMaps.InspectionDetails.UpdateIndex] = { ...this.NewReplantationInspectionMaps };
+                    this.NewReplantationInspectionMaps.InspectionDetails.IsUpdating = false;
+                } else {
+                    this.ReplantationInspectionMaps.push(this.NewReplantationInspectionMaps);
+                }
+                this.InitializeInspectionDetails();
+
+                clearFileInput("new_inspection_file_id");
+            },
+            remove_inspection_details_information(data) {
+                this.ReplantationInspectionMaps.splice(this.ReplantationInspectionMaps.indexOf(data), 1);
+            },
+            edit_inspection_details_information(data, index) {
+                this.NewReplantationInspectionMaps = { ...data };
+                this.NewReplantationInspectionMaps.InspectionDetails.UpdateIndex = index;
+                this.NewReplantationInspectionMaps.InspectionDetails.IsUpdating = true;
+            },
+        }
+    }
+</script>

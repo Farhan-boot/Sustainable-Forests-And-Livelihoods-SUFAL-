@@ -1,0 +1,18 @@
+namespace PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Cutting;
+
+public class DistributionPercentageVM : BaseModel
+{
+    public long DistributionFundTypeId { get; set; }
+    public DistributionFundTypeVM? DistributionFundType { get; set; }
+
+    public long PlantationTypeId { get; set; }
+    public PlantationTypeVM? PlantationType { get; set; }
+
+    public double Percentage { get; set; }
+}
+
+public class DistributionPercentageCustomVM
+{
+    public List<DistributionPercentageVM> DistributionPercentageListVM { get; set; }
+}
+

@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Transaction Report";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Transaction Report</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="TransactionReport" asp-controller="Reports" class="mb-4 green-card p-2" style="border-radius: 5px;">
+					<div class="row custom">
+						<div class="col-12 p-1">
+							<fieldset class="p-2">
+								<legend class="float-none w-auto">Basic Information</legend>
+								<div class="row">
+									<div class="col pr-1">
+										<label class="m-0">Forest Circle</label>
+										@Html.DropDownList("ForestCircleId", null, "Select Forest Circle", htmlAttributes: new { })
+									</div>
+									<div class="col px-1">
+										<label class="m-0">Forest Division</label>
+										@Html.DropDownList("ForestDivisionId", null, "Select Forest Division", htmlAttributes: new { })
+									</div>
+									<div class="col px-1">
+										<label class="m-0">From Date</label>
+										<input type="date" id="FromDate" value="@(ViewBag.FromDate is DateTime ? ((DateTime)ViewBag.FromDate).ToUIDateString() : null)" name="FromDate" placeholder="Enter from date" />
+									</div>
+									<div class="col pl-1">
+										<label class="m-0">To Date</label>
+										<input type="date" id="ToDate" value="@(ViewBag.ToDate is DateTime ? ((DateTime)ViewBag.ToDate).ToUIDateString() : null)" name="ToDate" placeholder="Enter to date" />
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save">Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

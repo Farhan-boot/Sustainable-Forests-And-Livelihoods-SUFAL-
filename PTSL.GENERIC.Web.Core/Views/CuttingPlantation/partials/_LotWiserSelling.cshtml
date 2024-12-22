@@ -1,0 +1,197 @@
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Lot wise selling Information</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Lot Number
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="text" id="LotNumber" name="LotNumber" x-model="NewLotWiseSellingInformation.LotNumber" placeholder="Enter lot number" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Felling Order Date
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="date" id="CuttingOrderDate" name="CuttingOrderDate" x-model="NewLotWiseSellingInformation.CuttingOrderDate" placeholder="Enter cutting order date" required="">
+            </div>
+            <div class="col-md-6 pl-1">
+                <label>
+                    Tender Notification Information
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="text" id="TenderNotificationInformation" name="TenderNotificationInformation" x-model="NewLotWiseSellingInformation.TenderNotificationInformation" placeholder="Enter tender notification"
+                    required="">
+            </div>
+        </div>
+
+        <div class="mt-3">Contractor Information</div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Contractor Name
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="text" id="ContractorName" name="ContractorName" x-model="NewLotWiseSellingInformation.ContractorName" placeholder="Enter contractor name" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Contractor Mobile No
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="ContractorMobileNumber" x-model="NewLotWiseSellingInformation.ContractorMobileNumber" name="ContractorMobileNumber" placeholder="Enter mobile no" required="" maxlength="11">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Contractor NID
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="ContractorNID" x-model="NewLotWiseSellingInformation.ContractorNID" name="ContractorNID" placeholder="Enter NID" required="" minlength="10" maxlength="17">
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Contractor Address
+                </label>
+                <input type="text" id="ContractorAddress" x-model="NewLotWiseSellingInformation.ContractorAddress" name="ContractorAddress" placeholder="Enter address" required="">
+            </div>
+        </div>
+
+        <div class="mt-3">Quantity</div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Timber
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="LotWiseTimber" x-model="NewLotWiseSellingInformation.LotWiseTimber" name="LotWiseTimber" placeholder="Enter timber" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Timber Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="LotWiseTimberUnitId" x-model="NewLotWiseSellingInformation.LotWiseTimberUnitId" name="LotWiseTimberUnitId" required="">
+                    <!option value="">Select Unit</!option>
+                    <template x-for="data in LotWiseSellingInformationDropdowns.Units">
+                        <!option :selected="data.Id == NewLotWiseSellingInformation.LotWiseTimberUnitId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Pole
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="LotWisePole" x-model="NewLotWiseSellingInformation.LotWisePole" name="LotWisePole" placeholder="Enter pole" required="">
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Pole Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="LotWisePoleUnitId" x-model="NewLotWiseSellingInformation.LotWisePoleUnitId" name="LotWisePoleUnitId" required="">
+                    <!option value="">Select Unit</!option>
+                    <template x-for="data in LotWiseSellingInformationDropdowns.Units">
+                        <!option :selected="data.Id == NewLotWiseSellingInformation.LotWisePoleUnitId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Fuel Wood
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="LotWiseFuelWood" x-model="NewLotWiseSellingInformation.LotWiseFuelWood" name="LotWiseFuelWood" placeholder="Enter fule wood" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Fuel Wood Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="LotWiseFuelWoodUnitId" x-model="NewLotWiseSellingInformation.LotWiseFuelWoodUnitId" name="LotWiseFuelWoodUnitId" required="">
+                    <!option value="">Select Unit</!option>
+                    <template x-for="data in LotWiseSellingInformationDropdowns.Units">
+                        <!option :selected="data.Id == NewLotWiseSellingInformation.LotWiseFuelWoodUnitId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+            </div>
+            <div class="col-md-3 pl-1">
+            </div>
+        </div>
+
+        <div class="mt-3">Sale Information</div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Sale Value
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="SaleValueOfLot" x-model="NewLotWiseSellingInformation.SaleValueOfLot" name="SaleValueOfLot" placeholder="Enter sale value" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Vat Percentage
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="SaleValueOfVatPercentage" x-model="NewLotWiseSellingInformation.SaleValueOfVatPercentage" name="SaleValueOfVatPercentage" placeholder="Enter sale value" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Tax Percentage
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="SaleValueOfTaxPercentage" x-model="NewLotWiseSellingInformation.SaleValueOfTaxPercentage" name="SaleValueOfTaxPercentage" placeholder="Enter tax value" required="">
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Total Sale Value (Including Vat and Tax)
+                </label>
+                <input type="number" x-model="NewLotWiseSellingInformation.TotalSaleValue" placeholder="Total Sale Value" disabled>
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button x-on:click="AddLotWiseSellingInformation" x-text="NewLotWiseSellingInformation.IsUpdating ? 'Update' : 'Add Information'" type="button" class="btn btn-sm"></button>
+        </div>
+
+    </div>
+
+    <p class="mt-3 border-btm">Lot wise selling details</p>
+    <p x-show="LotWiseSellingInformation.length == 0">No details added yet</p>
+    <table class="table table-sm" x-show="LotWiseSellingInformation.length > 0">
+        <tr>
+            <th>SL</th>
+            <th>Date</th>
+            <th>Lot Number</th>
+            <th>Sale value of Lot</th>
+            <th>Vat</th>
+            <th>Tax</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+        <tbody>
+            <template x-for="(data, index) in LotWiseSellingInformation" :key="index">
+                <tr class="">
+                    <td x-text="++index"></td>
+                    <td x-text="data.CuttingOrderDate.substring(0,10)"></td>
+                    <td x-text="data.LotNumber"></td>
+                    <td x-text="data.SaleValueOfLot"></td>
+                    <td x-text="data.SaleValueOfVatPercentage"></td>
+                    <td x-text="data.SaleValueOfTaxPercentage"></td>
+                    <td x-text="data.TotalSaleValue"></td>
+                    <td>
+                        <button @@click="RemoveLotWiseSellingInformation(data)" type="button" class="btn btn-sm btn-remove">Remove</button>
+                        <button @@click="EditLotWiseSellingInformation(data, index - 1)" type="button" class="btn btn-sm btn-primary">Edit</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+
+</fieldset>

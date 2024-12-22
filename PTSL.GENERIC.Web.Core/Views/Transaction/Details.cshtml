@@ -1,0 +1,146 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.TransactionMangement;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.TransactionMangement.TransactionVM
+
+@{
+    ViewBag.Title = "Transaction Details";
+}
+
+<style>
+    .imgDisplay {
+        width: 100%;
+        max-height: 280px;
+        height: 100%;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/Transaction/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Transaction Details
+        </h4>
+    </div>
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Circle: <b>@Model.ForestCircle?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Division: <b>@Model.ForestDivision?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Financial Year: <b>@Model.FinancialYear?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">From Date: <b>@Model.FromDate.ToUIDateString()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">To Date: <b>@Model.ToDate.ToUIDateString()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Total Expense: <b>@Model.TotalExpense.ToBDTCurrency()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Month: <b>@Model.ExpenseMonth.GetEnumDisplayName()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Fund Type: <b>@Model.FundType?.Name</b></label>
+            </div>
+
+            @if (Model.FundType?.IsCdf == true)
+            {
+                <h6 class="mt-4">CDF Details</h6>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Range: <b>@Model.ForestRange?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Beat: <b>@Model.ForestBeat?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest FCV/VCF: <b>@Model.ForestFcvVcf?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Expense Year: <b>@Model.ExpenseYear</b></label>
+                </div>
+
+                <h6 class="mt-4">CDF Scheme Details</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">#</th>
+                                <th scope="col">Scheme</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Remarks</th>
+                                <th scope="col">Document</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var expenseIndex = 1;
+                            }
+                            @foreach (var expense in Model.ExpenseDetailsForCDFs ?? Enumerable.Empty<ExpenseDetailsForCDFVM>())
+                            {
+                                <tr>
+                                    <td class="text-center">@(expenseIndex++)</td>
+                                    <td>@expense.ExpenseScheme</td>
+                                    <td>@expense.ExpenseAmount</td>
+                                    <td>@expense.ExpenseDate.ToString()</td>
+                                    <td>@expense.Remarks</td>
+                                    <td>
+                                        @if (string.IsNullOrEmpty(expense.DocumentFileURL))
+                                        {
+                                            <span>No document</span>
+                                        }
+                                        else
+                                        {
+                                            <a target="_blank" href="@expense.DocumentFileURL">Download</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        @{
+            var images = Model.TransactionFiles?.Where(x => x.FileType == FileType.Image) ?? Enumerable.Empty<TransactionFilesVM>();
+            var documents = Model.TransactionFiles?.Where(x => x.FileType == FileType.Document) ?? Enumerable.Empty<TransactionFilesVM>();
+        }
+
+        <div class="form-horizontal mt-4">
+            @if (images.Count() != default)
+            {
+                <h6>Images</h6>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    @foreach (var item in images)
+                    {
+                        <div style="display: flex; flex-direction: column;">
+                            <img class="imgDisplay" loading="lazy" src="@item.FileUrl" />
+                            <a class="btn btn-sm btn-secondary mt-2" href="@item.FileUrl" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(item.FileUrl))">Download</a>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (documents.Count() != default)
+            {
+                <h6 class="mt-4">Other documents</h6>
+                @foreach (var item in documents)
+                {
+                    <div style="display: flex; flex-direction: column;">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@item.FileUrl" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(item.FileUrl))">@item.FileName</a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

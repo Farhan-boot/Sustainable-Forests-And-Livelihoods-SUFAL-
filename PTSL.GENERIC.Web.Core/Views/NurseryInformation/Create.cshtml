@@ -1,0 +1,1579 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Nursery.NurseryInformationVM
+@{
+    ViewBag.Title = "Create";
+    var Message = ViewBag.Message;
+    var nurseryRaisingSectorIdList = ViewBag.NurseryRaisingSectorId;
+    var b = ViewBag.ForestCircleId;
+    var concernedOfficialDesignation = ViewBag.DesignationId;
+    var inspectionDesignation = ViewBag.SocialForestryDesignationId;
+}
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+
+    .btn-remove {
+        background-color: #fc544b !important;
+        border-color: #fc544b !important;
+        color: white;
+    }
+
+        .btn-remove:hover {
+            color: white;
+        }
+
+
+    .btn-addMore:hover {
+        background-color: green !important;
+        color: white;
+    }
+
+    tr, td {
+        border: 2px solid #d0d0d0 !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-header">
+                <h4>
+                    <a href="/NurseryInformation/Index" class="mr-1 back">
+                        <svg width="20" height="20" viewBox="0 0 32 32">
+                            <path fill="currentColor"
+                                  d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                        </svg>
+                    </a>
+                    Nursery Information
+                </h4>
+                <button class="ml-auto reset btn btn-sm" onclick="resetFromData('#NurseryInformationForm')">
+                    <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                        <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z"
+                              fill="currentColor" />
+                    </svg>
+                    Reset
+                </button>
+            </div>
+
+            <div class="card-body ">
+
+                <!form @@submit.prevent x-cloak x-data="new_nursary_plantation_information" class="mb-4" style="border-radius: 5px;" id="NurseryInformationForm">
+                <div class="container-fluid m-0 p-0">
+
+                    <div class="row custom green-card m-3" style="border-radius: 5px;">
+                     @*
+                        <div class="col-6 p-1 ">
+
+                            <fieldset class="p-2 col-12 mb-2">
+                                <legend class="float-none w-auto">Forest Administrative Unit</legend>
+                                <div class="row">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Forest Circle</label>
+                                        <select x-model="new_data.ForestCircleId"
+                                                id="@nameof(Model.ForestCircleId)"
+                                                class="form-control" name="ForestCircleId" required>
+                                            <!option value="">Select Forest Circle</!option>
+                                                @if (ViewBag.ForestCircleId != null)
+                                                {
+                                                    @foreach (var item in ViewBag.ForestCircleId)
+                                                    {
+                                                    <!option value="@item.Id">@item.Name</!option>
+                                                    }
+                                                }
+                                        </select>
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Forest Division</label>
+
+                                        <select x-model="new_data.ForestDivisionId"
+                                                id="@nameof(Model.ForestDivisionId)"
+                                                class="form-control" name="ForestDivisionId"
+                                                required>
+                                            <!option value="">Select Forest Division</!option>
+                                                @if (ViewBag.ForestDivisionId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.ForestDivisionId)
+                                                    {
+                                                    <!option value="@item.Id">@item.Name</!option>
+                                                    }
+                                                }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Forest Range/SFNTC</label>
+
+                                        <select x-model="new_data.ForestRangeId"
+                                                id="@nameof(Model.ForestRangeId)"
+                                                class="form-control" name="ForestRangeId"
+                                                required>
+                                            <!option value="">Select Forest Range/SFNTC</!option>
+                                                @if (ViewBag.ForestRangeId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.ForestRangeId)
+                                                    {
+                                                    <!option value="@item.Id">@item.Name</!option>
+                                                    }
+                                                }
+                                        </select>
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Forest Beat/Camp/SFPC</label>
+                                        <select x-model="new_data.ForestBeatId"
+                                                id="@nameof(Model.ForestBeatId)"
+                                                class="form-control" name="ForestBeatId"
+                                                required>
+                                            <!option value="">Select Forest Beat/Camp/SFPC</!option>
+                                                @if (ViewBag.ForestBeatId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.ForestBeatId)
+                                                    {
+                                                    <!option value="@item.Id">@item.Name</!option>
+                                                    }
+                                                }
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                      *@
+
+
+                        <div class="col-6 p-1">
+                                @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+
+
+                        <div class="col-6 p-1">
+                                @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+                    <div class="row custom green-card m-3" style="border-radius: 5px;">
+                        <div class="col-12 p-1">
+
+                            <fieldset class="p-2 col-12 mb-2">
+                                <legend class="float-none w-auto">Nursary Raising Information</legend>
+                                <div class="row custom">
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Nursary Name <span style="color:red;">*</span>
+                                        </label>
+                                        <input type="text" class="form-control"
+                                               id="NurseryName"
+                                               x-model="new_data.NurseryName"
+                                               name="NurseryName" value="@Model.NurseryName"
+                                               placeholder="Enter Nursery Name" required>
+
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Nursary Raising Year <span style="color:red;">*</span>
+                                        </label>
+                                        <select x-model="new_data.FinancialYearId"
+                                                id="@nameof(Model.FinancialYearId)"
+                                                name="@nameof(Model.FinancialYearId)" class="form-control"
+                                                required>
+                                            <!option value="">Select Nursary Raising Year</!option>
+                                                @if (ViewBag.FinancialYearId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.FinancialYearId)
+                                                    {
+                                                    <!option value="@item.Id">@item.Name</!option>
+                                                    }
+                                                }
+                                        </select>
+                                    </div>
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Seedling Raising Target (Number) <span style="color:red;">*</span>
+                                        </label>
+                                        <input type="number" class="form-control"
+                                               x-model="new_data.SeedlingRaisingTargetNumber"
+                                               id="SeedlingRaisingTargetNumber"
+                                               name="SeedlingRaisingTargetNumber"
+                                               value="@Model.SeedlingRaisingTargetNumber"
+                                               placeholder="Enter Seedling Raising Target Number"
+                                               required>
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label> Nursary Image</label>
+                                        <input type="file" class="form-control h-auto" id="NursaryImageFile" name="NursaryImageFile" />
+                                    </div>
+                                </div>
+
+                                <div class="row custom">
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Source of Funding/Name of Project <span style="color:red;">*</span>
+                                        </label>
+                                        <select x-model="new_data.ProjectTypeId"
+                                                id="@nameof(Model.ProjectTypeId)"
+                                                name="@nameof(Model.ProjectTypeId)" class="form-control"
+                                                required>
+                                            <!option value="">Select Project </!option>
+                                                @foreach (var item in ViewBag.ProjectTypeId)
+                                                {
+                                                <!option value="@item.Id">@item.Name</!option>
+                                                }
+                                        </select>
+
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Nursary Establishment Date <span style="color:red;">*</span>
+                                        </label>
+                                        <input type="date" class="form-control h-auto" id="EstablishmentDate"
+                                               x-model="new_data.EstablishmentDate"
+                                               name="NurseryEstablishmentDate" required>
+
+                                    </div>
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Sanction No <span style="color:red;">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="SanctionNo"
+                                               name="SanctionNo" value="@Model.SanctionNo"
+                                               x-model="new_data.SanctionNo"
+                                               placeholder="Enter Sanction No" required>
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Nursary Journal
+                                        </label>
+                                        <input type="file" class="form-control h-auto"
+                                               id="NursaryJournalFile" name="NursaryJournalFile" />
+
+                                    </div>
+                                </div>
+
+                                <div class="row custom">
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Nursary Type <span style="color:red;">*</span>
+                                        </label>
+                                        <select x-model="new_data.NurseryTypeId"
+                                                id="@nameof(Model.NurseryTypeId)"
+                                                name="@nameof(Model.NurseryTypeId)" class="form-control"
+                                                required>
+                                            <!option value="">Select Nursary Type</!option>
+                                                @foreach (var item in ViewBag.NurseryTypeId)
+                                                {
+                                                <!option value="@item.Id">@item.Name</!option>
+                                                }
+                                        </select>
+
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Nursary Location Name <span style="color:red;">*</span>
+                                        </label>
+                                        <input type="text" class="form-control h-auto" id="Location"
+                                               x-model="new_data.Location" name="Location"
+                                               value="@Model.Location"
+                                               placeholder="Enter Nursary Location Name" required>
+
+                                    </div>
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Nursary Latitude
+                                        </label>
+                                        <input type="number" class="form-control h-auto"
+                                               x-model="new_data.LocationLat" id="LocationLat"
+                                               name="LocationLat" value="@Model.LocationLat">
+
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Nursary Longitude
+                                        </label>
+                                        <input type="number" class="form-control h-auto"
+                                               x-model="new_data.LocationLon" id="LocationLon"
+                                               name="LocationLon" value="@Model.LocationLon" />
+
+                                    </div>
+                                </div>
+                                <div class="row custom">
+                                    <div class="col-3 pr-1  my-auto">
+                                        <label for="">
+                                            Bed Size & Nursery Layout <span style="color:red;">*</span>
+                                        </label>
+
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Total Number of Bed <span style="color:red;">*</span>
+                                        </label>
+                                        <input type="number" class="form-control"
+                                               x-model="new_data.TotalNumberOfBed" id="TotalNumberOfBed"
+                                               name="TotalNumberOfBed" value="@Model.TotalNumberOfBed"
+                                               placeholder="Enter Total Number Of Bed " required>
+                                    </div>
+                                    <div class="col-3 pr-1">
+                                        <label for="">
+                                            Number of Bed Seedling Per Bed<span style="color:red;">*</span>
+                                        </label>
+                                        <input type="number" class="form-control"
+                                               x-model="new_data.NumberOfSeedlingsPerBed"
+                                               id="NumberOfSeedlingsPerBed" name="NumberOfSeedlingsPerBed"
+                                               value="@Model.NumberOfSeedlingsPerBed"
+                                               placeholder="Enter Number Of Seedlings Per Bed Number"
+                                               required>
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label for="">
+                                            Nursary Layout
+                                        </label>
+                                        <input type="file" class="form-control h-auto"
+                                               id="NursaryLayoutFile" name="NursaryLayoutFile">
+
+                                    </div>
+                                </div>
+                                <div class="row custom">
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">
+                                            Nursary Raising Sector <span style="color:red;">*</span>
+                                        </label>
+                                        <select x-model="new_data.NurseryRaisingSectorId"
+                                                id="@nameof(Model.NurseryRaisingSectorId)"
+                                                name="NurseryRaisingSectorId"
+                                                class="form-control" required>
+                                            <!option value="">Select Nursary Raising Sector</!option>
+                                                @foreach (var item in ViewBag.NurseryRaisingSectorId)
+                                                {
+                                                <!option value="@item.Id">@item.Name</!option>
+                                                }
+                                        </select>
+
+
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="row custom green-card m-3" style="border-radius: 5px;">
+                        <div class="col-12 p-1 ">
+                            <fieldset class="p-2 col-12 mb-2">
+                                <legend class="float-none w-auto">Raised Seedling Information</legend>
+                                <div class="row">
+
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">
+                                            Species Name <span style="color:red;">*</span>
+                                        </label>
+
+                                        <input class="form-control"
+                                               x-model="new_nursery_seedling_information.SpeciesName"
+                                               id="SpeciesName"
+                                               name="SpeciesName"
+                                               placeholder="Enter Species Name"
+                                               required />
+
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label class="m-0">
+                                            Scientific Name <span style="color:red;"></span>
+                                        </label>
+                                        <input type="text" class="form-control"
+                                               x-model="new_nursery_seedling_information.ScientificName"
+                                               id="ScientificName"
+                                               name="ScientificName"
+                                               placeholder="Enter Scientific Name"
+                                                />
+                                    </div>
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">
+                                            Number of Seedling Raised<span style="color:red;">*</span>
+                                        </label>
+                                        <input type="number" class="form-control"
+                                               x-model="new_nursery_seedling_information.SeedlingRaised"
+                                               id="NumberOfSeedlingRaised"
+                                               name="NumberOfSeedlingRaised"
+                                               placeholder="Enter Number of Seedling Raised" required />
+                                    </div>
+                                    <div class="col-3 pl-1">
+                                        <label class="m-0">
+                                            Remarks
+                                        </label>
+                                        <input type="text" class="form-control"
+                                               x-model="new_nursery_seedling_information.Remarks"
+                                               id="Remarks" placeholder="Enter Remarks " required />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+
+                                    <div class="col-12 text-start">
+
+                                        <button @@click="add_nursery_seedling_information"
+                                                x-text="new_nursery_seedling_information.is_updating ? 'Update' : 'Add More'"
+                                                type="button" class="btn btn-sm btn-addMore"></button>
+                                    </div>
+                                    <p class="pl-3" x-show="error_message" x-text="error_message"
+                                       style="color: red;"></p>
+
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12 pl-3">
+                                        <p x-show="nursery_seedling_informations.length == 0">
+                                            No details
+                                            added yet
+                                        </p>
+                                        <table class="nursery_seedling_information_container table table-sm border border-2"
+                                               x-show="nursery_seedling_informations.length > 0">
+                                            <tr>
+                                                <th>SL</th>
+                                                <th>Species Name</th>
+                                                <th>Scientific Name</th>
+                                                <th>Number of Seedling Raised</th>
+                                                <th>Remarks</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            <tbody>
+                                                <template x-for="(data, index) in nursery_seedling_informations"
+                                                          :key="index">
+                                                    <tr class="nursery_seedling_information border border-2">
+                                                        <td x-text="++index"></td>
+                                                        <td x-text="data.SpeciesName"></td>
+                                                        <td x-text="data.ScientificName"></td>
+                                                        <td x-text="data.SeedlingRaised">
+                                                        </td>
+                                                        <td x-text="data.Remarks"></td>
+                                                        <td>
+                                                            <button @@click="remove_nursery_seedling_information(data)"
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-remove">
+                                                                Remove
+                                                            </button>
+                                                            <button @@click="edit_nursery_seedling_information(data, index)"
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-primary">
+                                                                Edit
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                    </div>
+                    <div class="custom green-card m-3 row" style="border-radius: 5px;" id="">
+                        <div class="col-12 p-1 ">
+
+                            <fieldset class="p-2 col-12 mb-2">
+                                <legend class="float-none w-auto">Concerned Officials</legend>
+
+                                <div class="row">
+                                    <div class="col-md-3 pr-1">
+                                        <label>
+                                            Name of the official
+                                            <span style="color:red;">*</span>
+                                        </label>
+                                        <input x-model="new_concerned_officials_information.OfficialName"
+                                               placeholder="Enter name of the official" id="OfficalName" name="Concerned_OfficialName"
+                                               required />
+                                    </div>
+                                    <div class="col-md-3 px-1">
+                                        <label>
+                                            Designation
+                                            <span style="color:red;">*</span>
+                                        </label>
+                                        <select x-model="new_concerned_officials_information.DesignationId"
+                                                x-on:change="get_concerned_officials_information_on_change" name="Concerned_Designation"
+                                                required>
+                                            <!option value="">Select Designation</!option>
+                                            <template x-for="data in new_concerned_officials_information_data.DesignationId">
+                                                <!option
+                                                :selected="data.Id == new_concerned_officials_information.DesignationId"
+                                                :value="data.Id" x-text="data.Name">
+                                                </!option>
+                                            </template>
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-3 px-1">
+                                        <label>
+                                            Mobile number
+                                            <span style="color:red;">*</span>
+                                        </label>
+                                        <input x-model="new_concerned_officials_information.MobileNo" type="number" name="Concerned_MobileNumber"
+                                               id="MobileNumber" placeholder="Enter mobile number" oninput="validatePhoneNumber()"
+                                               required />
+                                        <small id="phoneNumberErrorLabel" hidden style="color:red">Phone Number should be 11 digit</small>
+
+                                    </div>
+                                    <div class="col-md-3 pl-1">
+                                        <label>
+                                            Email
+                                            <span style="color:red;">*</span>
+                                        </label>
+                                        <input x-model="new_concerned_officials_information.EmailAddress" name="Concerned_Email"
+                                               id="Email" placeholder="Enter email" type="email" required />
+                                    </div>
+                                </div>
+                                <div class="mt-2 row">
+                                    <div class="col-12 text-start">
+
+                                        <button @@click="add_concerned_officials_information"
+                                                x-text="new_concerned_officials_information.is_updating ? 'Update' : 'Add More'"
+                                                type="button" class="btn btn-sm btn-addMore "></button>
+                                    </div>
+                                    <p class="pl-3" x-show="error_message" x-text="error_message"
+                                       style="color: red;"></p>
+
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12 pl-3">
+                                        <p x-show="ConcernedOfficial.length == 0">
+                                            No
+                                            details added yet
+                                        </p>
+                                        <table class="table table-sm "
+                                               x-show="ConcernedOfficial.length > 0">
+                                            <tr>
+                                                <th>SL</th>
+                                                <th>Name</th>
+                                                <th>Designation</th>
+                                                <th>Mobile Number</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            <tbody>
+                                                <template x-for="(data, index) in ConcernedOfficial"
+                                                          :key="index">
+                                                    <tr class="">
+                                                        <td x-text="++index"></td>
+                                                        <td x-text="data.OfficialName"></td>
+                                                        <td x-text="displayDesignation(data.DesignationId)"></td>
+                                                        <td x-text="data.MobileNo"></td>
+                                                        <td>
+                                                            <button @@click="remove_concerned_officials_information(data)"
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-remove">
+                                                                Remove
+                                                            </button>
+                                                            <button @@click="edit_concerned_officials_information(data,index)"
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-primary">
+                                                                Edit
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="custom green-card m-3 row inspectionSection" style="border-radius: 5px;" id="">
+                        <div class="col-12 p-1 ">
+                            <fieldset class="p-2 col-12 mb-2">
+                                <legend class="float-none w-auto">Inspection Details</legend>
+
+                                <div class="row">
+                                    <div class="col-md-3 pr-1">
+                                        <label>
+                                            Name of the official
+                                            <span style="color:red;"></span>
+                                        </label>
+                                        <input x-model="new_inspection_details_information.OfficialName"
+                                               placeholder="Enter name of the official" name="Inspection_OfficialName" required />
+                                    </div>
+                                    <div class="col-md-3 px-1">
+                                        <label>
+                                            Designation
+                                            <span style="color:red;"></span>
+                                        </label>
+                                        <select x-model="new_inspection_details_information.SocialForestryDesignationId"
+                                                name="Inspection_Designation"
+                                                >
+                                            <!option value="">Select Designation</!option>
+                                            <template x-for="data in new_inspection_details_information_data.SocialForestryDesignationId">
+                                                <!option
+                                                :selected="data.Id == new_inspection_details_information_data.SocialForestryDesignationId"
+                                                :value="data.Id" x-text="data.Name">
+                                                </!option>
+                                            </template>
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-3 px-1">
+                                        <label>
+                                            Comments
+                                            <span style="color:red;"></span>
+                                        </label>
+                                        <input x-model="new_inspection_details_information.Comments" placeholder="Enter comments"
+                                               name="Inspection_Comments"
+                                                />
+                                    </div>
+                                    <div class="col-md-3 pl-1">
+                                        <label>
+                                            Upload inspection file
+                                            <span style="color:red;"></span>
+                                        </label>
+                                        <input x-on:change="set_new_inspection_details_information_inspection_file_name"
+                                               class="form-control h-auto" id="new_inspection_file_id" type="file"
+                                               name="Inspection_File"
+                                                />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12 text-start">
+                                        <button @@click="add_inspection_details_information"
+                                                x-text="new_inspection_details_information.is_updating ? 'Update' : 'Add More'"
+                                                type="button" class="btn btn-sm btn-addMore"></button>
+                                    </div>
+                                    <p class="pl-3" x-show="error_message" x-text="error_message" style="color: red;"></p>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-12 pl-3">
+                                        <p x-show="inspection_details_informations.length == 0">
+                                            No
+                                            details added yet
+                                        </p>
+                                        <table class="table table-sm" x-show="inspection_details_informations.length > 0">
+                                            <tr>
+                                                <th>SL</th>
+                                                <th>Name</th>
+                                                <th>Designation</th>
+                                                <th>Inspection File</th>
+                                                <th>Comments</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            <tbody>
+                                                <template x-for="(data, index) in inspection_details_informations" :key="index">
+                                                    <tr class="">
+                                                        <td x-text="++index"></td>
+                                                        <td x-text="data.OfficialName"></td>
+                                                        <td x-text="displayDesignation(data.SocialForestryDesignationId)"></td>
+                                                        <td x-text="data.InspectionFile"></td>
+                                                        <td x-text="data.Comments"></td>
+                                                        <td>
+                                                            <button @@click="remove_inspection_details_information(data)"
+                                                                    type="button" class="btn btn-sm btn-remove">
+                                                                Remove
+                                                            </button>
+                                                            <button @@click="edit_inspection_details_information(data,index)"
+                                                                    type="button" class="btn btn-sm btn-primary">
+                                                                Edit
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="custom green-card m-3 row" style="border-radius: 5px;" id="">
+                        <div class="col-12 p-1 ">
+                            <fieldset class="p-2 col-12 mb-2">
+                                <legend class="float-none w-auto">Cost information</legend>
+
+                                <div class="row">
+                                    <div class="col-md-3 pr-1">
+                                        <label>
+                                            Date
+                                            <span style="color:red;">*</span>
+                                        </label>
+                                        <input x-model="new_cost_information.CostDate"
+                                               type="date"
+                                               placeholder="Enter date of cost"
+                                               name="Cost_DateOfCost"
+                                               required />
+                                    </div>
+                                    <div class="col-md-3 px-1">
+                                        <label>
+                                            Cost Amount
+                                            <span style="color:red;">*</span>
+                                        </label>
+                                        <input x-model="new_cost_information.CostAmount"
+                                               type="number"
+                                               name="Cost_Amount"
+                                               placeholder="Enter cost of amount" required />
+                                    </div>
+                                    <div class="col-md-3 pl-1">
+                                        <label>
+                                            Remarks
+
+                                        </label>
+                                        <input x-model="new_cost_information.Remarks"
+                                               placeholder="Enter Remarks"  />
+                                    </div>
+
+                                    <div class="col-md-3 pr-1">
+                                        <label>
+                                            Cost attachment
+                                            <span style="color:red;"></span>
+
+                                        </label>
+                                        <input x-on:change="set_new_cost_information_attachment_file_name"
+                                               x-data="{ filesArray: [] }"
+                                               class="form-control h-auto costAttachments"
+                                               id="cost_attachment_id" type="file"
+                                               name="Cost_File"
+                                               placeholder="Enter attachment" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+
+                                    <div class="col-12 mt-2 text-start">
+                                        <button @@click="add_cost_information"
+                                                x-text="new_cost_information.is_updating ? 'Update' : 'Add More'"
+                                                type="button" class="btn btn-sm btn-addMore"></button>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-12 pl-3">
+                                        <p x-show="cost_informations.length == 0">
+                                            No details added yet
+                                        </p>
+                                        <table class="table table-sm"
+                                               x-show="cost_informations.length > 0">
+                                            <tr>
+                                                <th>SL</th>
+                                                <th>Date</th>
+                                                <th>Cost Amount</th>
+                                                <th>Remarks</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            <tbody>
+                                                <template x-for="(data, index) in cost_informations"
+                                                          :key="index">
+                                                    <tr class="">
+                                                        <td x-text="++index"></td>
+                                                        <td x-text="DisplayDate(data.CostDate)"></td>
+                                                        <td x-text="data.CostAmount"></td>
+                                                        <td x-text="data.Remarks"></td>
+                                                        <td>
+                                                            <button @@click="remove_cost_information(data)"
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-remove">
+                                                                Remove
+                                                            </button>
+                                                            <button @@click="edit_cost_information(data,index)"
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-primary">
+                                                                Edit
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid m-0 p-0">
+                    <div class="custom row m-3">
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="button" id="submit-btn" x-on:click="submit()"
+                                    class="btn btn-sm btn-green save">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </!form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function validatePhoneNumber() {
+        const phoneNumberInput = $("#MobileNumber").val();
+        const phoneNumber = phoneNumberInput.toString();
+        const phoneRegex = /^\d{11}$/;
+
+        if (/[^0-9]/.test(phoneNumber)) {
+            $("#phoneNumberErrorLabel").text("Phone number should be numeric");
+            $("#phoneNumberErrorLabel").removeAttr('hidden');
+        }
+
+        if (phoneRegex.test(phoneNumber)) {
+            $("#phoneNumberErrorLabel").attr('hidden', 'hidden');
+
+        }
+        else {
+            $("#phoneNumberErrorLabel").removeAttr('hidden');
+
+        }
+    }
+
+    $(".submit-btn").on("click", function () {
+        if ($("#NurseryInformationForm").valid()) {
+            $(".loader").fadeIn("slow");
+        }
+    });
+    const ConcernedOfficialFormValidation = {
+        Concerned_OfficialName: {
+            required: true
+        },
+        Concerned_Designation: {
+            required: true
+        },
+        Concerned_MobileNumber: {
+            required: true
+        },
+        Concerned_Email: {
+            required: true
+        }
+    };
+
+    const InspectionDetailsMapFormValidation = {
+        Inspection_OfficialName: {
+            required: true
+        },
+        Inspection_Designation: {
+            required: true
+        },
+        Inspection_Comments: {
+            required: true
+        },
+        Inspection_File: {
+            required: true
+        }
+    };
+
+    const CostInformationFormValidation = {
+
+        Cost_DateOfCost: {
+            required: true
+        },
+        Cost_Amount: {
+            required: true,
+            min: 1,
+        },
+        Cost_File: {
+            required: true
+        }
+    };
+    const NurseryRaisedSeedlingFormValidation = {
+
+        SpeciesName: {
+            required: true
+        },
+        ScientificName: {
+            required: true
+        },
+        NumberOfSeedlingRaised: {
+            required: true
+        }
+    };
+
+
+    $(document).ready(function () {
+        $("#ForestCircleId").change(function () {
+            var selectedItem = $(this).val();
+            var forestDivisonList = $("#ForestDivisionId");
+            if (selectedItem == "" || selectedItem == null) {
+                //todo--------------------------
+                $("#ForestDivisionId").empty();
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListForestDivisionByForestCircle",
+                data: { "id": selectedItem },
+                success: function (data) {
+                    forestDivisonList.html('<option value="">Choose Forest Division</option>');
+                    $.each(data, function (id, option) {
+                        forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestDivisonList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+
+        $("#ForestDivisionId").change(function () {
+            var selectedItem = $(this).val();
+            var forestRangeList = $("#ForestRangeId");
+            if (selectedItem == "" || selectedItem == null) {
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListForestRangeByForestDivision",
+                data: { "id": selectedItem },
+                success: function (data) {
+                    forestRangeList.html('<option value="">Choose Forest Range</option>');
+                    $.each(data, function (id, option) {
+                        forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestRangeList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+
+        $("#ForestRangeId").change(function () {
+            var selectedItem = $(this).val();
+            var forestBeatList = $("#ForestBeatId");
+            if (selectedItem == "" || selectedItem == null) {
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListForestBeatByForestRange",
+                data: { "id": selectedItem },
+                success: function (data) {
+                    forestBeatList.html('<option value="">Choose Forest Beat</option>');
+                    $.each(data, function (id, option) {
+                        forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestBeatList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+
+        $("#ForestBeatId").change(function () {
+            var selectedItem = $(this).val();
+            var forestFcvVcfList = $("#ForestFcvVcfId");
+            var FcvVcfType = $("#FcvVcfType").val();
+
+            if (selectedItem == "" || selectedItem == null || FcvVcfType == "" | FcvVcfType == null) {
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListByForestBeatAndType",
+                data: { "beatId": selectedItem, "type": FcvVcfType },
+                success: function (data) {
+                    forestFcvVcfList.html('<option value="">Choose Forest FCV/VCF</option>');
+                    $.each(data, function (id, option) {
+                        forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestFcvVcfList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+    });
+
+    const RequiredValidation = {
+        ForestCircleId: {
+            required: true
+        },
+        ForestDivisionId: {
+            required: true
+        },
+        ForestRangeId: {
+            required: true
+        },
+        ForestBeatId: {
+            required: true
+        },
+        DistrictId: {
+            required: true
+        },
+        DivisionId: {
+            required: true
+        },
+        UpazillaId: {
+            required: true
+        },
+        UnionId: {
+            required: true
+        },
+
+
+        NurseryName: {
+            required: true
+        },
+        FinancialYearId: {
+            required: true
+        },
+        SeedlingRaisingTargetNumber: {
+            required: true
+        },
+        ProjectTypeId: {
+            required: true
+        },
+        NurseryEstablishmentDate: {
+            required: true
+        },
+        SanctionNo: {
+            required: true
+        },
+        NurseryTypeId: {
+            required: true
+        },
+        Location: {
+            required: true
+        },
+        TotalNumberOfBed: {
+            required: true
+        },
+        NumberOfSeedlingsPerBed: {
+            required: true
+        },
+        NurseryRaisingSectorId: {
+            required: true
+        }
+
+    };
+
+    const NurseryInformationFormValidation = {
+        ...RequiredValidation,
+        ...ConcernedOfficialFormValidation,
+        ...InspectionDetailsMapFormValidation,
+        ...CostInformationFormValidation
+    };
+
+
+
+
+
+    function getFileUrl(imageFileElement) {
+        const [file] = imageFileElement?.files ?? [];
+        if (file) {
+            return URL.createObjectURL(file);
+        }
+
+        return null;
+    }
+
+    function getFileName(imageFileElement) {
+        const [file] = imageFileElement?.files ?? [];
+        if (file) {
+            return file.name;
+        }
+
+        return null;
+    }
+
+    function clearFileInput(inputId) {
+        const inputElement = document.getElementById(inputId);
+
+        if (inputElement) {
+            const newInput = document.createElement(inputElement.tagName);
+            newInput.id = inputId;
+
+            for (let i = 0; i < inputElement.attributes.length; i++) {
+                const attr = inputElement.attributes[i];
+                newInput.setAttribute(attr.name, attr.value);
+            }
+
+            inputElement.parentNode.replaceChild(newInput, inputElement);
+        }
+    }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('new_nursary_plantation_information', () => ({
+
+            init() {
+                this.new_nursery_seedling_information = { ...this.init_nursery_seedling_information };
+                this.new_concerned_officials_information = { ...this.init_concerned_officials_information };
+                this.new_inspection_details_information = { ...this.init_inspection_details_information };
+                this.new_cost_information = { ...this.init_cost_information };
+                this.GetDesignation();
+
+            },
+            designations: [],
+            DisplayDesignation: "",
+            DisplayDate: "",
+
+            displayDesignation(id) {
+                this.DisplayDesignation = this.designations.find(x => x.Id == id).Name;
+                return this.DisplayDesignation;
+            },
+
+            displayDate(date) {
+                return 
+            },
+
+            async GetDesignation() {
+
+
+                let designationsList = await fetch("/NurseryInformation/GetDesignation").then(response => response.json());
+
+                if (designationsList) {
+
+                    this.designations = designationsList.data;
+                    this.new_inspection_details_information_data.SocialForestryDesignationId = this.designations;
+                    this.new_concerned_officials_information_data.DesignationId = this.designations;
+                }
+
+            },
+
+
+            new_data:
+            {
+                ForestCircleId: "",
+                ForestDivisionId: "",
+                ForestRangeId: "",
+                ForestBeatId: "",
+
+                DivisionId: "",
+                DistrictId: "",
+                UpazillaId: "",
+                UnionId: "",
+
+                NurseryName: "",
+                FinancialYearId: "",
+                SeedlingRaisingTargetNumber: "",
+                ProjectTypeId: "",
+                EstablishmentDate: "",
+                SanctionNo: "",
+
+                NurseryRaisingSectorId: "",
+
+                NurseryTypeId: "",
+                Location: "",
+                LocationLat: "",
+                LocationLon: "",
+                TotalNumberOfBed: "",
+                NumberOfSeedlingsPerBed: "",
+
+                NurseryRaisedSeedlingInformation: [],
+                ConcernedOfficialMap: [],
+                InspectionDetailsMap: [],
+                CostInformations: [],
+                NurseryDistributionDetails: []
+
+            },
+            error_message: "",
+            nursery_seedling_informations: [],
+            init_nursery_seedling_information:
+            {
+
+                is_updating: false,
+                updateIndex: null,
+
+                SpeciesName: "",
+                ScientificName: "",
+                SeedlingRaised: "",
+                Remarks: ""
+            },
+
+            new_nursery_seedling_information: { ...this.init_nursery_seedling_information },
+
+            add_nursery_seedling_information() {
+
+                let hasError = 0;
+                for (const key of Object.keys(NurseryRaisedSeedlingFormValidation)) {
+                    const inputElement = $(`#NurseryInformationForm input[name=${key}], #NurseryInformationForm select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+                if (hasError > 0) return;
+
+
+                if (!this.new_nursery_seedling_information.is_updating) {
+
+                    this.nursery_seedling_informations.push(this.new_nursery_seedling_information);
+                }
+                else {
+
+                    this.nursery_seedling_informations[this.new_nursery_seedling_information.updateIndex - 1] = { ...this.new_nursery_seedling_information };
+                }
+
+                this.new_nursery_seedling_information = { ...this.init_nursery_seedling_information };
+
+            },
+            remove_nursery_seedling_information(data) {
+                this.nursery_seedling_informations.splice(this.nursery_seedling_informations.indexOf(data), 1);
+            },
+            edit_nursery_seedling_information(data, index) {
+                this.new_nursery_seedling_information = { ...data, is_updating: true, updateIndex: index };
+            },
+
+            ConcernedOfficial: [],
+            init_concerned_officials_information:
+            {
+                is_updating: false,
+                updateIndex: null,
+
+                OfficialName: "",
+                DesignationId: "",
+                MobileNo: "",
+                EmailAddress: "",
+            },
+            new_concerned_officials_information: { ...this.init_concerned_officials_information },
+            new_concerned_officials_information_data:
+            {
+                DesignationId: [],
+            },
+
+            add_concerned_officials_information() {
+
+                let hasError = 0;
+                for (const key of Object.keys(ConcernedOfficialFormValidation)) {
+                    const inputElement = $(`#NurseryInformationForm input[name=${key}], #NurseryInformationForm select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+                if (hasError > 0) return;
+
+                if (!this.new_concerned_officials_information.is_updating) {
+
+                    this.ConcernedOfficial.push(this.new_concerned_officials_information);
+                }
+                else {
+
+                    this.ConcernedOfficial[this.new_concerned_officials_information.updateIndex - 1] = { ...this.new_concerned_officials_information };
+                }
+                this.new_concerned_officials_information = { ...this.init_concerned_officials_information };
+
+            },
+            remove_concerned_officials_information(data) {
+                this.ConcernedOfficial.splice(this.ConcernedOfficial.indexOf(data), 1);
+            },
+            edit_concerned_officials_information(data, index) {
+                this.new_concerned_officials_information = { ...data, is_updating: true, updateIndex: index };
+            },
+
+            inspection_details_informations: [],
+            insepectionInfoFiles: [],
+            init_inspection_details_information:
+            {
+                is_updating: false,
+                updateIndex: null,
+
+                OfficialName: "",
+                SocialForestryDesignationId: "",
+                Comments: "",
+                InspectionFile: ""
+            },
+            new_inspection_details_information: { ...this.init_inspection_details_information },
+
+            set_new_inspection_details_information_inspection_file_name(event) {
+                const name = getFileName(event.target);
+                this.new_inspection_details_information.InspectionFile = name;
+                const selectedFile = event.target.files[0];
+                debugger;
+                if (selectedFile) {
+                    this.insepectionInfoFiles.push(selectedFile);
+                }
+
+
+            },
+            new_inspection_details_information_data: {
+                SocialForestryDesignationId: [],
+            },
+
+            add_inspection_details_information() {
+
+                let hasError = 0;
+                for (const key of Object.keys(InspectionDetailsMapFormValidation)) {
+                    const inputElement = $(`#NurseryInformationForm input[name=${key}], #NurseryInformationForm select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+                if (hasError > 0) return;
+
+                if (!this.new_inspection_details_information.is_updating) {
+
+                    this.inspection_details_informations.push(this.new_inspection_details_information);
+                    console.log(this.inspection_details_informations);
+                }
+                else {
+
+                    this.inspection_details_informations[this.new_inspection_details_information.updateIndex - 1] = { ...this.new_inspection_details_information };
+                }
+                this.new_inspection_details_information = { ...this.init_inspection_details_information };
+                clearFileInput("new_inspection_file_id");
+
+            },
+            remove_inspection_details_information(data) {
+                this.inspection_details_informations.splice(this.inspection_details_informations.indexOf(data), 1);
+            },
+            edit_inspection_details_information(data, index) {
+                this.new_inspection_details_information = { ...data, is_updating: true, updateIndex: index };
+            },
+
+            cost_informations: [],
+            cost_info_files: [],
+            init_cost_information: {
+                is_updating: false,
+                updateIndex: null,
+
+                cost_type_display: "",
+                cost_type_label: "",
+                CostDate: "",
+                CostAmount: "",
+                Remarks: "",
+                CostInformationFiles: "",
+                Attachment: ""
+            },
+
+            new_cost_information: { ...this.init_cost_information },
+
+            set_new_cost_information_attachment_file_name(event) {
+                const name = getFileName(event.target);
+                this.new_cost_information.Attachment = name;
+                let filesArray = this.$data.filesArray;
+                const selectedFile = event.target.files[0];
+
+                if (selectedFile) {
+                    this.cost_info_files.push(selectedFile);
+                }
+
+            },
+
+            add_cost_information() {
+
+                let hasError = 0;
+                for (const key of Object.keys(CostInformationFormValidation)) {
+                    const inputElement = $(`#NurseryInformationForm input[name=${key}], #NurseryInformationForm select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+                if (hasError > 0) return;
+
+                if (!this.new_cost_information.is_updating) {
+
+                    this.cost_informations.push(this.new_cost_information);
+                }
+                else {
+
+                    this.cost_informations[this.new_cost_information.updateIndex - 1] = { ...this.new_cost_information };
+                }
+                this.new_cost_information = { ...this.init_cost_information };
+                clearFileInput("cost_attachment_id");
+            },
+            remove_cost_information(data) {
+                this.cost_informations.splice(this.cost_informations.indexOf(data), 1);
+            },
+            edit_cost_information(data, index) {
+                this.new_cost_information = { ...data, is_updating: true, updateIndex: index };
+            },
+            get_cost_information_on_change() {
+                //
+            },
+            remove_error_message() {
+                setTimeout(() => {
+                    this.error_message = "";
+                }, 3000);
+            },
+
+            submit() {
+
+                let hasError = 0;
+                for (const key of Object.keys(RequiredValidation)) {
+                    const inputElement = $(`#NurseryInformationForm input[name=${key}], #NurseryInformationForm select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+                if (hasError > 0) return;
+
+
+                var formData = new FormData();
+                //Forest
+                this.new_data.ForestCircleId = document.getElementById('ForestCircleId').value;
+                this.new_data.ForestDivisionId = document.getElementById('ForestDivisionId').value;
+                this.new_data.ForestRangeId = document.getElementById('ForestRangeId').value;
+                this.new_data.ForestBeatId = document.getElementById('ForestBeatId').value;
+                this.new_data.ForestFcvVcfId = document.getElementById('ForestFcvVcfId').value;
+
+
+                //Civil
+                this.new_data.DivisionId = document.getElementById('DivisionId').value;
+                this.new_data.DistrictId = document.getElementById('DistrictId').value;
+                this.new_data.UpazillaId = document.getElementById('UpazillaId').value;
+                this.new_data.UnionId = document.getElementById('UnionId').value;
+
+
+                let nursaryImagefileInput = document.getElementById('NursaryImageFile');
+                let nursaryLayoutfileInput = document.getElementById('NursaryLayoutFile');
+                let nursaryJournalfileInput = document.getElementById('NursaryJournalFile');
+
+                if (nursaryImagefileInput.files.length > 0) {
+
+                    formData.append('NursaryImageFile', nursaryImagefileInput.files[0]);
+                }
+                else {
+                    console.error('No file selected');
+                }
+                if (nursaryLayoutfileInput.files.length > 0) {
+
+                    formData.append('NursaryLayout', nursaryLayoutfileInput.files[0]);
+                }
+                else {
+                    console.error('No file selected');
+                }
+                if (nursaryJournalfileInput.files.length > 0) {
+
+                    formData.append('NursaryJournal', nursaryJournalfileInput.files[0]);
+                }
+                else {
+                    console.error('No file selected');
+                }
+
+
+                this.new_data.NurseryRaisedSeedlingInformation = this.nursery_seedling_informations;
+
+                this.new_data.CostInformations = this.cost_informations;
+
+                for (let i = 0; i < this.ConcernedOfficial.length; i++) {
+                    this.new_data.ConcernedOfficialMap.push(
+                        {
+                            ConcernedOfficial: this.ConcernedOfficial[i]
+
+                        });
+                }
+
+                for (let i = 0; i < this.inspection_details_informations.length; i++) {
+                    this.new_data.InspectionDetailsMap.push(
+                        {
+                            InspectionDetails: this.inspection_details_informations[i]
+
+                        });
+
+                }
+                this.cost_info_files.forEach(x => {
+
+                    formData.append('CostInformationFiles', x);
+
+                });
+                this.insepectionInfoFiles.forEach(x => {
+
+                    formData.append('InspectionFiles', x);
+
+                });
+
+                console.log(this.new_data);
+
+                objectToFormData(this.new_data, formData);
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "/NurseryInformation/Create",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        $(".loader").fadeOut("fast");
+
+                        if (data.RedirectUrl) {
+                            window.location.href = data.RedirectUrl;
+                            return;
+                        }
+
+                        if (data.Success) {
+                            swal(
+                                'Success',
+                                data.Message,
+                                'success'
+                            );
+                        } else {
+                            swal(
+                                'Failed',
+                                data.Message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $(".loader").fadeOut("fast");
+
+                        swal(
+                            'Failed',
+                            'Unexpected Error Occured',
+                            'error'
+                        );
+                    }
+                });
+
+            }
+
+        }));
+    });
+    function objectToFormData(dataObject, formData, parentKey) {
+        for (var key in dataObject) {
+            if (dataObject.hasOwnProperty(key)) {
+                var propName = parentKey ? `${parentKey}[${key}]` : key;
+
+                if (typeof dataObject[key] === 'object' && !Array.isArray(dataObject[key])) {
+                    // Nested object, recursively convert it
+                    objectToFormData(dataObject[key], formData, propName);
+                } else if (Array.isArray(dataObject[key])) {
+                    // Array of objects, loop through and convert each item
+                    dataObject[key].forEach(function (item, index) {
+                        var arrayKey = `${propName}[${index}]`;
+                        objectToFormData(item, formData, arrayKey);
+                    });
+                } else {
+                    // Regular key-value pair
+                    formData.append(propName, dataObject[key]);
+                }
+            }
+        }
+    }
+</script>
+

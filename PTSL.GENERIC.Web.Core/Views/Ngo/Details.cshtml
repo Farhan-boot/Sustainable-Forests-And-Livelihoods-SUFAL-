@@ -1,0 +1,39 @@
+﻿@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.NgoVM
+@{
+	ViewBag.Title = "NGO Details";
+}
+
+<div class="card">
+	<div class="card-header">
+		<h4>
+			<a href="/Ngo/Index" class="mr-1 back">
+				<svg width="20" height="20" viewBox="0 0 32 32">
+					<path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+				</svg>
+			</a>
+			NGO Details
+		</h4>
+	</div>
+
+	<div class="card-body">
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label style="font-size:15px;">English Name: <b>@Model.Name</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Bangla Name: <b>@Model.NameBn</b></label>
+			</div>
+			@{
+				var index = 1;
+			}
+			@foreach (var item in Model.ForestDivisions ?? Enumerable.Empty<ForestDivisionVM>())
+			{
+				<div class="form-group">
+					<label style="font-size:15px;">Assigned to Forest Division @(index++): <b>@item.Name</b></label>
+				</div>
+			}
+		</div>
+	</div>
+</div>
+

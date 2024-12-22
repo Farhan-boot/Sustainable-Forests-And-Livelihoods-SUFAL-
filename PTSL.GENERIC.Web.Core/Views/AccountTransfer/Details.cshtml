@@ -1,0 +1,121 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountTransferVM
+@{
+    ViewBag.Title = "Account Transfer Details";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+    }
+
+        fieldset legend {
+            width: auto;
+        }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/Accounts/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Account Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>From Account</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Account Balance: <b>@Model?.FromAccount?.CurrentAccountBalance</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Block Amount: <b>@Model?.FromAccount?.CurrentBlockAmount</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Available Balance: <b>@Model?.FromAccount?.CurrentAvailableBalance</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Bank Account Name: <b>@Model?.FromAccount?.BankAccountName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Number: <b>@Model?.FromAccount?.AccountNumber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Type: <b>@Model?.FromAccount?.AccountType</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Bank Name: <b>@Model?.FromAccount?.BankName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Branch Name: <b>@Model?.FromAccount?.BranchName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Opening Date: <b>@Model?.FromAccount?.AccountOpeningDate</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Remarks: <b>@Model?.FromAccount?.Remarks</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Type Text: <b>@Model?.FromAccount?.AccountTypeText</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Available Balance BDT Text: <b>@Model?.FromAccount?.CurrentAvailableBalanceBdtText</b></label>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-horizontal">
+
+            <fieldset>
+                <legend>To Account</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Account Balance: <b>@Model?.ToAccount?.CurrentAccountBalance</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Block Amount: <b>@Model?.ToAccount?.CurrentBlockAmount</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Available Balance: <b>@Model?.ToAccount?.CurrentAvailableBalance</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Bank Account Name: <b>@Model?.ToAccount?.BankAccountName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Number: <b>@Model?.ToAccount?.AccountNumber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Type: <b>@Model?.ToAccount?.AccountType</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Bank Name: <b>@Model?.ToAccount?.BankName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Branch Name: <b>@Model?.ToAccount?.BranchName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Opening Date: <b>@Model?.ToAccount?.AccountOpeningDate</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Remarks: <b>@Model?.ToAccount?.Remarks</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Type Text: <b>@Model?.ToAccount?.AccountTypeText</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Current Available Balance BDT Text: <b>@Model?.ToAccount?.CurrentAvailableBalanceBdtText</b></label>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+

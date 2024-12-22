@@ -1,0 +1,89 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum.Beneficiary;
+@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyEssentialVM>
+@{
+    ViewBag.Title = "Beneficiary Report";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Beneficiary Report</h5>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="7">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Beneficiary Report</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Name</th>
+                    <th>NID</th>
+                    <th>Mobile Number</th>
+                    <th>Gender</th>
+                    <th>FCV/VCF</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var survey in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@survey.BeneficiaryName</td>
+                        <td>@survey.BeneficiaryNid</td>
+                        <td>@survey.BeneficiaryPhone</td>
+                        <td>@survey.BeneficiaryGenderString</td>
+                        <td>@survey.ForestFcvVcf?.Name</td>
+                        <td>@survey.BeneficiaryApproveStatusString</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="4" class="text-center">Total:</td>
+                    <td colspan="3" class="text-center">@(Model.Count)</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-center">Total Male / Female:</td>
+                    <td colspan="3" class="text-center">@(Model.Count(x => x.BeneficiaryGender == Gender.Male)) / @(Model.Count(x => x.BeneficiaryGender == Gender.Female))</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-center">Total Approved / Pending:</td>
+                    <td colspan="3" class="text-center">@(Model.Count(x => x.BeneficiaryApproveStatus == BeneficiaryApproveStatus.Approved)) / @(Model.Count(x => x.BeneficiaryApproveStatus == BeneficiaryApproveStatus.Pending))</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons:['excel', 'pdf']
+        });
+    });
+</script>
+

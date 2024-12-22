@@ -1,0 +1,238 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.NewRaisedPlantationVM>
+@{
+    ViewBag.Title = "Information And Data On Newly Raised Plantation";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div style="min-width: 250% !important;" class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Information And Data On Newly Raised Plantation</h5>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="26">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Information And Data On Newly Raised Plantation</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Plantation Id</th>
+                    <th>Forest Division</th>
+                    <th>Civil District</th>
+                    <th>Forest Range/SFNTC</th>
+                    <th>Forest Beat/Camp/SFPC</th>
+                    <th>Land Owning Agency</th>
+                    <th>Source of funding/Project name</th>
+                    <th>Plantation year</th>
+                    <th>Plantation Type</th>
+                    <th>Location with Coordinate</th>
+                    <th>Plantation Area</th>
+                    <th>Cost Type</th>
+                    <th>Total Cost</th>
+
+                    <th>Labor Type</th>
+                    <th>Male no</th>
+                    <th>Female no</th>
+                    <th>Total</th>
+
+
+                   @*  <th>Beneficiary</th> *@
+                    <th>Beneficiary Total Male</th>
+                    <th>Beneficiary Total Female</th>
+                    <th>Beneficiary Total</th>
+
+                    <th>Social forestry management committee formed</th>
+                    <th>Fund management sub committee formed</th>
+                    <th>Advisory committee formed</th>
+                    <th>Remarks</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@item.PlantationId</td>
+                        <td>@item.ForestDivision.Name</td>
+                        <td>@item.District.Name</td>
+                        <td>@item.ForestRange.Name</td>
+                        <td>@item.ForestBeat.Name</td>
+                        @if(item.LandOwningAgency != null)
+                        {
+                            <td>@item.LandOwningAgency.Name</td>
+                        }
+                        else
+                        {
+                            <td>----</td>
+                        }
+
+                        <td>@item.ProjectType.Name</td>
+                        <td>@item.PlantedFinancialYear.Name</td>
+                        @if (item.PlantationType != null)
+                        {
+                            <td>@item.PlantationType.Name</td>
+                        }
+                        else
+                        {
+                            <td>----</td>
+                        }
+                        <td>@item.LocationWithCoordinate</td>
+                        <td>@item.PlantationArea (@item.PlantationUnit.Name)</td>
+
+                        <span>
+                            @if (item.CostInformation.Count() > 0)
+                            {
+                                foreach (var costInfo in item.CostInformation)
+                                {
+                                    <td>@costInfo?.CostType?.Name</td>
+                                }
+                            }
+                            else
+                            {
+                            <td>---</td>
+                            }
+                        </span>
+
+
+                        <span>
+                            @if (item.CostInformation.Count() > 0)
+                            {
+                                foreach (var costInfo in item.CostInformation)
+                                {
+                                <td>@costInfo?.CostAmount</td>
+                                }
+                            }
+                            else
+                            {
+                            <td>---</td>
+                            }
+                        </span>
+
+                        <span>
+                            @if (item.LaborInformation.Count() > 0)
+                            {
+                                foreach (var laborInfo in item.LaborInformation)
+                                {
+                                    <td>@laborInfo?.LaborCostType?.Name</td>
+                                    <td>@laborInfo?.TotalMale</td>
+                                    <td>@laborInfo?.TotalFemale</td>
+                                <td>
+                                        @(laborInfo?.TotalMale + laborInfo?.TotalFemale)
+                                </td>
+                                }
+                            }
+                            else
+                            {
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            <td>---</td>
+                            }
+                        </span>
+
+
+
+                        <span>
+                            @if (item.PlantationSocialForestryBeneficiaryMaps.Select(x => x.SocialForestryBeneficiary).Count() > 0)
+                            {
+                                long feMaleNo = 0;
+                                long maleNo = 0;
+
+                                foreach (var beneficiaryInfo in item.PlantationSocialForestryBeneficiaryMaps.Select(x => x.SocialForestryBeneficiary))
+                                {
+                                    if (beneficiaryInfo != null)
+                                    {
+                                        if(beneficiaryInfo.Gender.GetEnumDisplayName() == "Male")
+                                        {
+                                            maleNo++; 
+                                        }
+                                        else
+                                        {
+                                            maleNo++;
+                                        }
+                                    }
+                                }
+                            @* <td>---</td> *@
+                            <td>@maleNo</td>
+                            <td>@feMaleNo</td>
+                            <td>
+                              @(feMaleNo + maleNo)
+                            </td >
+
+                            }
+                            else
+                            {
+                            <td>---</td>
+     
+                            }
+                        </span>
+
+                        @if (item.SocialForestryManagementCommitteeFormed == false)
+                        {
+                            <td>No</td>
+                        }
+                        else
+                        {
+                            <td>Yes</td>
+                        }
+                        @if (item.FundManagementSubCommitteeFormed == false)
+                        {
+                            <td>No</td>
+                        }
+                        else
+                        {
+                            <td>Yes</td>
+                        }
+                        @if (item.AdvisoryCommitteeFormed == false)
+                        {
+                            <td>No</td>
+                        }
+                        else
+                        {
+                            <td>Yes</td>
+                        }
+                        <td>@item.Remarks</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="20" class="text-center">Total:</td>
+                    <td colspan="22" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

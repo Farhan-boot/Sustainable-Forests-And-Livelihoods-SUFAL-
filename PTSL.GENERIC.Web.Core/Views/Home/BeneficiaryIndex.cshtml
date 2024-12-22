@@ -1,0 +1,227 @@
+﻿@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Dashboard.SurveyDashboardVM
+@{
+    ViewBag.Title = "Beneficiary Home";
+    var currentDate = DateTime.Now;
+}
+
+<style>
+    .boxStyle { 
+        min-height: 135px;
+        background: white;
+        border-radius: 30pz;
+        box-shadow: 10px 5px 5px #e7dfdf;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .boxStyle i {
+        font-size: 55px;
+        padding-top: 5px;
+    }
+
+
+    .profileBoxStyle {
+        min-height: 200px;
+        background: white;
+        border-radius: 30pz;
+        box-shadow: 10px 5px 5px #e7dfdf;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+        .profileBoxStyle img {
+            font-size: 55px;
+            padding-top: 15px;
+        }
+
+        .profileBoxStyle p {
+           padding:0px;
+           margin:0px;
+
+        }
+
+
+</style>
+
+
+<div class="container"> 
+
+    <div class="row" style="padding-bottom:15px">
+        <div class="col-md-6">
+            <div class="thumbnail profileBoxStyle">
+                <a href="#">
+                    <img src="~/img/profile.webp" class="rounded float-start thumbnail" alt="" style="height: 100px;">
+                    <div class="caption">
+                        <h4>@Model.BeneficiaryName</h4>
+                       @* <p>Phone No: 01759893384</p>
+                        <p>NID No: 12345678123</p>
+                        <p>Gender: Mail</p>
+                        <p>Loan Status: Under Observation</p>*@
+                        @*<a class="btn btn-success btn-sm" href="#" style="margin-bottom: 10px;">READ MORE</a>*@
+                    </div>
+                </a>
+            </div>
+        </div>
+
+       
+            <div class="col-md-6">
+            <div class="thumbnail profileBoxStyle">
+                    <a href="#">
+                    <div class="caption">
+                        <p>Phone No: @Model.PhoneNumber</p>
+                        <p>NID No: @Model.NidNo</p>
+                        <p>Gender: @Model.Gender</p>
+                       @* <p>Loan Status: @Model.NidNo</p>*@
+                    </div>
+                    </a>
+                </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="thumbnail boxStyle">
+                <a href="#">
+                  <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Total Loan : @Model.TotalAIGLoanTaken</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+              <div class="thumbnail boxStyle">
+                <a href="#">
+                  <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Total Repayment : @Model.TotalAIGLoanRepayment</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+              <div class="thumbnail boxStyle">
+                <a href="#">
+                  <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Meeting Participation : @Model.TotalMeetingParticipations</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail boxStyle">
+                <a href="#">
+                    <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Training Participation : @Model.TotalTrainingParticipations</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+  @*  <div class="row" style="padding-top:15px">
+        <div class="col-md-3">
+            <div class="thumbnail boxStyle">
+                <a href="#">
+                    <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Total Loan : 500 TK</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail boxStyle">
+                <a href="#">
+                    <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Total Loan : 500 TK</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail boxStyle">
+                <a href="#">
+                    <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Total Loan : 500 TK</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail boxStyle">
+                <a href="#">
+                    <i class="fa fa-clock"></i>
+                    <div class="caption">
+                        <p>Total Loan : 500 TK</p>
+                        <p>READ MORE</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>*@
+</div>
+
+
+<br />
+@*<div>
+    <div>
+        <h4>Beneficiary Name: @Model.BeneficiaryName</h4>
+    </div>
+    <div>
+        <h4>Total Loan: @Model.TotalAIGLoanTaken</h4>
+    </div>
+    <div>
+        <h4>Total Repayment: @Model.TotalAIGLoanRepayment</h4>
+    </div>
+
+
+    <div>
+        <h4>Meeting Participation: @Model.TotalMeetingParticipations</h4>
+    </div>
+    <div>
+        <h4>Training Participation: @Model.TotalTrainingParticipations</h4>
+    </div>
+</div>*@
+
+<div class="container">
+    <h5>AIG Loan</h5>
+    <div class="row">
+    @foreach (var aig in Model.AIGBasicInformations)
+    {
+        <div class="col-md-3 thumbnail boxStyle">
+            <h5>LDF Round @aig.LDFCount</h5>
+
+                <h6>Repayments - <a href="/AIGBasicInformation/Details?id=@aig.Id" class="btn btn-success btn-sm">View Details</a></h6>
+            @{
+                var currentRepayment =
+                    aig.RepaymentLDFs?.Where(x => x.RepaymentEndDate >= currentDate).Take(3).ToList();
+                currentRepayment = currentRepayment?.Count == null ? aig.RepaymentLDFs?.TakeLast(3).ToList() : currentRepayment;
+            }
+
+            @foreach (var repayment in currentRepayment ?? Enumerable.Empty<RepaymentLDFVM>())
+            {
+                <div>
+                    <h6>@repayment.RepaymentSerial - @repayment.RepaymentAmount</h6>
+                    <h6>@repayment.RepaymentStartDate.ToUIDateString() - @repayment.RepaymentEndDate.ToUIDateString()</h6>
+                    <p>@(repayment.IsPaymentCompleted ? "Payment Completed" : "Remaining")</p>
+                    <p>@repayment.PastFutureCurrentInString</p>
+                </div>
+            }
+        </div>
+    }
+    </div>
+</div>
+

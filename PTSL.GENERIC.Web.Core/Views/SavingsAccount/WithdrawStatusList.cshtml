@@ -1,0 +1,296 @@
+﻿@model IEnumerable<PTSL.GENERIC.Web.Core.Model.EntityViewModels.BeneficiarySavingsAccount.WithdrawAmountInformationVM>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10 p-0">
+                    <h4>Withdraw Pending List</h4>
+                </div>
+                @* <div class="col-md-2 text-right p-0">
+                <a href="/SavingsAccount/Create" class="badge badge-success badge-shadow">Create New</a>
+                </div>*@
+            </div>
+            <div class="card-body">
+
+                <form asp-action="WithdrawStatusList" asp-controller="SavingsAccount" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                                     "~/Views/Shared/_ForestAdministration.cshtml",
+                                     (
+                                     ViewBag.ForestCircleId as SelectList,
+                                     ViewBag.ForestDivisionId as SelectList,
+                                     ViewBag.ForestRangeId as SelectList,
+                                     ViewBag.ForestBeatId as SelectList,
+                                     ViewBag.ForestFcvVcfId as SelectList
+                                     )
+                                     )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                                     "~/Views/Shared/_CivilAdministration.cshtml",
+                                     (
+                                     ViewBag.DivisionId as SelectList,
+                                     ViewBag.DistrictId as SelectList,
+                                     ViewBag.UpazillaId as SelectList,
+                                     ViewBag.UnionId as SelectList
+                                     )
+                                     )
+                        </div>
+                    </div>
+
+                    <!--Extra Filter-->
+                    @*    <div class="row custom">
+                    <div class="col-12 p-1">
+                    <fieldset class="p-2">
+                    <legend class="float-none w-auto">Basic Information</legend>
+                    <div class="row">
+                    <div class="col pr-1">
+                    <label class="m-0">NGO</label>
+                    @Html.DropDownList("NgoId", null, "Select NGO", htmlAttributes: new { })
+                    </div>
+                    <div class="col px-1">
+                    <label class="m-0">Mobile Number</label>
+                    <input type="text" id="PhoneNumber" value="@ViewBag.PhoneNumber" name="PhoneNumber" placeholder="Enter Beneficiary Mobile Number" />
+                    </div>
+                    <div class="col px-1">
+                    <label class="m-0">NID</label>
+                    <input type="text" id="NID" value="@ViewBag.NID" name="NID" placeholder="Enter Beneficiary NID (if any)" />
+                    </div>
+                    <div class="col pl-1">
+                    <label class="m-0">Gender</label>
+                    @Html.DropDownList("Gender", null, "Select Gender", htmlAttributes: new { })
+                    </div>
+                    </div>
+                    </fieldset>
+                    </div>
+                    </div>*@
+
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save">Search</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Beneficiary Name</th>
+                                <th>Ngo</th>
+                                <th>Forest Circle</th>
+                                <th>Forest Division</th>
+                                <th>Forest Range</th>
+                                <th>Forest Beat</th>
+                                <th>Withdraw Date</th>
+                                <th>Withdraw Request Amount</th>
+                                <th>Approval Status</th>
+                                @*  <th>Total Account Balance(TK)</th>*@
+                                <th class="not-export-col" style="width:180px">Action</th>
+                            </tr>
+                        </thead> @{
+                            int i = 1;
+                        }
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var data in Model)
+                                {
+                                    //var saving = @data.SavingsAccounts.SavingsAmountInformations.Select(x => x.SavingsAmount).Sum();
+                                    //var withdraw = @data.SavingsAccounts.WithdrawAmountInformations.Select(x => x.WithdrawAmount).Sum();
+                                    //var totalAccountBalance = @saving - @withdraw;
+
+
+                                    <tr>
+                                        <td>@i</td>
+
+                                        @if (data?.SavingsAccounts?.Survey != null)
+                                        {
+                                            <td>@data.SavingsAccounts.Survey.BeneficiaryName</td>
+                                        }
+                                        else
+                                        {
+                                            <td>---</td>
+                                        }
+                                        @if (data?.SavingsAccounts?.Ngos != null)
+                                        {
+                                            <td>@data.SavingsAccounts.Ngos.Name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>---</td>
+                                        }
+                                        @if (data?.SavingsAccounts?.ForestCircle != null)
+                                        {
+                                            <td>@data.SavingsAccounts.ForestCircle.Name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>---</td>
+                                        }
+                                        @if (data?.SavingsAccounts?.Division != null)
+                                        {
+                                            <td>@data.SavingsAccounts.Division.Name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>---</td>
+                                        }
+                                        @if (data?.SavingsAccounts?.ForestRange != null)
+                                        {
+                                            <td>@data.SavingsAccounts.ForestRange.Name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>---</td>
+                                        }
+                                        @if (data?.SavingsAccounts?.ForestBeat != null)
+                                        {
+                                            <td>@data.SavingsAccounts.ForestBeat.Name</td>
+                                        }
+                                        else
+                                        {
+                                            <td>---</td>
+                                        }
+
+
+                                        @* <td><input id="@("dfoRemarkId"+data.Id)" value="@data.DfoRemark" name="DfoRemark" /></td>*@
+                                        @if (data != null)
+                                        {
+                                            <td>@data?.WithdrawDate.Value.ToShortDateString()</td>
+                                            <td>@data?.WithdrawAmount</td>
+                                            @if (@data.DfoStatusId == 1)
+                                            {
+                                                <td>Pending</td>
+                                            }
+                                            @if (@data.DfoStatusId == 2)
+                                            {
+                                                <td>Approved</td>
+                                            }
+                                            @if (@data.DfoStatusId == 3)
+                                            {
+                                                <td>Rejected</td>
+                                            }
+                                        }
+
+
+                                        <td class="not-export-col">
+                                            @*<a href="/SavingsAccount/Savings?id=@data.Id" class="btn btn-success btn-sm">Padding</a>*@
+                                            @*<button class="btn btn-primary btn-sm" onclick="withdrawAmountApproved(@data.Id, @data.DfoRemark)">Approved </button>*@
+                                            <a href="/SavingsAccount/WithdrawAmountApproved?id=@data.Id" class="btn btn-info btn-sm m-1">Approve</a>
+                                            <a href="/SavingsAccount/WithdrawAmountRjected?id=@data.Id" class="btn btn-danger btn-sm m-1">Reject</a>
+                                            @* <button onclick="showDeleteConfirmMessage(@data.Id)" class="btn btn-danger btn-sm">Delete</button>*@
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50], [10, 25, 50]],
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Savings Account List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Savings Account List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Savings Account List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Savings Account List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                }
+            ]
+        });
+    });
+    function withdrawAmountApproved(id, DfoRemark) {
+        var dfoRemarkVal = $("#dfoRemarkId" + id).val();
+
+        var dataInfo = {
+            id: id,
+            dfoRemark: dfoRemarkVal
+        };
+
+
+        swal({
+            title: "Are you sure?",
+            text: "Withdraw Amount Approved !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }, function () {
+            $("select#foo option:checked").val();
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/SavingsAccount/WithdrawAmountApproved",
+                data: dataInfo,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+
+
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        $('.buttons-copy').hide();
+    });
+</script>

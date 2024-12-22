@@ -1,0 +1,854 @@
+﻿@using PTSL.GENERIC.Web.Core.Controllers.AIG;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.CipVM>
+
+@{
+    ViewBag.Title = "CIP List";
+    var permissions = userRoleService.CurrentUserHasPermissions(
+        CipCreatePermission.PermissionNameConst,
+        CipUpdatePermission.PermissionNameConst,
+        CipDeletePermission.PermissionNameConst
+    );
+}
+
+
+
+<!-- Modal Start-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Permission Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" value="" id="cipTeamId" hidden />
+                <div class="row  custom">
+                    <div class="col-12 p-1">
+                        <fieldset class="p-2">
+                            <legend class="float-none w-auto">Map To User</legend>
+                            <div class="col-6" style="padding-left: 0px;float:left">
+                                <label class="m-0">User Role Name <span style="color: red;">*</span></label>
+                                @Html.DropDownList("UserRoleId", null, "Choose User Role Name", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                            </div>
+                            <div class="col-6" style="padding-left: 0px;float:left">
+                                <label class="m-0">Receiver Name <span style="color: red;">*</span></label>
+                                @Html.DropDownList("ReceiverId", null, "Choose Receiver Name", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                            </div>
+                            <div class="col-6" style="padding-left: 0px;float:left">
+                                <label class="m-0">Sending Date <span style="color: red;">*</span></label>
+                                <input type="date" id="SendingDateId" name="SendingDateId" placeholder="Enter Sending Date" required="">
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row custom">
+                    <div class="col-12 p-1">
+                        <fieldset class="p-2">
+
+                            <div class="col-6" style="padding-left: 0px">
+                                <label class="m-0">Sending Time <span style="color: red;">*</span></label>
+                                <input class="form-control" type="time" id="SendingTimeId" name="SendingTimeId" placeholder="Enter Sending Time" required="">
+                            </div>
+                            <div class="col-12" style="padding-left: 0px">
+                                <label class="m-0">Remark <span style="color: red;">*</span></label>
+                                <input class="form-control" type="text" id="RemarkId" name="RemarkId" placeholder="Enter Remark" required="">
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                <button onclick="SaveMapToUser()" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal End-->
+
+
+
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>CIP List</h4>
+                </div>
+
+                @if (permissions.TryGetValue(CipCreatePermission.PermissionNameConst, out var hasCreatePermission) && hasCreatePermission)
+                {
+                    <div class="col-md-2 text-right">
+                        <a href="/Cip/Create" class="badge badge-success badge-shadow">Create New</a>
+                    </div>
+                }
+            </div>
+            <div class="card-body">
+                @* asp-action="IndexFilterCipListByPagination" asp-controller="Cip" *@
+                <div class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+                    <div class="row custom">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Basic Information</legend>
+                                <div class="row">
+                                    <div class="col pr-1">
+                                        <label class="m-0">Gender</label>
+                                        @Html.DropDownList("Gender", null, "Select Gender", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">Wealth</label>
+                                        @Html.DropDownList("CipWealth", null, "Select Wealth", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">NID</label>
+                                        <input type="text" id="NID" value="@ViewBag.NID" name="NID" placeholder="Enter NID (if any)" />
+                                    </div>
+                                    <div class="col pl-1">
+                                        <label class="m-0">Ethnicity</label>
+                                        @Html.DropDownList("EthnicityId", null, "Select Ethnicity", htmlAttributes: new { })
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button id="submit" type="submit" class="btn btn-sm btn-green save">Search</button>
+                    </div>
+                </div>
+
+
+                <div style="margin-left:20px;margin-right:20px;margin-top:15px;">
+
+                    <table id="foodTable" class="display">
+
+                        <thead class="table-content">
+                            <tr class="table-row">
+                                <th scope="col">Id</th>
+                                <th scope="col">Beneficiary Name</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">MobileNumber</th>
+                                <th scope="col">NID</th>
+                                <th scope="col">CipWealth</th>
+                                <th>Approval Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-content">
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+
+
+
+
+
+                @* 	<div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+                <thead>
+                <tr>
+                <th>SL</th>
+                <th>Beneficiary Name</th>
+                <th>Gender</th>
+                <th>Mobile Number</th>
+                <th>NID</th>
+                <th>Wealth</th>
+                <th>Approval Status</th>
+                <th class="not-export-col">Action</th>
+                </tr>
+                </thead> @{
+                int i = 1;
+                }
+                <tbody>
+                @if (Model != null)
+                {
+                foreach (var data in Model)
+                {
+                <tr>
+                <td>@i</td>
+                <td>@data.BeneficiaryName</td>
+                <td>@data.Gender.GetEnumDisplayName()</td>
+                <td>@data.MobileNumber</td>
+                <td>@data.NID</td>
+                <td>@data.CipWealth.GetEnumDisplayName()</td>
+
+                @if (data?.ApprovalStatus == null)
+                {
+                <td>---</td>
+                }
+                @if (data?.ApprovalStatus == 0)
+                {
+                <td>Pending</td>
+                }
+                @if (data?.ApprovalStatus == 1)
+                {
+                <td>Pending</td>
+                }
+                @if (data?.ApprovalStatus == 2)
+                {
+                <td>Approve</td>
+                }
+                @if (data?.ApprovalStatus == 3)
+                {
+                <td>Reject</td>
+                }
+
+                <td class="not-export-col">
+                @if (permissions.TryGetValue(CipUpdatePermission.PermissionNameConst, out var hasUpdatePermission) && hasUpdatePermission)
+                {
+                <a href="/Cip/Edit?id=@data.Id" class="btn btn-sm btn-primary">Edit</a>
+                }
+                <a href="/Cip/Details?id=@data.Id" class="btn btn-sm btn-info">Details</a>
+                @if (permissions.TryGetValue(CipDeletePermission.PermissionNameConst, out var hasDeletePermission) && hasDeletePermission)
+                {
+                <button onclick="showDeleteConfirmMessage(@data.Id)" class="btn btn-sm btn-danger">Delete</button>
+                }
+
+
+                @{
+                var checkIsApprove = Convert.ToBoolean(ViewBag.CheckIsApprove);
+                if (checkIsApprove != true)
+                {
+                <button data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm" onclick="SendRequestModal(@data.Id)" style="width: 100%;margin-top: 2px;margin-top: 2px;">Send for Approval</button>
+                }
+                }
+                </td>
+                </tr>
+                i++;
+                }
+                }
+                </tbody>
+                </table>
+                </div> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                }
+            ]
+        });
+    });
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Cip/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+</script>
+
+<script>
+    $("#UserRoleId").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("#ForestFcvVcfId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+        var receiverId = $("#ReceiverId");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CipTeam/GetUserInfoByRoleId",
+            data: { "id": selectedItem },
+            success: function (data) {
+                $("#ReceiverId > option").remove();
+                receiverId.html('<option value="">Select User Name</option>');
+                $.each(data.Data, function (id, option) {
+                    receiverId.append($('<option></option>').val(option.Id).html(option.UserName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    function SendRequestModal(id) {
+        var myId = parseInt(id);
+        $("#cipTeamId").val(myId);
+        var receiverId = $("#ReceiverId");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CipTeam/GetModalDataExtra",
+            data: { "id": myId },
+            success: function (data) {
+                $("#ReceiverId > option").remove();
+                receiverId.html('<option value="">Select User Name</option>');
+                $.each(data.Data, function (id, option) {
+                    receiverId.append($('<option></option>').val(option.Id).html(option.UserName));
+                });
+                //forestDivisonList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+        //alert(id);
+    }
+
+    function SaveMapToUser() {
+        var receiverId = parseInt($("#ReceiverId").val());
+        var sendingDateId = $("#SendingDateId").val();
+        var sendingTimeId = $("#SendingTimeId").val();
+        var remarkId = $("#RemarkId").val();
+        var teamId = $("#cipTeamId").val();
+        var receiverRoleId = parseInt($("#UserRoleId").val());
+
+        var ApprovalLogForCfmVM = {
+            "SenderId": 0,
+            "SenderRoleId": 0,
+            "ReceiverId": receiverId,
+            "ReceiverRoleId": receiverRoleId,
+            "SendingDate": sendingDateId,
+            "SendingTime": sendingTimeId,
+            "CipId": teamId,
+            "Remark": remarkId
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Cip/SaveMapToUser",
+            data: ApprovalLogForCfmVM,
+            cache: false,
+            dataType: 'json',
+            success: function (response) {
+                alert("success");
+                window.location.href = "/CipTeam/Index";
+                //committeeDesignationId.append($('<option></option>').val("").html("Select Designation"));
+                //$.each(response.Entity, function (id, option) {
+                //    committeeDesignationId.append($('<option></option>').val(option.Id).html(option.Name));
+                //});
+            },
+            error: function () {
+                $(".loader").fadeOut("slow");
+                swal(
+                    'Unexpected',
+                    'Unknown error occurred',
+                    'error'
+                );
+            }
+        });
+
+        //alert(id);
+    }
+</script>
+
+<script>
+    // var $j = jQuery.noConflict();
+    $(document).ready(function () {
+        $('#foodTable').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'CIP List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
+            ],
+
+            "sAjaxSource": "/Cip/GetCipListByPagination",
+            "bDestroy": true,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bSearchable": true,
+            "order": [[1, 'asc']],
+            "language": {
+                "emptyTable": "No record found.",
+                "processing":
+                    '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+            },
+            // "fnDrawCallback": function (oSettings) {
+            //     alert(oSettings.aoData[1]._aData.Id);
+            // },
+            "columns": [
+                {
+                    title: 'Id',
+                    data: null,
+                    render: (data, type, row, meta) => meta.row
+                },
+                // {
+                //     "data": "Id",
+                //     "autoWidth": true,
+                //     "searchable": true
+                // },
+
+                {
+                    "data": "BeneficiaryName",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    "data": "GenderName",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    "data": "MobileNumber",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    "data": "NID",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    "data": "CipWealthName",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    "data": "ApprovalStatusName",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+
+                { 
+                    render : (data, type, row, meta) => {
+                        var approveHideShowButton = null;
+                        if (meta.settings.json.checkIsApprove != true) {
+                             approveHideShowButton = "<button data-toggle='modal' data-target='#exampleModal' class='btn btn-primary btn-sm' onclick='SendRequestModal(+ row.Id +)' style='width: 100 %; margin-top: 2px; margin-top: 2px;'>Send for Approval</button>";
+                        }
+                        //Permissions
+                        var editButtonShowHode = null;
+                        if (meta.settings.json.isEditPermissions == true) {
+                             editButtonShowHode = "<a  href='/Cip/Edit?id=" + row.Id + " ' $ type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-sm btn-primary'> Edit </a>";
+                        }
+                        var deleteButtonShowHode = null;
+                        if (meta.settings.json.isDeletePermissions == true) {
+                            deleteButtonShowHode = "<button onclick='showDeleteConfirmMessage(" + row.Id + ")' class='btn btn-sm btn-danger'>Delete</button>";
+                        }
+                        return "" + editButtonShowHode + "<a href='/Cip/Details?id=" + row.Id + " ' class='btn btn-sm btn-info'>Details</a> " + deleteButtonShowHode + "  " + approveHideShowButton + "  "
+                    },
+                },
+
+            ]
+        });
+    });
+
+
+    //Filter
+    $("#submit").click(function () {
+
+        var forestCircleId = Number($("#ForestCircleId").val());
+        var forestDivisionId = Number($("#ForestDivisionId").val());
+        var forestRangeId = Number($("#ForestRangeId").val());
+        var forestBeatId = Number($("#ForestBeatId").val());
+        //var fcvVcfType = Number($("#FcvVcfType").val());
+        var forestFcvVcfId = Number($("#ForestFcvVcfId").val());
+        var divisionId = Number($("#DivisionId").val());
+        var districtId = Number($("#DistrictId").val());
+        var upazillaId = Number($("#UpazillaId").val());
+        var unionId = Number($("#UnionId").val());
+        var gender = Number($("#Gender").val());
+        var cipWealth = Number($("#CipWealth").val());
+        var nID = $("#NID").val();
+        var ethnicityId = Number($("#EthnicityId").val());
+
+        //alert(forestCircleId);
+
+        var cipFilterVM =
+        {
+            ForestCircleId: forestCircleId,
+            ForestDivisionId: forestDivisionId,
+            ForestRangeId: forestRangeId,
+            ForestBeatId: forestBeatId,
+            //FcvVcfType: fcvVcfType,
+            ForestFcvVcfId: forestFcvVcfId,
+            DivisionId: divisionId,
+            DistrictId: districtId,
+            UpazillaId: upazillaId,
+            UnionId: unionId,
+            Gender: gender,
+            CipWealth: cipWealth,
+            NID: nID,
+            EthnicityId: ethnicityId
+        };
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Cip/IndexFilterCipListByPagination",
+            data: cipFilterVM,
+            cache: false,
+            dataType: 'json',
+            success: function (response) {
+                //$('#foodTable').DataTable().data().clear();
+                //$('#foodTable').DataTable().table().destroy();
+                
+
+                $('#foodTable').DataTable({
+                    "bDestroy": true,
+                    pageLength: 5,
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            title: 'CIP List',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6]
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            title: 'CIP List',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6]
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            title: 'CIP List',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            title: 'CIP List',
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6]
+                            }
+                        }
+                    ],
+                    //"bServerSide": true,
+                    //"bProcessing": true,
+                    //"bSearchable": true,
+                    //"order": [[1, 'asc']],
+                    // "language": {
+                    //     "emptyTable": "No record found.",
+                    //     "processing":
+                    //         '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    // },
+                    data: response.aaData,
+                    columns: [
+                        {
+                            title: 'Id',
+                            data: null,
+                            render: (data, type, row, meta) => meta.row
+                        },
+                        // { "data": "Id" },
+                        { "data": "BeneficiaryName" },
+                        { "data": "GenderName" },
+                        { "data": "MobileNumber" },
+                        { "data": "NID" },
+                        { "data": "CipWealthName" },
+                        {
+                            "data": "ApprovalStatusName",
+                            "autoWidth": true,
+                            "searchable": true
+                        },
+                        {
+                            render: (data, type, row, meta) => {
+                                //var approveHideShowButton = null;
+                                //if (meta.settings.json.checkIsApprove !== true) {
+                                    approveHideShowButton = "<button data-toggle='modal' data-target='#exampleModal' class='btn btn-primary btn-sm' onclick='SendRequestModal(+ row.Id +)' style='width: 100 %; margin-top: 2px; margin-top: 2px;'>Send for Approval</button>";
+                               // };
+                                //Permissions
+                                //var editButtonShowHode = null;
+                                //if (meta.settings.json.isEditPermissions == true) {
+                                    editButtonShowHode = "<a  href='/Cip/Edit?id=" + row.Id + " ' $ type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-sm btn-primary'> Edit </a>";
+                                //};
+                                //var deleteButtonShowHode = null;
+                                //if (meta.settings.json.isDeletePermissions == true) {
+                                    deleteButtonShowHode = "<button onclick='showDeleteConfirmMessage(" + row.Id + ")' class='btn btn-sm btn-danger'>Delete</button>";
+                                //};
+                                return "" + editButtonShowHode + "<a href='/Cip/Details?id=" + row.Id + " ' class='btn btn-sm btn-info'>Details</a>  `"+ deleteButtonShowHode +"'   " + approveHideShowButton + "  "
+                            },
+                        },
+
+                        //{ "defaultContent": "<button id='teste' type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-light-primary'> Detalhes </button>" },
+                    ]
+
+
+
+                    // "columns": [
+                    //     {
+                    //         "data": "Id",
+                    //         "autoWidth": true,
+                    //         "searchable": true
+                    //     },
+                    //     {
+                    //         "data": "BeneficiaryName",
+                    //         "autoWidth": true,
+                    //         "searchable": true
+                    //     },
+                    //     {
+                    //         "data": "Gender",
+                    //         "autoWidth": true,
+                    //         "searchable": true
+                    //     },
+                    //     {
+                    //         "data": "MobileNumber",
+                    //         "autoWidth": true,
+                    //         "searchable": true
+                    //     },
+                    //     {
+                    //         "data": "NID",
+                    //         "autoWidth": true,
+                    //         "searchable": true
+                    //     },
+                    //     {
+                    //         "response.aaData": "CipWealth",
+                    //         "autoWidth": true,
+                    //         "searchable": true
+                    //     },
+                    //     { "defaultContent": "<button id='teste' type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-light-primary'> Detalhes </button>" },
+                    // ]
+                });
+            },
+            error: function () {
+                $(".loader").fadeOut("slow");
+                swal(
+                    'Unexpected',
+                    'Unknown error occurred',
+                    'error'
+                );
+            }
+        });
+
+
+
+
+        // $.ajax({
+        //     url: "/Cip/IndexFilterCipListByPagination",
+        //     'method': 'POST',
+        //     'contentType': 'application/json',
+        //     dataType: "json",
+        //     data: cipFilterVM,
+        // }).done(function (data) {
+        //     //console.log('dataaa', aoData);
+        //     // $('#foodTable').dataTable({
+        //     //     'aaData': data['data'],
+        //     //     "columns": [
+        //     //         {
+        //     //             "data": "Id",
+        //     //             "autoWidth": true,
+        //     //             "searchable": true
+        //     //         },
+        //     //         {
+        //     //             "data": "BeneficiaryName",
+        //     //             "autoWidth": true,
+        //     //             "searchable": true
+        //     //         },
+        //     //         {
+        //     //             "data": "Gender",
+        //     //             "autoWidth": true,
+        //     //             "searchable": true
+        //     //         },
+        //     //         {
+        //     //             "data": "MobileNumber",
+        //     //             "autoWidth": true,
+        //     //             "searchable": true
+        //     //         },
+        //     //         {
+        //     //             "data": "NID",
+        //     //             "autoWidth": true,
+        //     //             "searchable": true
+        //     //         },
+        //     //         {
+        //     //             "data": "CipWealth",
+        //     //             "autoWidth": true,
+        //     //             "searchable": true
+        //     //         },
+        //     //         { "defaultContent": "<button id='teste' type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-light-primary'> Detalhes </button>" },
+        //     //     }]
+        //     })
+
+
+
+
+
+
+
+        // $('#foodTable').DataTable({
+        //     //"sAjaxSource": "/Cip/IndexFilterCipListByPagination",
+
+        //     "sAjaxSource": "/Cip/IndexFilterCipListByPagination",
+        //     "fnServerParams": function (aoData) {
+        //         aoData.push({ "ForestCircleId": forestCircleId });
+        //     },
+
+
+        //     "bDestroy": true,
+        //     "bServerSide": true,
+        //     "bProcessing": true,
+        //     "bSearchable": true,
+        //     "order": [[1, 'asc']],
+        //     "sServerMethod": "POST",
+        //     "language": {
+        //         "emptyTable": "No record found.",
+        //         "processing":
+        //             '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+        //     },
+        //     "columns": [
+        //         {
+        //             "data": "Id",
+        //             "autoWidth": true,
+        //             "searchable": true
+        //         },
+        //         {
+        //             "data": "BeneficiaryName",
+        //             "autoWidth": true,
+        //             "searchable": true
+        //         },
+        //         {
+        //             "data": "Gender",
+        //             "autoWidth": true,
+        //             "searchable": true
+        //         },
+        //         {
+        //             "data": "MobileNumber",
+        //             "autoWidth": true,
+        //             "searchable": true
+        //         },
+        //         {
+        //             "data": "NID",
+        //             "autoWidth": true,
+        //             "searchable": true
+        //         },
+        //         {
+        //             "data": "CipWealth",
+        //             "autoWidth": true,
+        //             "searchable": true
+        //         },
+        //         { "defaultContent": "<button id='teste' type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-light-primary'> Detalhes </button>" },
+        //     ]
+        // });
+
+
+
+    });
+
+</script>

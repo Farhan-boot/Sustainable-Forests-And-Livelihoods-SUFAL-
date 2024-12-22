@@ -1,0 +1,154 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestryTraining.SocialForestryTrainingVM
+@{
+    ViewBag.Title = "Details of Social Forestry Training";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+    }
+    fieldset legend {
+        width: auto;
+    }
+</style>
+
+<style>
+    input, select {
+        height: 30px !important;
+        line-height: 10px !important;
+        font-weight: 400 !important;
+        color: black !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/SocialForestryTraining/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Social Forestry Training Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+       
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Training Information</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Training Title: <b>@Model.TrainingTitle</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Finanacial Year: <b>@Model.FinancialYearForTraining?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Event Type: <b>@Model.EventTypeForTraining?.Name</b></label>
+                </div>
+               
+                <div class="form-group">
+                    <label style="font-size:15px;">Training Organizer: <b>@Model.TrainingOrganizerForTraining?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Duration: <b>@Model.TrainingDuration</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Start Date: <b>@Model.StartDate.ToShortDateString()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">End Date: <b>@Model.EndDate.ToShortDateString()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Location: <b>@Model.Location</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Trainer Name: <b>@Model.TrainerName</b></label>
+                </div>
+            </fieldset>
+           
+        </div>
+
+        @{ var index = 1; }
+
+        <h5 class="mt-4">Participant Lists</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm ">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">#</th>
+                        <th scope="col">Member Name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">NID</th>
+                        <th scope="col">Mobile Number</th>
+                        <th scope="col">Designation</th>
+                        <th scope="col">Organization</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.SocialForestryTrainingParticipentsMaps != null)
+                    {
+                        foreach (var member in Model.SocialForestryTrainingParticipentsMaps)
+                        {
+                            <tr data-id=@member.Id>
+                                <th scope="row" class="text-center index">@(index++)</th>
+                                <td>@member.SocialForestryTrainingMember?.MemberName</td>
+                                <td>@member.SocialForestryTrainingMember?.MemberGender</td>
+                                <td>@member.SocialForestryTrainingMember?.MemberNID</td>
+                                <td>@member.SocialForestryTrainingMember?.MemberPhoneNumber</td>
+                                <td>@member.SocialForestryTrainingMember?.MemberDesignation</td>
+                                <td>@member.SocialForestryTrainingMember?.MemberOrganization</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                @if (Model.SocialForestryTrainingFiles != null && Model.SocialForestryTrainingFiles.Count > 0)
+                {
+                    <h5 class="mt-4">Images</h5>
+                    <div class="d-flex flex-wrap" style="gap: 5px;">
+                        @foreach (var file in Model.SocialForestryTrainingFiles)
+                        {
+                            if (file.FileType == FileType.Image)
+                            {
+                                <img width="285" height="200" src="@file.FileNameUrl" />
+                            }
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-md-6">
+                @if (Model.SocialForestryTrainingFiles != null && Model.SocialForestryTrainingFiles.Count > 0)
+                {
+                    <h5 class="mt-4">Documents</h5>
+                    <div class="d-flex flex-wrap" style="gap: 5px;">
+                        <ul class="list-group">
+                            @foreach (var file in Model.SocialForestryTrainingFiles)
+                            {
+                                if (file.FileType == FileType.Document)
+                                {
+                                    <li class="list-group-item">
+                                        <a href="@file.FileNameUrl"><i class="fa fa-file-download mr-2"></i> @file.FileName</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,984 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<style>
+    select[multiple] + div div.ms-options li label input {
+        margin-right: 8px !important;
+        margin-top: 5px !important;
+    }
+</style>
+
+<form id="SocioEconomicStatus" class="collapse">
+    <!-- GrossMarginIncomeAndCostStatus -->
+    <h5 class="mt-2">6.1. Income and cost status for the calculation of Gross-Margin</h5>
+    <div id="GrossMarginIncomeAndCostStatusList"></div>
+	<p>Gross margin per ha/per animal/per cage: <span class="GrandTotalGrossMarginAgriculture">@Model.GrandTotalGrossMarginAgriculture</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreGrossMarginIncomeAndCostStatus" type="button" class="btn btn-outline-dark btn-sm">Add More Income and Cost Status <i class="fa fa-plus"></i></button>
+    </div>
+
+    <!-- ManualPhysicalWork -->
+    <h5 class="mt-5">6.2. Manual / Physical Work</h5>
+    <div id="ManualPhysicalWorkList"></div>
+	<p>Total Annual Income: <span class="GrandTotalAnnualPhysicalIncome">@Model.GrandTotalAnnualPhysicalIncome</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreManualPhysicalWork" type="button" class="btn btn-outline-dark btn-sm">Add More Manual / Physical Work <i class="fa fa-plus"></i></button>
+    </div>
+
+    <!-- NaturalResourcesIncomeAndCostStatus -->
+    <h5 class="mt-5">6.3. Income and cost status (from collection / use of wild natural resources)</h5>
+    <div id="NaturalResourcesIncomeAndCostStatusList"></div>
+	<p>Total Net Income: <span class="GrandTotalWildResourceIncome">@Model.GrandTotalWildResourceIncome</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreNaturalResourcesIncomeAndCostStatus" type="button" class="btn btn-outline-dark btn-sm">Add More Natural Resource <i class="fa fa-plus"></i></button>
+    </div>
+
+    <!-- OtherIncomeSource -->
+    <h5 class="mt-5">6.4. Other income sources not covered in previous questions</h5>
+    <div id="OtherIncomeSourceList"></div>
+	<p>Total Net Income: <span class="GrandTotalOtherIncome">@Model.GrandTotalOtherIncome</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreOtherIncomeSource" type="button" class="btn btn-outline-dark btn-sm">Add More Other Income source <i class="fa fa-plus"></i></button>
+    </div>
+
+    <!-- Business -->
+    <h5 class="mt-5">6.5. Business</h5>
+    <div id="BusinessList"></div>
+	<p>Total Net Income: <span class="GrandTotalBusinessIncome">@Model.GrandTotalBusinessIncome</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreBusiness" type="button" class="btn btn-outline-dark btn-sm">Add More Business <i class="fa fa-plus"></i></button>
+    </div>
+
+    <h5 class="mt-3">6.6.1. Within the country: How many people live away from this household within Bangladesh but send an income, how much did they send in this year?</h5>
+    <h5 class="mt-2">Male</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                No
+            </label>
+            <input type="number" class="form-control @nameof(Model.NoOfMaleInsideCountry)" name="@nameof(Model.NoOfMaleInsideCountry)" value="@(Model.Id == 0 ? "" : Model.NoOfMaleInsideCountry)" min="0" placeholder="No of male inside country" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                TK
+            </label>
+            <input type="number" class="form-control @nameof(Model.SentIncomeOfMaleInYearInsideCountry)" name="@nameof(Model.SentIncomeOfMaleInYearInsideCountry)" value="@(Model.Id == 0 ? "" : Model.SentIncomeOfMaleInYearInsideCountry)" min="0" placeholder="Income sent inside country by male" />
+        </div>
+    </div>
+    <h5 class="mt-2">Female</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                No
+            </label>
+            <input type="number" class="form-control @nameof(Model.NoOfFemaleInsideCountry)" name="@nameof(Model.NoOfFemaleInsideCountry)" value="@(Model.Id == 0 ? "" : Model.NoOfFemaleInsideCountry)" min="0" placeholder="No of female inside country" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                TK
+            </label>
+            <input type="number" class="form-control @nameof(Model.SentIncomeOfFemaleInYearInsideCountry)" name="@nameof(Model.SentIncomeOfFemaleInYearInsideCountry)" value="@(Model.Id == 0 ? "" : Model.SentIncomeOfFemaleInYearInsideCountry)" min="0" placeholder="Income sent inside country by female" />
+        </div>
+    </div>
+
+    <h5 class="mt-5">6.6.2. Outside the Country: How many people live away from this household outside Bangladesh and send an income, how much did they send in this year?</h5>
+    <h5 class="mt-2">Male</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                No
+            </label>
+            <input type="number" class="form-control @nameof(Model.NoOfMaleOutsideCountry)" name="@nameof(Model.NoOfMaleOutsideCountry)" value="@(Model.Id == 0 ? "" : Model.NoOfMaleOutsideCountry)" min="0" placeholder="No of male outside country" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                TK
+            </label>
+            <input type="number" class="form-control @nameof(Model.SentIncomeOfMaleInYearOutsideCountry)" name="@nameof(Model.SentIncomeOfMaleInYearOutsideCountry)" value="@(Model.Id == 0 ? "" : Model.SentIncomeOfMaleInYearOutsideCountry)" min="0" placeholder="Income sent outside country by male" />
+        </div>
+    </div>
+    <h5 class="mt-2">Female</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                No
+            </label>
+            <input type="number" class="form-control @nameof(Model.NoOfFemaleOutsideCountry)" name="@nameof(Model.NoOfFemaleOutsideCountry)" value="@(Model.Id == 0 ? "" : Model.NoOfFemaleOutsideCountry)" min="0" placeholder="No of female outside country" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                TK
+            </label>
+            <input type="number" class="form-control @nameof(Model.SentIncomeOfFemaleInYearOutsideCountry)" name="@nameof(Model.SentIncomeOfFemaleInYearOutsideCountry)" value="@(Model.Id == 0 ? "" : Model.SentIncomeOfFemaleInYearOutsideCountry)" min="0" placeholder="Income sent outside country by female" />
+        </div>
+    </div>
+</form>
+
+<script>
+    function addGrossMarginChildValidation() {
+        $("#SocioEconomicStatus .ProductName").each(function (i, e) {
+            var fieldName = "ProductName_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                minlength: 2,
+            });
+        });
+        $("#SocioEconomicStatus .LandArea").each(function (i, e) {
+            var fieldName = "LandArea_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalProductionHousehold").each(function (i, e) {
+            var fieldName = "TotalProductionHousehold_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalCostOfProduction").each(function (i, e) {
+            var fieldName = "TotalCostOfProduction_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalConsumption").each(function (i, e) {
+            var fieldName = "TotalConsumption_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .QuantitySold").each(function (i, e) {
+            var fieldName = "QuantitySold_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalValueSold").each(function (i, e) {
+            var fieldName = "TotalValueSold_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+    }
+    function addManualPhysicalChildValidation() {
+        $("#SocioEconomicStatus .NoOfMale").each(function (i, e) {
+            var fieldName = "NoOfMale_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .NoOfFemale").each(function (i, e) {
+            var fieldName = "NoOfFemale_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .NoOfActiveMonth").each(function (i, e) {
+            var fieldName = "NoOfActiveMonth_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .AvgNoPersonActivePerMonth").each(function (i, e) {
+            var fieldName = "AvgNoPersonActivePerMonth_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .AvgDailyIncome").each(function (i, e) {
+            var fieldName = "AvgDailyIncome_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+    }
+    function addNaturalPhysicalChildValidation() {
+        $("#SocioEconomicStatus .NoOfMale").each(function (i, e) {
+            var fieldName = "NoOfMale_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .NoOfFemale").each(function (i, e) {
+            var fieldName = "NoOfFemale_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .NoOfActiveMonth").each(function (i, e) {
+            var fieldName = "NoOfActiveMonth_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .AvgNoPersonActivePerMonth").each(function (i, e) {
+            var fieldName = "AvgNoPersonActivePerMonth_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalProduced").each(function (i, e) {
+            var fieldName = "TotalProduced_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalConsumption").each(function (i, e) {
+            var fieldName = "TotalConsumption_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .QuantitySold").each(function (i, e) {
+            var fieldName = "QuantitySold_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .ValueProduceSold").each(function (i, e) {
+            var fieldName = "ValueProduceSold_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .CostOfActivity").each(function (i, e) {
+            var fieldName = "CostOfActivity_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+    }
+    function addOtherIncomeChildValidation() {
+        $("#SocioEconomicStatus .GrossValueOfSales").each(function (i, e) {
+            var fieldName = "GrossValueOfSales_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .TotalCashCosts").each(function (i, e) {
+            var fieldName = "TotalCashCosts_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+    }
+    function addBusinessChildValidation() {
+        $("#SocioEconomicStatus .BusinessGrossValueOfSales").each(function (i, e) {
+            var fieldName = "BusinessGrossValueOfSales_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#SocioEconomicStatus .BusinessTotalCashCosts").each(function (i, e) {
+            var fieldName = "BusinessTotalCashCosts_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+    }
+</script>
+
+<!-- Add new Income and Cost status -->
+<script>
+    var GrossMarginIncomeAndCostStatusList = $("#GrossMarginIncomeAndCostStatusList");
+    var ManualPhysicalWorkList = $("#ManualPhysicalWorkList");
+    var NaturalResourcesIncomeAndCostStatusList = $("#NaturalResourcesIncomeAndCostStatusList");
+    var partialGrossMarginIncomeAndCostStatusBase = null;
+    var partialManualPhysicalWorkBase = null;
+    var partialNaturalResourcesIncomeAndCostStatusBase = null;
+    var partialOtherIncomeSourceBase = null;
+    var partialParitalBase = null;
+    $("#SocioEconomicStatus").validate();
+
+    $("[href='#SocioEconomicStatus']").one("click", function () {
+        // Gross Margin Income and Cost
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadGrossMarginIncomeAndCostStatusBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialGrossMarginIncomeAndCostStatusBase = data;
+
+                if (!@Model.Id) {
+                    AddNewGrossMarginIncomeAndCostStatusInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadGrossMarginIncomeAndCostStatusBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    GrossMarginIncomeAndCostStatusList.append(data);
+                    addGrossMarginChildValidation();
+                    runGrossMarginIncomeAndCostStatusIndex();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Manual Physical Income Work
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadManualPhysicalWorkBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialManualPhysicalWorkBase = data;
+
+                if (!@Model.Id) {
+                    AddNewManualPhysicalWorkInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadManualPhysicalWorkBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    ManualPhysicalWorkList.append(data);
+                    addManualPhysicalChildValidation();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Natural Income Work
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadNaturalPhysicalWorkBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialNaturalResourcesIncomeAndCostStatusBase = data;
+
+                if (!@Model.Id) {
+                    AddNewNaturalResourcesIncomeAndCostStatusInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadNaturalPhysicalWorkBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    NaturalResourcesIncomeAndCostStatusList.append(data);
+                    addNaturalPhysicalChildValidation();
+					$(".NaturalResourcesIncomeAndCostStatusChild .NoOfMale, .NaturalResourcesIncomeAndCostStatusChild .NoOfFemale, .NaturalResourcesIncomeAndCostStatusChild .NoOfActiveMonth, .NaturalResourcesIncomeAndCostStatusChild .AvgNoPersonActivePerMonth, .NaturalResourcesIncomeAndCostStatusChild .TotalProduced, .NaturalResourcesIncomeAndCostStatusChild .TotalConsumption, .NaturalResourcesIncomeAndCostStatusChild .QuantitySold, .NaturalResourcesIncomeAndCostStatusChild .ValueProduceSold, .NaturalResourcesIncomeAndCostStatusChild .CostOfActivity").trigger("change");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Other Income Source
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadOtherIncomeSourceBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialOtherIncomeSourceBase = data;
+
+                if (!@Model.Id) {
+                    AddNewOtherIncomeSourceInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadOtherIncomeSourceBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    OtherIncomeSourceList.append(data);
+                    addOtherIncomeChildValidation();
+					$(".OtherIncomeSourceChild .GrossValueOfSales, .OtherIncomeSourceChild .TotalCashCosts").trigger("change");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Business
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadBusinessBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialParitalBase = data;
+
+                if (!@Model.Id) {
+                    AddNewBusinessInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadBusinessBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    BusinessList.append(data);
+                    addBusinessChildValidation();
+					$(".BusinessChild .BusinessGrossValueOfSales, .BusinessChild .BusinessTotalCashCosts").trigger("change");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+    });
+</script>
+<script>
+    function AddNewGrossMarginIncomeAndCostStatusInUI() {
+        if (!GrossMarginIncomeAndCostStatusList.has('div')?.length) {
+            GrossMarginIncomeAndCostStatusList.append(partialGrossMarginIncomeAndCostStatusBase);
+            addGrossMarginChildValidation();
+            runGrossMarginIncomeAndCostStatusIndex();
+        }
+    }
+    $("#AddMoreGrossMarginIncomeAndCostStatus").on("click", function () {
+        GrossMarginIncomeAndCostStatusList.append(partialGrossMarginIncomeAndCostStatusBase);
+        addGrossMarginChildValidation();
+        runGrossMarginIncomeAndCostStatusIndex();
+    });
+    function runGrossMarginIncomeAndCostStatusIndex() {
+        $("#GrossMarginIncomeAndCostStatusList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveGrossMarginIncomeAndCostStatus(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveGrossMarginIncomeAndCostStatus(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedGrossMarginIncomeAndCostStatuses.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#GrossMarginIncomeAndCostStatusList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runGrossMarginIncomeAndCostStatusIndex();
+
+				$(".GrossMarginIncomeAndCostStatusChild .TotalNetIncome").trigger("change");
+				if ($(".GrossMarginIncomeAndCostStatusChild .TotalNetIncome").length == 0) {
+					$(".GrandTotalGrossMarginAgriculture").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<!-- Add new Manual Physical work -->
+<script>
+    function AddNewManualPhysicalWorkInUI() {
+        if (!ManualPhysicalWorkList.has('div')?.length) {
+            ManualPhysicalWorkList.append(partialManualPhysicalWorkBase);
+            addManualPhysicalChildValidation();
+            runManualPhysicalWorkIndex();
+        }
+    }
+    $("#AddMoreManualPhysicalWork").on("click", function () {
+        ManualPhysicalWorkList.append(partialManualPhysicalWorkBase);
+        addManualPhysicalChildValidation();
+        runManualPhysicalWorkIndex();
+    })
+    function runManualPhysicalWorkIndex() {
+        $("#ManualPhysicalWorkList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveManualPhysicalWork(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveManualPhysicalWork(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedManualPhysicalWorks.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#ManualPhysicalWorkList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runManualPhysicalWorkIndex();
+
+				$(".ManualPhysicalWorkChild .TotalAnnualIncome").trigger("change");
+				if ($(".ManualPhysicalWorkChild .TotalAnnualIncome").length == 0) {
+					$(".GrandTotalAnnualPhysicalIncome").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<!-- Add new Natural Resources Income And Cost Status -->
+<script>
+    function AddNewNaturalResourcesIncomeAndCostStatusInUI() {
+        if (!NaturalResourcesIncomeAndCostStatusList.has('div')?.length) {
+            NaturalResourcesIncomeAndCostStatusList.append(partialNaturalResourcesIncomeAndCostStatusBase);
+            addNaturalPhysicalChildValidation();
+            runNaturalResourcesIncomeAndCostStatusIndex();
+        }
+    }
+    $("#AddMoreNaturalResourcesIncomeAndCostStatus").on("click", function () {
+        NaturalResourcesIncomeAndCostStatusList.append(partialNaturalResourcesIncomeAndCostStatusBase);
+        addNaturalPhysicalChildValidation();
+        runNaturalResourcesIncomeAndCostStatusIndex();
+    });
+    function runNaturalResourcesIncomeAndCostStatusIndex() {
+        $("#NaturalResourcesIncomeAndCostStatusList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveNaturalResourcesIncomeAndCostStatus(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveNaturalResourcesIncomeAndCostStatus(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedNaturalResourcesIncomeAndCostStatuses.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#NaturalResourcesIncomeAndCostStatusList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runNaturalResourcesIncomeAndCostStatusIndex();
+
+				$(".NaturalResourcesIncomeAndCostStatusChild .natural-total-net-income").trigger("change");
+				if ($(".NaturalResourcesIncomeAndCostStatusChild .natural-total-net-income").length == 0) {
+					$(".GrandTotalWildResourceIncome").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<!-- Add new other income source -->
+<script>
+    var OtherIncomeSourceList = $("#OtherIncomeSourceList");
+    function AddNewOtherIncomeSourceInUI() {
+        if (!OtherIncomeSourceList.has('div')?.length) {
+            OtherIncomeSourceList.append(partialOtherIncomeSourceBase);
+            addOtherIncomeChildValidation();
+            runOtherIncomeSourceIndex();
+        }
+    }
+    $("#AddMoreOtherIncomeSource").on("click", function () {
+        OtherIncomeSourceList.append(partialOtherIncomeSourceBase);
+        addOtherIncomeChildValidation();
+        runOtherIncomeSourceIndex();
+    })
+    function runOtherIncomeSourceIndex() {
+        $("#OtherIncomeSourceList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveOtherIncomeSource(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveOtherIncomeSource(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedOtherIncomeSources.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#OtherIncomeSourceList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runOtherIncomeSourceIndex();
+
+				$(".OtherIncomeSourceChild .TotalNetIncome").trigger("change");
+				if ($(".OtherIncomeSourceChild .TotalNetIncome").length == 0) {
+					$(".GrandTotalOtherIncome").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<!-- Add new business -->
+<script>
+    var BusinessList = $("#BusinessList");
+    function AddNewBusinessInUI() {
+        if (!BusinessList.has('div')?.length) {
+            BusinessList.append(partialParitalBase);
+            addBusinessChildValidation();
+            runBusinessIndex();
+        }
+    }
+    $("#AddMoreBusiness").on("click", function () {
+        BusinessList.append(partialParitalBase);
+        addBusinessChildValidation();
+        runBusinessIndex();
+    })
+    function runBusinessIndex() {
+        $("#BusinessList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveBusiness(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveBusiness(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedBusinesses.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#BusinessList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runBusinessIndex();
+
+				$(".BusinessChild .TotalNetIncome").trigger("change");
+				if ($(".BusinessChild .TotalNetIncome").length == 0) {
+					$(".GrandTotalBusinessIncome").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<script>
+	// Gross-Margin
+	$(document).on("change", ".GrossMarginIncomeAndCostStatusChild .LandArea, .GrossMarginIncomeAndCostStatusChild .TotalProductionHousehold, .GrossMarginIncomeAndCostStatusChild .TotalCostOfProduction, .GrossMarginIncomeAndCostStatusChild .TotalConsumption, .GrossMarginIncomeAndCostStatusChild .QuantitySold, .GrossMarginIncomeAndCostStatusChild .TotalValueSold", function () {
+        const parentElement = $(this).parent().parent().parent();
+		const currentTotalElement = parentElement.find(".TotalNetIncome");
+
+		const LandArea = Number.parseFloat(parentElement.find(".LandArea").val());
+		const TotalProductionHousehold = Number.parseFloat(parentElement.find(".TotalProductionHousehold").val());
+		const TotalCostOfProduction = Number.parseFloat(parentElement.find(".TotalCostOfProduction").val());
+		const TotalConsumption = Number.parseFloat(parentElement.find(".TotalConsumption").val());
+		const QuantitySold = Number.parseFloat(parentElement.find(".QuantitySold").val());
+		const TotalValueSold = Number.parseFloat(parentElement.find(".TotalValueSold").val());
+
+		const ValueSoldPerQuantity = (TotalValueSold / QuantitySold).toFixed(2);
+		const ProductionValueSoldPerQuantity = TotalProductionHousehold * ValueSoldPerQuantity;
+		const TotalNetIncome = (ProductionValueSoldPerQuantity - TotalCostOfProduction).toFixed(2);
+
+		currentTotalElement.val(TotalNetIncome);
+		$(".GrossMarginIncomeAndCostStatusChild .TotalNetIncome").trigger("change");
+    });
+	$(document).on("change", ".GrossMarginIncomeAndCostStatusChild .TotalNetIncome", function () {
+		let sum = 0;
+		$(".GrossMarginIncomeAndCostStatusChild .TotalNetIncome").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalGrossMarginAgriculture").text(sum);
+    });
+
+	// Manual Physical Work
+	$(document).on("change", ".ManualPhysicalWorkChild .NoOfMale, .ManualPhysicalWorkChild .NoOfFemale, .ManualPhysicalWorkChild .NoOfActiveMonth, .ManualPhysicalWorkChild .AvgNoPersonActivePerMonth, .ManualPhysicalWorkChild .AvgDailyIncome", function () {
+        const parentElement = $(this).parent().parent().parent();
+		const totalPersonElement = parentElement.find(".TotalPerson");
+		const totalAnnualIncomeElement = parentElement.find(".TotalAnnualIncome");
+
+		const NoOfMale = Number.parseFloat(parentElement.find(".NoOfMale").val());
+		const NoOfFemale = Number.parseFloat(parentElement.find(".NoOfFemale").val());
+		const NoOfActiveMonth = Number.parseFloat(parentElement.find(".NoOfActiveMonth").val());
+		const AvgNoPersonActivePerMonth = Number.parseFloat(parentElement.find(".AvgNoPersonActivePerMonth").val());
+		const AvgDailyIncome = Number.parseFloat(parentElement.find(".AvgDailyIncome").val());
+
+		const TotalPerson = (NoOfMale + NoOfFemale) * NoOfActiveMonth * AvgNoPersonActivePerMonth;
+		let TotalAnnualIncome = (AvgDailyIncome * TotalPerson).toFixed(2);
+		TotalAnnualIncome = Number.isNaN(TotalAnnualIncome) ? 0 : TotalAnnualIncome;
+
+		totalPersonElement.val(TotalPerson);
+		totalAnnualIncomeElement.val(TotalAnnualIncome);
+
+		$(".ManualPhysicalWorkChild .TotalAnnualIncome").trigger("change");
+    });
+	$(document).on("change", ".ManualPhysicalWorkChild .TotalAnnualIncome", function () {
+		let sum = 0;
+		$(".ManualPhysicalWorkChild .TotalAnnualIncome").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalAnnualPhysicalIncome").text(sum);
+    });
+
+	// Natural Resource Income and Cost status
+	$(document).on("change", ".NaturalResourcesIncomeAndCostStatusChild .NoOfMale, .NaturalResourcesIncomeAndCostStatusChild .NoOfFemale, .NaturalResourcesIncomeAndCostStatusChild .NoOfActiveMonth, .NaturalResourcesIncomeAndCostStatusChild .AvgNoPersonActivePerMonth, .NaturalResourcesIncomeAndCostStatusChild .TotalProduced, .NaturalResourcesIncomeAndCostStatusChild .TotalConsumption, .NaturalResourcesIncomeAndCostStatusChild .QuantitySold, .NaturalResourcesIncomeAndCostStatusChild .ValueProduceSold, .NaturalResourcesIncomeAndCostStatusChild .CostOfActivity", function () {
+        const parentElement = $(this).parent().parent().parent();
+		const totalAnnualIncomeElement = parentElement.find(".natural-total-net-income");
+
+		debugger;
+
+		const NoOfMale = Number.parseFloat(parentElement.find(".NoOfMale").val());
+		const NoOfFemale = Number.parseFloat(parentElement.find(".NoOfFemale").val());
+		const NoOfActiveMonth = Number.parseFloat(parentElement.find(".NoOfActiveMonth").val());
+		const AvgNoPersonActivePerMonth = Number.parseFloat(parentElement.find(".AvgNoPersonActivePerMonth").val());
+		const TotalProduced = Number.parseFloat(parentElement.find(".TotalProduced").val());
+		const TotalConsumption = Number.parseFloat(parentElement.find(".TotalConsumption").val());
+		const QuantitySold = Number.parseFloat(parentElement.find(".QuantitySold").val());
+		const ValueProduceSold = Number.parseFloat(parentElement.find(".ValueProduceSold").val());
+		const CostOfActivity = Number.parseFloat(parentElement.find(".CostOfActivity").val());
+
+		const TotalManDaysForCollection = (NoOfMale + NoOfFemale) * NoOfActiveMonth * AvgNoPersonActivePerMonth;
+		parentElement.find(".totalManDaysForCollection").text(Number.isNaN(TotalManDaysForCollection) ? 0 : TotalManDaysForCollection);
+
+        const ValueSoldPerActivity = ValueProduceSold / QuantitySold;
+        const ProducedValueSoldActivity = TotalProduced * ValueSoldPerActivity;
+        const ActivityPerValueSold = ProducedValueSoldActivity - CostOfActivity;
+		const TotalNetIncome = (ActivityPerValueSold / TotalManDaysForCollection).toFixed(2);
+
+		totalAnnualIncomeElement.val(TotalNetIncome);
+		$(".NaturalResourcesIncomeAndCostStatusChild .natural-total-net-income").trigger("change");
+    });
+	$(document).on("change", ".NaturalResourcesIncomeAndCostStatusChild .natural-total-net-income", function () {
+		let sum = 0;
+		$(".NaturalResourcesIncomeAndCostStatusChild .natural-total-net-income").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalWildResourceIncome").text(sum);
+    });
+
+	// Business Income source
+	$(document).on("change", ".BusinessChild .BusinessGrossValueOfSales, .BusinessChild .BusinessTotalCashCosts", function () {
+        const parentElement = $(this).parent().parent().parent();
+		const totalAnnualIncomeElement = parentElement.find(".TotalNetIncome");
+
+		const BusinessGrossValueOfSales = Number.parseFloat(parentElement.find(".BusinessGrossValueOfSales").val());
+		const BusinessTotalCashCosts = Number.parseFloat(parentElement.find(".BusinessTotalCashCosts").val());
+
+		totalAnnualIncomeElement.val(BusinessGrossValueOfSales - BusinessTotalCashCosts);
+		$(".BusinessChild .TotalNetIncome").trigger("change");
+    });
+	$(document).on("change", ".BusinessChild .TotalNetIncome", function () {
+		let sum = 0;
+		$(".BusinessChild .TotalNetIncome").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalBusinessIncome").text(sum);
+    });
+
+	// Other income source
+	$(document).on("change", ".OtherIncomeSourceChild .GrossValueOfSales, .OtherIncomeSourceChild .TotalCashCosts", function () {
+        const parentElement = $(this).parent().parent().parent();
+		const totalAnnualIncomeElement = parentElement.find(".TotalNetIncome");
+
+		const GrossValueOfSales = Number.parseFloat(parentElement.find(".GrossValueOfSales").val());
+		const TotalCashCosts = Number.parseFloat(parentElement.find(".TotalCashCosts").val());
+
+		totalAnnualIncomeElement.val(GrossValueOfSales - TotalCashCosts);
+		$(".OtherIncomeSourceChild .TotalNetIncome").trigger("change");
+    });
+	$(document).on("change", ".OtherIncomeSourceChild .TotalNetIncome", function () {
+		let sum = 0;
+		$(".OtherIncomeSourceChild .TotalNetIncome").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalOtherIncome").text(sum);
+    });
+</script>

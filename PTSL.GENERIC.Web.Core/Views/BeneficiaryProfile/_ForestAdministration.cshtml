@@ -1,0 +1,304 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<form id="ForestAdministration" class="collapse show">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Forest Circle
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestCircleId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Forest Division
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestDivisionId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Forest Range/SFNTC
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestRangeId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Forest Beat/Camp/SFPC
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestBeatId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Forest FCV/VCF
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestFcvVcfId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Name of Village / Para
+                <span style="color:red;">*</span>
+            </label>
+            <input type="text"
+                   class="form-control" 
+                   id="@nameof(Model.ForestVillageName)" 
+                   name="@nameof(Model.ForestVillageName)" 
+                   value="@Model.ForestVillageName" 
+                   placeholder="Enter village name">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+				NGO
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("NgoId", null, "Choose", htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+				CIP
+            </label>
+			@Html.DropDownList("CipId", null, "Select CIP", htmlAttributes: new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Beneficiary Household serial Number
+                <span style="color:red;">*</span>
+            </label>
+            <input type="text"
+                   class="form-control"
+                   id="@nameof(Model.BeneficiaryHouseholdSerialNo)"
+                   name="@nameof(Model.BeneficiaryHouseholdSerialNo)"
+                   value="@Model.BeneficiaryHouseholdSerialNo"
+                   placeholder="Beneficiary Household serial Number"
+                   maxlength="3"
+                   required>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Beneficiary ID: 
+            </label>
+            <input type="text" class="m-0 form-control" id="@nameof(Model.BeneficiaryId)" name="@nameof(Model.BeneficiaryId)" value="@Model.BeneficiaryId" readonly />
+        </div>
+    </div>
+    <input type="hidden" id="BeneficiaryApproveStatus" value="@Model.BeneficiaryApproveStatus" />
+</form>
+
+<script type="module">
+    $("#ForestDivisionId, #ForestRangeId, #ForestBeatId, #ForestFcvVcfId, #BeneficiaryHouseholdSerialNo").on("change", function () {
+        const forestDivisionId = $("#ForestDivisionId").val();
+        const forestRangeId = $("#ForestRangeId").val();
+        const forestBeatId = $("#ForestBeatId").val();
+        const forestFcvVcfId = $("#ForestFcvVcfId").val();
+        const beneficiaryHouseholdSerialNo = $("#BeneficiaryHouseholdSerialNo").val();
+        const beneficiaryId = $("#BeneficiaryId");
+
+        var generatedId = [forestDivisionId, forestRangeId, forestBeatId, forestFcvVcfId, beneficiaryHouseholdSerialNo]
+            .filter(Boolean)
+            .join("-");
+
+        beneficiaryId.val(generatedId);
+    });
+
+    $("#ForestCircleId").change(function () {
+        var selectedItem = $(this).val();
+        var forestDivisonList = $("#ForestDivisionId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestDivisionByForestCircle",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestDivisonList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+    $("#ForestDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var forestRangeList = $("#ForestRangeId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+		loadNgoBasedOnForestDivision(selectedItem);
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestRangeByForestDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestRangeList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+    $("#ForestRangeId").change(function () {
+        var selectedItem = $(this).val();
+        var forestBeatList = $("#ForestBeatId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestBeatByForestRange",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestBeatList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+    $("#ForestBeatId").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("#ForestFcvVcfId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestFcvVcfByForestBeat",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestFcvVcfList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+	// Load CIP and store
+	let cipListData = [];
+	$("#ForestFcvVcfId").change(function () {
+        var forestFcvVcfId = $(this).val();
+        var cipList = $("#CipId");
+        if (forestFcvVcfId == "" || forestFcvVcfId == null) {
+			cipList.html('<option value="">Select CIP</option>');
+            return true;
+        }
+
+        $.ajax({
+            type: "POST",
+			url: "/Cip/ListByFilterForBeneficiary",
+            data: { 
+				ForestCircleId: $("#ForestCircleId").val(),
+				ForestDivisionId: $("#ForestDivisionId").val(),
+				ForestRangeId: $("#ForestRangeId").val(),
+				ForestBeatId: $("#ForestBeatId").val(),
+				ForestFcvVcfId: forestFcvVcfId,
+			},
+            success: function (data) {
+				data = data.Data;
+				cipListData = data;
+
+				cipList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+					cipList.append($('<option></option>').val(option.Id).html(`${option.BeneficiaryName} - ${option.CipGeneratedId}`));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+    function loadNgoBasedOnForestDivision(divisionId) {
+        const NgoId = $("#NgoId");
+
+        if (NgoId.length > 0) {
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/Ngo/ListByForestDivisions",
+                data: { "divisions": [divisionId] },
+                success: function (data) {
+                    NgoId.html('<option value="">Choose..</option>');
+                    $.each(data, function (id, option) {
+                        NgoId.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    NgoId.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        }
+    }
+
+	$("#CipId").on("change", function() {
+		let value = $(this).val();
+		if (!value) {
+            $("#BeneficiaryHouseholdSerialNo").removeAttr("disabled");
+            $("#GeneralInformation #BeneficiaryNid").removeAttr("disabled");
+            return;
+        };
+
+		var selected = cipListData.find(x => x.Id == value);
+		if (!selected) return;
+
+        var generalInformationIsCollapsed = $("#GeneralInformation").hasClass("show");
+        if (generalInformationIsCollapsed == false) {
+            $("a[href='#GeneralInformation']").click();
+        }
+
+        var economicStatusIsCollapsed = $("#EconomicStatus").hasClass("show");
+        if (economicStatusIsCollapsed == false) {
+            $("a[href='#EconomicStatus']").click();
+        }
+		
+		$("#BeneficiaryHouseholdSerialNo").val(selected.HouseholdSerialNo);
+		$("#BeneficiaryHouseholdSerialNo").trigger("change");
+		$("#BeneficiaryHouseholdSerialNo").attr("disabled", "true");
+		$("#ForestVillageName").val(selected.ForestVillageName);
+
+		$("#GeneralInformation #BeneficiaryName").val(selected.BeneficiaryName);
+		$("#GeneralInformation #BeneficiaryGender").val(selected.Gender);
+		$("#GeneralInformation #BeneficiaryNid").val(selected.NID);
+		$("#GeneralInformation #BeneficiaryNid").attr("disabled", "true");
+		$("#GeneralInformation #BeneficiaryPhone").val(selected.MobileNumber);
+		$("#GeneralInformation #BeneficiaryEthnicityId").val(selected.EthnicityId);
+
+        $("#EconomicStatus #TypeOfHouseId").val(selected.TypeOfHouseNewId);
+	})
+</script>

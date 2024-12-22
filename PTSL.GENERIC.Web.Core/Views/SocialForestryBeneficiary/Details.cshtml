@@ -1,0 +1,40 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.SocialForestryBeneficiaryVM
+@{
+    ViewBag.Title = "Details of Social Forestry Beneficiary ";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/SocialForestryBeneficiary/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Details of Social Forestry Beneficiary
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Beneficiary Name: <b>@Model.BeneficiaryName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">MobileNumber: <b>@Model.MobileNumber</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;"> NID: <b>@Model.NID</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;"> Address: <b>@Model.Address</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;"> Gender: <b>@Model.Gender</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;"> Ethnicity: <b>@Model.Ethnicity.Name</b></label>
+            </div>
+        </div>
+    </div>
+</div>

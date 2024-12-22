@@ -1,0 +1,1103 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+@{
+    ViewBag.Title = "Beneficiary Detatils";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+        overflow: hidden;
+    }
+    fieldset legend {
+        width: auto;
+    }
+
+    .hr {
+        position: relative;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+        .hr:after {
+            content: "";
+            height: 1px;
+            position: absolute;
+            width: 100%;
+            background: grey;
+            top: 50%;
+            margin-left: 10px;
+        }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+			<a href="/BeneficiaryProfile/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+			Beneficiary Detatils
+		</h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Forest Administrative Unit</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Circle: <b>@(Model.ForestCircle?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Division: <b>@(Model.ForestDivision?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Range: <b>@(Model.ForestRange?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Beat: <b>@(Model.ForestBeat?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest FCV/VCF: <b>@(Model.ForestFcvVcf?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">NGO: <b>@(Model.Ngo?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Village Name: <b>@(Model.ForestVillageName)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Beneficiary Household Serial No: <b>@(Model.BeneficiaryHouseholdSerialNo)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Beneficiary Id: <b>@(Model.BeneficiaryId)</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Beneficiary Profile Picture & Documents</legend>
+				<div class="row" style="padding: 0px 10px;">
+					<div class="form-group col-md-2" style="padding: 0 !important;">
+						<label>
+							Beneficiary Profile Picture
+						</label>
+						<img id="BenProfilePicPreview" src="@(string.IsNullOrEmpty(Model.BeneficiaryProfileURL) ? "/img/profile.webp" : Model.BeneficiaryProfileURL)" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@Model.BeneficiaryProfileURL" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.BeneficiaryProfileURL))">Download</a>
+					</div>
+					<div class="form-group col-md-2" style="padding: 0 !important;">
+						<label>
+							Beneficiary NID Front Image
+						</label>
+						<img src="@Model.BeneficiaryNIDFrontURL" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@Model.BeneficiaryNIDFrontURL" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.BeneficiaryNIDFrontURL))">Download</a>
+                    </div>
+					<div class="form-group col-md-2" style="padding: 0 !important;">
+						<label>
+							Beneficiary NID Back Image
+						</label>
+						<img src="@Model.BeneficiaryNIDBackURL" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@Model.BeneficiaryNIDBackURL" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.BeneficiaryNIDBackURL))">Download</a>
+                    </div>
+
+                    <div class="form-group col-md-6 row">
+						<div class="col-md-6">
+							@if (Model.SurveyDocuments?.Count > 0)
+							{
+								var index = 1;
+								foreach (var doc in Model.SurveyDocuments)
+								{
+									<div class="d-flex">
+										<p class="mr-2">@(index++).</p>
+										<a target="_blank" href="@doc.DocumentNameURL">@(doc.DocumentName)</a>
+									</div>
+								}
+							}
+						</div>
+					</div>
+				</div>
+            </fieldset>
+
+            <fieldset>
+                <legend>General Information</legend>
+                <div class="row">
+                    <div class="form-group col-md-6">
+						<label style="font-size:15px;">Name of Beneficiary: <b>@Model.BeneficiaryName</b></label>
+                    </div>
+                </div>
+                <div class="form-group">
+					<label style="font-size:15px;">National ID: <b>@Model.BeneficiaryNid</b></label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+						<label style="font-size:15px;">Mobile Number: <b>@(string.IsNullOrEmpty(Model.BeneficiaryPhone) ? Model.BeneficiaryPhoneBn : Model.BeneficiaryPhone)</b></label>
+                    </div>
+                </div>
+                <div class="form-group">
+					<label style="font-size:15px;">Gender of Beneficiary: <b>@Model.BeneficiaryGenderString</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Ethnicity: <b>@(Model.BeneficiaryEthnicity?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Age: <b>@(Model.BeneficiaryAge)</b></label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+						<label style="font-size:15px;">Father's Name: <b>@(Model.BeneficiaryFatherName)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+						<label style="font-size:15px;">Mother's Name: <b>@(Model.BeneficiaryMotherName)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+						<label style="font-size:15px;">Spouse's Name (if required): <b>@(Model.BeneficiarySpouseName)</b></label>
+                    </div>
+                </div>
+                <div class="form-group">
+					<label style="font-size:15px;">Name of Head of the Household - If Different: <b>@(Model.HeadOfHouseholdName)</b></label>
+                </div>
+                <div class="form-group">
+					<label style="font-size:15px;">Gender of Head of the Household: <b>@(Model.HeadOfHouseholdGender.ToString())</b></label>
+                </div>
+                <div class="form-group">
+					<label style="font-size:15px;">FCV/VCF Added Date: <b>@(Model.FcvVcfAddedDate.ToUITimeStringNullable())</b></label>
+                </div>
+                <div class="form-group">
+					<label style="font-size:15px;">Recipient Status: <b>@(Model.RecipientStatus.GetEnumDisplayName())</b></label>
+                </div>
+
+                <h6 class="hr">Present Address</h6>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Name of the Village: <b>@(Model.PresentVillageName)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Name of the Post office: <b>@(Model.PresentPostOfficeName)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Division: <b>@(Model.PresentDivision?.Name)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">District: <b>@(Model.PresentDistrict?.Name)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Upazilla: <b>@(Model.PresentUpazilla?.Name)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Union: <b>@(Model.PresentUnionNew?.Name)</b></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Union Old: <b>@(Model.PresentUnion)</b></label>
+                    </div>
+                </div>
+                @if (Model.IsPermanentSameAsPresent == false)
+				{
+					<h6 class="hr">Permanent Address</h6>
+
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">Name of the Village: <b>@(Model.PermanentVillageName)</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">Name of the Post office: <b>@(Model.PermanentPostOfficeName)</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">Division: <b>@(Model.PermanentDivision?.Name)</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">District: <b>@(Model.PermanentDistrict?.Name)</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">Upazilla: <b>@(Model.PermanentUpazilla?.Name)</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">Union: <b>@(Model.PermanentUnionNew?.Name)</b></label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label style="font-size:15px;">Union Old: <b>@(Model.PermanentUnion)</b></label>
+						</div>
+					</div>
+				}
+				else
+                {
+                    <div class="form-group">
+                        <label style="font-size:15px;"><b>Permanent Address is same as Present Address</b></label>
+                    </div>
+                }
+                <div class="form-group">
+					<label style="font-size:15px;">Photograph of the SUFAL beneficiary in front of the house:</label>
+					<div>
+						<img style="object-fit: cover;width: 100%;" src="@Model.BeneficiaryHouseFrontImageURL" />
+					</div>
+                </div>
+				<div>
+					<h6>GPS Location of the Household</h6>
+
+					<div class="form-group">
+						<label style="font-size:15px;">Latitude: <b>@(Model.BeneficiaryLatitude)</b></label>
+					</div>
+					<div class="form-group">
+						<label style="font-size:15px;">Longitude: <b>@(Model.BeneficiaryLongitude)</b></label>
+					</div>
+					<div class="form-group">
+						<label style="font-size:15px;">Altitude: <b>@(Model.BeneficiaryAltitude)</b></label>
+					</div>
+					<div class="form-group">
+						<label style="font-size:15px;">Precision: <b>@(Model.BeneficiaryPrecision)</b></label>
+					</div>
+				</div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Household Members</legend>
+                @{ 
+                    var memberIndex = 0;
+                    var householdMembers = Model.HouseholdMembers ?? new List<HouseholdMemberVM>();
+                }
+                @foreach (var member in householdMembers)
+                {
+                    memberIndex++;
+
+                    if (memberIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@memberIndex</h5>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Name: <b>@(member.FullName)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+						<label style="font-size:15px;">Relation with Head of the Household: <b>@(member.RelationWithHeadHouseHoldType?.Name)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Gender: <b>@(member.Gender.ToString())</b></label>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Age: <b>@(member.Age)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Marital Status: <b>@(member.MaritalSatus.ToString())</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Education: <b>@(member.EducationLevel.ToString())</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Main Occupation: <b>@(member.MainOccupation?.Name)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Secondary Occupation: <b>@(member.SecondaryOccupation?.Name)</b></label>
+                    </div>
+                    <div class="form-group">
+						<label style="font-size:15px;">
+							Association with BFD:
+							@foreach (var map in member.BFDAssociationHouseholdMembersMap ?? Enumerable.Empty<BFDAssociationHouseholdMembersMapVM>())
+							{
+								<b>@map.BFDAssociation?.Name, </b>
+							}
+						</label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Other Association with BFD: <b>@(member.BFDAssociationTxt)</b></label>
+                    </div>
+					@if (member.HasDisability)
+					{
+						<div class="form-group">
+							<label style="font-size:15px;">
+								Disability Types:
+								@foreach (var map in member.DisabilityTypeHouseholdMembersMap ?? Enumerable.Empty<DisabilityTypeHouseholdMembersMapVM>())
+								{
+									<b>@map.DisabilityType?.Name, </b>
+								}
+							</label>
+						</div>
+					}
+					else
+					{
+						<div class="form-group">
+							<label style="font-size:15px;">Has No Disability</label>
+						</div>
+					}
+                    <div class="form-group">
+                        <label style="font-size:15px;">Safety Net: <b>@(member.SafetyNetType?.Name)</b></label>
+                    </div>
+				}
+            </fieldset>
+
+            <fieldset>
+                <legend>Lands - Grand Total Land (Decimal): (@Model.GrandTotalLandOccupancy)</legend>
+                @{ 
+                    var landIndex = 0;
+                    var landOccupancy = Model.LandOccupancy ?? new List<LandOccupancyVM>();
+                }
+                @foreach (var land in landOccupancy)
+                {
+                    landIndex++;
+
+                    if (landIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@landIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Land classification: <b>@(land.LandClassificationEnum.GetEnumDisplayName())</b></label>
+                        </div>
+                        <div class="form-group col-md-6" style="display: none;">
+                            <label style="font-size:15px;">Land Classification Other: <b>@(land.LandClassificationTxt)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Homesteads: <b>@(land.Homesteads)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+							<label style="font-size:15px;">Productive Land (e.g. Agriculture): <b>@(land.ProductiveLand)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Fallow Land: <b>@(land.FallowLand)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Productive Wetland (Pond): <b>@(land.ProductiveWetland)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Fallow Wetland (Pond): <b>@(land.FallowWetland)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Other Land: <b>@(land.OthersLand)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total Land (Decimal): <b>@(land.TotalLand)</b></label>
+                    </div>
+					@*
+                    <div class="form-group">
+                        <label style="font-size:15px;">Notes: <b>@(land.Notes)</b></label>
+                    </div>
+					*@
+                }
+            </fieldset>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label style="font-size:15px;">House type: <b>@(Model.TypeOfHouse?.Name)</b></label>
+            </div>
+
+            <fieldset>
+				<legend>Livestocks - Total Livestock Estimated Cost/ Market value (BDT): (@Model.GrandTotalLivestockCost)</legend>
+                @{ 
+                    var liveStockIndex = 0;
+                    var livestocks = Model.LiveStocks ?? new List<LiveStockVM>();
+                }
+                @foreach (var livestock in livestocks)
+                {
+                    liveStockIndex++;
+
+                    if (liveStockIndex != 1)
+                    {
+                        <hr />
+                    }
+
+					<h5>@liveStockIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Name of Livestock: <b>@(livestock.LiveStockType?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Quantity: <b>@(livestock.LiveStockQuantity)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+							<label style="font-size:15px;">Estimated Cost / Market value (BDT): <b>@(livestock.LivestockCost)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+				<legend>Assets - Total Asset Estimated Cost/ Market value (BDT): (@Model.GrandTotalAssetsCost)</legend>
+                @{ 
+                    var assetIndex = 0;
+                    var assets = Model.Assets ?? new List<AssetVM>();
+                }
+                @foreach (var asset in assets)
+                {
+                    assetIndex++;
+
+                    if (assetIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@assetIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Name of Assets: <b>@(asset.AssetType?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Qurantity: <b>@(asset.AssetQuantity)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Estimated Cost / Market value (BDT): <b>@(asset.AssetsCost)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Immovable Assets - Total Annual Return: (@Model.GrandTotalImmovableAnnualReturn)</legend>
+                @{ 
+                    var immAssetIndex = 0;
+                    var immovableAssets = Model.ImmovableAssets ?? new List<ImmovableAssetVM>();
+                }
+                @foreach (var asset in immovableAssets)
+                {
+                    immAssetIndex++;
+
+                    if (immAssetIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@immAssetIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Category: <b>@(asset.ImmovableAssetType?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Annual Return: <b>@(asset.ImmovableAnnualReturn)</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Energy Uses - Grand Total Energy Uses (@Model.GrandTotalEnergyUsesMonthly)</legend>
+                @{ 
+                    var energyIndex = 0;
+                    var energyUses = Model.EnergyUses ?? new List<EnergyUseVM>();
+                }
+                @foreach (var energy in energyUses)
+                {
+                    energyIndex++;
+
+                    if (energyIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@energyIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Energy Use: <b>@(energy.EnergyTypeId)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Monthly Energy Use (in %): <b>@(energy.EnergyUsesMonthly)</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Access To General Facilities</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Is there any problem in the village for access to health services: <b>@(Model.IsProblemToAccessHealthService ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Nearest Health Service Location: <b>@(Model.NearestHealthServiceLocation)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Nearest Health Service Distance: <b>@(Model.NearestHealthServiceDistance)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Has problem to access drinking water: <b>@(Model.IsProblemToAccessDrinkingWater ? "Yes": "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Nearest Drinking Water Distance: <b>@(Model.NearestDrinkingWaterDistance)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Nearest Drinking Water Distance: <b>@(Model.NearestDrinkingWaterDistance)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">
+                        Source of drinking water (dry season): <b>@(Model.SourceofDrySeasonWaterEnumListText)</b>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Other source of drinking water (dry season): <b>@(Model.SourceofDrySeasonWaterTxt)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">
+                        Source of drinking water (wet season): <b>@(Model.SourceofWetSeasonWaterEnumListText)</b>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Other source of drinking water (wet season): <b>@(Model.SourceofWetSeasonWaterTxt)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Nearest Growth Center: <b>@(Model.NearestGrowthCenter)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Distance from the nearest growth center/market place(km): <b>@(Model.NearestGrowthCenterDistance)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Is there problem in the village for access to education: <b>@(Model.IsProblemToAccessEducation ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Availability of educational institutions (school/madrassa etc.) nearby?: <b>@(Model.HasEducationalInstituteNearby ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Distance from nearest educational institutions (School/Madrassa etc.): <b>@(Model.EducationalInstituteDistance)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Accessibility to educational institutions (school/madrassa etc.): <b>@(Model.EducationalInstituteAccessibilityEnum.GetEnumDisplayName())</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Sanitation Facilities: <b>@(Model.SanitationFacilitiesEnum.GetEnumDisplayName())</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Existing skills of the beneficiary household</legend>
+                @{ 
+                    var existingSkillIndex = 0;
+                    var existingSkills = Model.ExistingSkills ?? new List<ExistingSkillVM>();
+                }
+                @foreach (var skill in existingSkills)
+                {
+                    existingSkillIndex++;
+
+                    if (existingSkillIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@energyIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Skill Level: <b>@(skill.SkillName)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Skill Level: <b>@(skill.SkillLevelEnum?.GetEnumDisplayName())</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Potential skills of the beneficiary household</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Potential Skill 1: <b>@(Model.PotentialSkillName1)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Potential Skill 2: <b>@(Model.PotentialSkillName2)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Potential Skill 3: <b>@(Model.PotentialSkillName3)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Potential Special Skill: <b>@(Model.PotentialSpecialSkill)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Potential Skill Remarks: <b>@(Model.PotentialSkillsRemarks)</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Cross Cutting Issues</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">How much you satisfied in existing forest management?: <b>@(Model.ForestMngmtSatisfactionEnum.GetEnumDisplayName())</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">How effective do you think existing Forest Management is?: <b>@(Model.ForestMngmtEffectivenessEnum.GetEnumDisplayName())</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">How much are you dependent on Forests currently?: <b>@(Model.ForestDependencyEnum.GetEnumDisplayName())</b></label>
+                </div>
+
+                <h6 class="hr">Awareness about Collaborative Forest Management/Co-Management in Protected Areas</h6>
+                <div class="form-group">
+                    <label style="font-size:15px;">Have you heard about Collaborative Forest Management?: <b>@(Model.IsHearedAboutCfm ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Did you participate in any CFM / PA Co-Management discussion?: <b>@(Model.IsParticipatedInCfm ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Do you think the CFM / PA Co-Management will improve Forest Management?: <b>@(Model.WillCfmImproveForestMngmnt ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Do you think CFM / PA Co-Management will bring improvement in your well-being?: <b>@(Model.WillCfmImproveWellBeing ? "Yes" : "No")</b></label>
+                </div>
+
+                <h6 class="hr">Gender & Ethnicity</h6>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who takes final decision in family affairs?: <b>@(Model.DicisionTakerEnum)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who mostly owns productive assets?: <b>@(Model.ProductiveAssetsOwnerGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who takes final decision in selecting production process for income generation?: <b>@(Model.CropTypeDecisionGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who takes final decision in sale or transfer of productive asset?: <b>@(Model.DecisionToTransferAssetsGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who decides the daily family needs?: <b>@(Model.FamilyNeedsDeciderGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who gets priority accessing to Credit (from different donors)?: <b>@(Model.AccessorToCreditGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who controls use of Credits or money earned?: <b>@(Model.ControllerOfCreditGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who, in general, is representing in any organization, as office bearer or member?: <b>@(Model.OfficeBearerGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who gets more payment for same work?: <b>@(Model.MorePaymentGetterGender)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Do you get access to legal support in case of Gender based violence (GBV) events?: <b>@(Model.CanAccessLegalSupportForGbv == true ? "Yes" : "No")</b></label>
+                </div>
+
+                <h6 class="hr">Small Ethnic Community</h6>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who takes final decision in family affairs?: <b>@(Model.CanUnsufructsRights == true ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who takes final decision in family affairs?: <b>@(Model.FaceLiveAndLivelihoodChallanges == true ? "Yes" : "No")</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Who takes final decision in family affairs?: <b>@(Model.HasLlfmInterest == true ? "Yes" : "No")</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Socio Economic Status</legend>
+                <h6 class="hr">Gross Margin Income and Cost status (Gross margin per ha/per animal/per cage = @Model.GrandTotalGrossMarginAgriculture)</h6>
+                @{
+                    var grossMarginIncomeIndex = 0;
+                    var grossMarginIncomeAndCostStatus = Model.GrossMarginIncomeAndCostStatuses ?? new List<GrossMarginIncomeAndCostStatusVM>();
+                }
+                @foreach (var gross in grossMarginIncomeAndCostStatus)
+                {
+                    grossMarginIncomeIndex++;
+
+                    if (grossMarginIncomeIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@grossMarginIncomeIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label style="font-size:15px;">Name of the Products: <b>@(gross.ProductName)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Area (decimals): <b>@(gross.LandArea)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Production Unit of measurement (Q unit): <b>@(gross.MeasurementOfProduct)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total production of household (in Q unit): <b>@(gross.TotalProductionHousehold)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total cost of production (Tk): <b>@(gross.TotalCostOfProduction)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total consumption (in Q unit): <b>@(gross.TotalConsumption)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Quantity Sold (in Q Unit): <b>@(gross.QuantitySold)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total value sold (Tk): <b>@(gross.TotalValueSold)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Net income (BDT): <b>@(gross.TotalNetIncome)</b></label>
+                    </div>
+                }
+
+                <h6 class="hr">Manual Physical Work (Total Annual Income = @Model.GrandTotalAnnualPhysicalIncome)</h6>
+                @{
+                    var manualPhysicalIndex = 0;
+                    var manualPhysicalWorkList = Model.ManualPhysicalWorks ?? new List<ManualPhysicalWorkVM>();
+                }
+                @foreach (var manual in manualPhysicalWorkList)
+                {
+                    manualPhysicalIndex++;
+
+                    if (manualPhysicalIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@manualPhysicalIndex</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Income Source: <b>@(manual.ManualIncomeSourceType?.Name)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">No of Male: <b>@(manual.NoOfMale)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">No of Female: <b>@(manual.NoOfFemale)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">No of Active month: <b>@(manual.NoOfActiveMonth)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Avg No of person days active/month: <b>@(manual.AvgNoPersonActivePerMonth)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Average daily Income: <b>@(manual.AvgDailyIncome)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total person days in last 12 months: <b>@(manual.TotalPerson)</b></label>
+                    </div>
+					<div class="form-group">
+                        <label style="font-size:15px;">Annual income: <b>@(manual.TotalAnnualIncome)</b></label>
+                    </div>
+                }
+
+                <h6 class="hr">Income and cost status (from collection / use of wild natural resources) (Total Net Income = @Model.GrandTotalWildResourceIncome)</h6>
+                @{
+                    var naturalResourcesIncomeAndCostStatusIndex = 0;
+                    var naturalResourcesIncomeAndCostStatusList = Model.NaturalResourcesIncomeAndCostStatuses ?? new List<NaturalResourcesIncomeAndCostStatusVM>();
+                }
+                @foreach (var natural in naturalResourcesIncomeAndCostStatusList)
+                {
+                    naturalResourcesIncomeAndCostStatusIndex++;
+
+                    if (naturalResourcesIncomeAndCostStatusIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@naturalResourcesIncomeAndCostStatusIndex</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Activity: <b>@(natural.NaturalIncomeSourceTypeId)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">No of Male: <b>@(natural.NoOfMale)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">No of Female: <b>@(natural.NoOfFemale)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">No of active months involved in collecting NR: <b>@(natural.NoOfActiveMonth)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Average no of active person days/month: <b>@(natural.AvgNoPersonActivePerMonth)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total man-days for wild resource collection: <b>@(natural.TotalManDaysForCollection)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Unit: <b>@(natural.Unit)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total Produce (in Q Unit) collected (in Q unit): <b>@(natural.TotalProduced)</b></label>
+                    </div>
+					<div class="form-group">
+                        <label style="font-size:15px;">Total consumption (in Q unit): <b>@(natural.TotalConsumption)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Quantity sold (in Q unit): <b>@(natural.QuantitySold)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Value produce sold (TK): <b>@(natural.ValueProduceSold)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Cash of activity (TK): <b>@(natural.CostOfActivity)</b></label>
+                    </div>
+					<div class="form-group">
+                        <label style="font-size:15px;">Net income (BDT): <b>@(natural.TotalNetIncome)</b></label>
+                    </div>
+                }
+
+                <h6 class="hr">Other income sources not covered in previous questions (Total Net Income: @Model.GrandTotalOtherIncome)</h6>
+                @{
+                    var otherIncomeSourceIndex = 0;
+                    var otherIncomeSources = Model.OtherIncomeSources ?? new List<OtherIncomeSourceVM>();
+                }
+                @foreach (var ois in otherIncomeSources)
+                {
+                    otherIncomeSourceIndex++;
+
+                    if (otherIncomeSourceIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@otherIncomeSourceIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Income Source: <b>@(ois.OtherIncomeSourceType?.Name)</b></label>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <label style="font-size:15px;">Gross value of sales/ Income (tk): <b>@(ois.GrossValueOfSales)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total cash costs/Expenditure of activity (tk): <b>@(ois.TotalCashCosts)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Net Income: <b>@(ois.TotalNetIncome)</b></label>
+                    </div>
+                }
+
+                <h6 class="hr">Business (Total Net Income: @Model.GrandTotalOtherIncome)</h6>
+                @{
+                    var businessSourceIndex = 0;
+                    var businessIncomeSources = Model.Businesses ?? new List<BusinessVM>();
+                }
+                @foreach (var business in businessIncomeSources)
+                {
+                    businessSourceIndex++;
+
+                    if (businessSourceIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@businessSourceIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Income Source: <b>@(business.BusinessIncomeSourceType?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Gross value of sales/ Income (tk): <b>@(business.BusinessGrossValueOfSales)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Total cash costs/Expenditure of activity (tk): <b>@(business.BusinessTotalCashCosts)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Net Income: <b>@(business.TotalNetIncome)</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Remittances</legend>
+
+                <h6 class="hr">Access to finance of the households during last 12 months</h6>
+                <div class="form-group">
+                    <label style="font-size:15px;">Personal savings of all household members (as of now) (tk): <b>@(Model.PersonalSavingsOfAllMembers)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Household share in any group savings (TK): <b>@(Model.HouseShareInSavings)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Borrowing from Bank (Tk): <b>@(Model.BorrowedFromBank)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Borrowing from NGO (Tk) e.g. Grameen Bank: <b>@(Model.BorrowedFromNGO)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Grants from NGO (Tk): <b>@(Model.GrantsFromNGO)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Grants from GoB (Tk): <b>@(Model.GrantsFromGob)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Borrowing from Co-operatives (Tk): <b>@(Model.BorrowedFromCoOperatives)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Borrowing from Mahajon/Non relatives (Tk): <b>@(Model.BorrowedFromNonRelatives)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Borrowing from Relatives/Friends (Tk): <b>@(Model.BorrowedFromRelatives)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Sale of products/assets (Tk): <b>@(Model.SaleOfProducts)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Others (please specify): <b>@(Model.OtherFinanceName)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Others ammount (Tk): <b>@(Model.OtherFinanceAmount)</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Annual Household Expenditure</legend>
+
+                @{
+                    var annualExpenditureSourceIndex = 0;
+                    var annualExpenditureIncomeSources = Model.AnnualHouseholdExpenditures ?? new List<AnnualHouseholdExpenditureVM>();
+                }
+                @foreach (var annual in annualExpenditureIncomeSources)
+                {
+                    annualExpenditureSourceIndex++;
+
+                    if (annualExpenditureSourceIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@annualExpenditureSourceIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Major item of expenditure: <b>@(annual.ExpenditureType?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Expenditure (BDT): <b>@(annual.ExpenditureCost)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Remarks: <b>@(annual.ExpenditureRemarks)</b></label>
+                    </div>
+                    <div class="form-group">
+						<label style="font-size:15px;">Total annual Household Expenditure: <b>@(Model.GrandTotalHouseholdExpenditure)</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Food Consumption & Security</legend>
+
+                <h6 class="hr">Food Consumption</h6>
+                <div class="form-group">
+                    <label style="font-size:15px;">Do you consider your household to be: <b>@(Model.HouseholdFoodConditionText)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">When/if you have a problem feeding your family, who receives relatively more food : <b>@(Model.FoodyPersonInFoodCrisisText)</b></label>
+                </div>
+
+                <h6 class="hr">Food Security</h6>
+                @{
+                    var foodSecurityIndex = 0;
+                    var foodSecurities = Model.FoodSecurityItems ?? new List<FoodSecurityItemVM>();
+                }
+                @foreach (var food in foodSecurities)
+                {
+                    foodSecurityIndex++;
+
+                    if (foodSecurityIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@foodSecurityIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Food Items: <b>@(food.FoodItem?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Availability (month in a year): <b>@(food.FoodAvilableMonthInYear)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Remarks: <b>@(food.Remarks)</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Vulnerability Situation</legend>
+
+                @{
+                    var vulnerabilityIndex = 0;
+                    var vulnerabilities = Model.VulnerabilitySituations ?? new List<VulnerabilitySituationVM>();
+                }
+                @foreach (var v in vulnerabilities)
+                {
+                    vulnerabilityIndex++;
+
+                    if (vulnerabilityIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@vulnerabilityIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Vulnerability situations: <b>@(v.VulnerabilitySituationType?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Event (name or type): <b>@(v.EventName)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Monetary loss (Value if BDT): <b>@(v.MonetaryLoss)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">How did you recover the situation: <b>@(v.HowDidRecover)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Remarks: <b>@(v.Remarks)</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Enumerator and Data collection</legend>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label style="font-size:15px;">Name of the Enumerator: <b>@(Model.NameOfTheEnumerator)</b></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Mobile number of the Enumerator: <b>@(Model.CellPhoneNumber)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Date of data collection: <b>@(Model.DataCollectionDate?.ToUIDateString())</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Notes image:</label>
+                    <img src="@(Model.NotesImageUrl)" style="width: 100%; object-fit: cover" />
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+

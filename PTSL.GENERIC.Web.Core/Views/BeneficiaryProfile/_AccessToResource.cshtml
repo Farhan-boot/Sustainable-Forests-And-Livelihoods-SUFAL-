@@ -1,0 +1,386 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<style>
+    select[multiple] + div div.ms-options li label input {
+        margin-right: 8px !important;
+        margin-top: 5px !important;
+    }
+</style>
+
+<form id="AccessToResource" class="collapse">
+    <h5>4.1. Access to general facillities</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.a. Is there any problem in the village for access to health services?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsProblemToAccessHealthService)" id="inlineRadio1" value="true" @(Model.IsProblemToAccessHealthService && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsProblemToAccessHealthService)" id="inlineRadio2" value="false" @(!Model.IsProblemToAccessHealthService && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio2">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.b. Location of nearest health service
+                <span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control required @nameof(Model.NearestHealthServiceLocation)" value="@Model.NearestHealthServiceLocation" name="@nameof(Model.NearestHealthServiceLocation)" placeholder="Enter location of nearest health service" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.c. Is there any problem in the village for access to drinking water?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsProblemToAccessDrinkingWater)" id="inlineRadio3" value="true" @(Model.IsProblemToAccessDrinkingWater && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio3">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsProblemToAccessDrinkingWater)" id="inlineRadio4" value="false" @(!Model.IsProblemToAccessDrinkingWater && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio4">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.d. Distance from the nearest drinking water facilities(km)
+                <span style="color:red;">*</span>
+            </label>
+            <input type="number" min="0" class="form-control required @nameof(Model.NearestDrinkingWaterDistance)" value="@(Model.Id == 0 ? "" : Model.NearestDrinkingWaterDistance)" name="@nameof(Model.NearestDrinkingWaterDistance)" placeholder="Enter distance from nearest drinking water facilities" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.e. Distance from health service(km)
+                <span style="color:red;">*</span>
+            </label>
+            <input type="number" min="0" class="form-control required @nameof(Model.NearestHealthServiceDistance)" value="@(Model.Id == 0 ? "" : Model.NearestHealthServiceDistance)" name="@nameof(Model.NearestHealthServiceDistance)" placeholder="Enter distance from nearest health service" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.f. Source of drinking water (dry season)
+                <span style="color:red;">*</span>
+            </label>
+            <select multiple class="form-control @nameof(Model.SourceofDrySeasonWaterEnumList)" id="@nameof(Model.SourceofDrySeasonWaterEnumList)" name="SourceofDrySeasonWaterEnumList">
+                @{ var _sourceofDrySeasonWaterEnumList = Model.SourceofDrySeasonWaterEnumList != null ? Model.SourceofDrySeasonWaterEnumList.Split(',').Select(x => x.Trim()).ToList() : new List<string>(); }
+                @foreach (var item in ViewBag.SourceofDrySeasonWaterEnumList)
+                {
+                    <!option value="@item.Id" @(_sourceofDrySeasonWaterEnumList.Contains(item.Id.ToString()) ? "selected" : "")>@item.Name</!option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.f. Other source of drinking water (dry season)
+            </label>
+            <input type="text" class="form-control @nameof(Model.SourceofDrySeasonWaterTxt)" value="@Model.SourceofDrySeasonWaterTxt" name="@nameof(Model.SourceofDrySeasonWaterTxt)" placeholder="Enter other source of dry season drinking water" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.g. Source of drinking water (wet season)
+                <span style="color:red;">*</span>
+            </label>
+            <select multiple class="form-control @nameof(Model.SourceofWetSeasonWaterEnumList)" id="@nameof(Model.SourceofWetSeasonWaterEnumList)" name="SourceofWetSeasonWaterEnumList">
+                @{ var _sourceofWetSeasonWaterEnumList = Model.SourceofWetSeasonWaterEnumList != null ? Model.SourceofWetSeasonWaterEnumList.Split(',').Select(x => x.Trim()).ToList() : new List<string>(); }
+                @foreach (var item in ViewBag.SourceofDrySeasonWaterEnumList)
+                {
+                    <!option value="@item.Id" @(_sourceofWetSeasonWaterEnumList.Contains(item.Id.ToString()) ? "selected" : "")>@item.Name</!option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.g. Other source of drinking water (wet season)
+            </label>
+            <input type="text" class="form-control @nameof(Model.SourceofWetSeasonWaterTxt)" value="@Model.SourceofWetSeasonWaterTxt" name="@nameof(Model.SourceofWetSeasonWaterTxt)" placeholder="Enter other source of wet season drinking water" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.h. Name of nearest growth center
+                <span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control required @nameof(Model.NearestGrowthCenter)" value="@Model.NearestGrowthCenter" name="@nameof(Model.NearestGrowthCenter)" placeholder="Enter name of growth center" required />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.i. Distance from the nearest growth center/market place(km)
+                <span style="color:red;">*</span>
+            </label>
+            <input type="number" min="0" class="form-control required @nameof(Model.NearestGrowthCenterDistance)" value="@(Model.Id == 0 ? "" : Model.NearestGrowthCenterDistance)" name="@nameof(Model.NearestGrowthCenterDistance)" placeholder="Enter distance from the nearest growth center" required />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.j. Is there problem in the village for access to education?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsProblemToAccessEducation)" id="inlineRadio5" value="true" @(Model.IsProblemToAccessEducation && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio5">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsProblemToAccessEducation)" id="inlineRadio6" value="false" @(!Model.IsProblemToAccessEducation && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio6">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.k. Availability of educational institutions (school/madrassa etc.) nearby?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.HasEducationalInstituteNearby)" id="inlineRadio7" value="true" @(Model.HasEducationalInstituteNearby && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio7">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.HasEducationalInstituteNearby)" id="inlineRadio8" value="false" @(!Model.HasEducationalInstituteNearby && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="inlineRadio8">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.l. Distance from nearest educational institutions (School/Madrassa etc.)
+                <span style="color:red;">*</span>
+            </label>
+            <input class="form-control required @nameof(Model.EducationalInstituteDistance)" value="@(Model.Id == 0 ? "" : Model.EducationalInstituteDistance)" type="number" name="@nameof(Model.EducationalInstituteDistance)" placeholder="Enter distance from educaitonal institute" required />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4.1.m. Accessibility to educational institutions (school/madrassa etc.)
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("EducationalInstituteAccessibilityEnum", null, "Choose Institutes", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.1.n. Sanitation Facilities
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("SanitationFacilitiesEnum", null, "Choose Facilities", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+
+    <!-- Existing skill -->
+    <h5 class="mt-5">4.2.a Existing skills of the beneficiary household</h5>
+    <div id="ExistingSkillList"></div>
+    <div class="text-center">
+        <button id="AddMoreExistingSkill" type="button" class="btn btn-outline-dark btn-sm">Add More Existing Skill <i class="fa fa-plus"></i></button>
+    </div>
+
+    <!-- Potential skill -->
+	<h5 class="mt-5">4.2.b Potential skills of the beneficiary household</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Name of the Skill 1
+            </label>
+            <input type="text" class="form-control @nameof(Model.PotentialSkillName1)" value="@Model.PotentialSkillName1" placeholder="Enter name" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Name of the Skill 2
+            </label>
+            <input type="text" class="form-control @nameof(Model.PotentialSkillName2)" value="@Model.PotentialSkillName2" placeholder="Enter name" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Name of the Skill 3
+            </label>
+            <input type="text" class="form-control @nameof(Model.PotentialSkillName3)" value="@Model.PotentialSkillName3" placeholder="Enter name" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Potential skill remarks
+            </label>
+            <input type="text" class="form-control @nameof(Model.PotentialSkillsRemarks)" value="@Model.PotentialSkillsRemarks" placeholder="Enter remarks" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                4.2.c Skill traininig received from any project/program
+            </label>
+            <input type="text" class="form-control @nameof(Model.PotentialSpecialSkill)" value="@Model.PotentialSpecialSkill" placeholder="Special training" />
+        </div>
+    </div>
+</form>
+
+<script>
+    // Load dropdown data only once
+
+    $("#AccessToResource").validate();
+
+	$("#SourceofWetSeasonWaterEnumList").on("change", function () {
+		var value = $(this).val();
+		if (value?.length == 0) {
+			return;
+		}
+		$(this).valid();
+    });
+	$("#SourceofDrySeasonWaterEnumList").on("change", function () {
+		var value = $(this).val();
+		if (value?.length == 0) {
+			return;
+		}
+		$(this).valid();
+    });
+
+    var ExistingSkillList = $("#ExistingSkillList");
+    var partialExistingSkillBase = null;
+
+    $("[href='#AccessToResource']").one("click", function () {
+        // Load Drinking water list
+        $('.SourceofDrySeasonWaterEnumList').multiselect({
+            search: true,
+            selectAll: true
+        });
+        $('.SourceofWetSeasonWaterEnumList').multiselect({
+            search: true,
+            selectAll: true
+        });
+
+        //$.ajax({
+        //    cache: false,
+        //    type: "GET",
+        //    url: "/Dropdown/GetDrinkingWaterResourceEnumList",
+        //    success: function (data) {
+
+        //        if (Array.isArray(data)) {
+        //            var options = data.map(x => { return { name: x.Name, value: x.Id, checked: false } });
+        //            $('.SourceofDrySeasonWaterEnumList').multiselect('loadOptions', options);
+        //            $('.SourceofWetSeasonWaterEnumList').multiselect('loadOptions', options);
+        //        }
+        //    },
+        //    error: function (xhr, ajaxOptions, thrownError) {
+        //        alert('Failed to retrieve data.');
+        //    }
+        //});
+
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadExistingSkillBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialExistingSkillBase = data;
+
+                if (!@Model.Id) {
+                    AddExistingSkillInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadExistingSkillBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    ExistingSkillList.append(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+    })
+</script>
+
+<script>
+    // Add new energy use in UI
+    function AddExistingSkillInUI() {
+        if (!ExistingSkillList.has('div')?.length) {
+            ExistingSkillList.append(partialExistingSkillBase);
+
+            runExistingSkillIndex();
+        }
+    }
+
+    $("#AddMoreExistingSkill").on("click", function () {
+        ExistingSkillList.append(partialExistingSkillBase);
+
+        runExistingSkillIndex();
+    })
+
+    function runExistingSkillIndex() {
+        $("#ExistingSkillList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveExistingSkillItem(${id}, ${dbId ?? 0})`);
+        });
+    }
+
+    // Remove Asset item
+    function RemoveExistingSkillItem(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedExistingSkills.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#ExistingSkillList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runExistingSkillIndex();
+            });
+        }
+    }
+</script>
+

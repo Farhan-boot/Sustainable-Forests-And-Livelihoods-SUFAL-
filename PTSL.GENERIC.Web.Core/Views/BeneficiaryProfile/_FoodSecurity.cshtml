@@ -1,0 +1,136 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<form id="FoodSecurity" class="collapse">
+
+    <!-- FoodSecurityItem -->
+    <h5 class="mt-2">9.1 Food consumption</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                9.1.a. Do you consider your household to be
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("HouseholdFoodCondition", null, "Choose..", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                9.1.b. When/if you have a problem feeding your family, who receives relatively more food 
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("FoodyPersonInFoodCrisis", null, "Choose..", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+
+    <h5 class="mt-5">9.2. Food Security</h5>
+    <div id="FoodSecurityList"></div>
+    <div class="text-center">
+        <button id="AddMoreFoodSecurity" type="button" class="btn btn-outline-dark btn-sm">Add More Food Security <i class="fa fa-plus"></i></button>
+    </div>
+</form>
+
+<script>
+    // Load dropdown data only once
+    var FoodSecurityList = $("#FoodSecurityList");
+    var partialFoodSecurityBase = null;
+
+    //$("[href='#FoodSecurity']").one("click", function () {
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadFoodSecurityBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialFoodSecurityBase = data;
+
+                if (!@Model.Id) {
+                    AddFoodSecurityInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+                cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadFoodSecurityBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    FoodSecurityList.append(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+    //});
+</script>
+
+<!-- Add new other income source -->
+<script>
+    function AddFoodSecurityInUI() {
+        if (!FoodSecurityList.has('div')?.length) {
+            FoodSecurityList.append(partialFoodSecurityBase);
+
+            runFoodSecurityIndex();
+        }
+    }
+
+    $("#AddMoreFoodSecurity").on("click", function () {
+        FoodSecurityList.append(partialFoodSecurityBase);
+
+        runFoodSecurityIndex();
+    })
+
+    function runFoodSecurityIndex() {
+        $("#FoodSecurityList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveFoodSecurity(${id}, ${dbId ?? 0})`);
+        });
+    }
+
+    function RemoveFoodSecurity(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedFoodSecurityItems.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#FoodSecurityList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runFoodSecurityIndex();
+            });
+        }
+    }
+</script>

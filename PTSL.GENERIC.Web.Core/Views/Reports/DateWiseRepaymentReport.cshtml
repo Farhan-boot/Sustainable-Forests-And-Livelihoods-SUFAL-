@@ -1,0 +1,86 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.DateWiseRepaymentReportVM>
+@{
+    ViewBag.Title = "Date wise Repayment Report";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Date wise Repayment Report</h5>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="9">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Date wise Repayment Report</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Beneficiary Name</th>
+                    <th>Mobile Number</th>
+                    <th>NID</th>
+                    <th>LDF Round</th>
+                    <th>Allocated Loan</th>
+                    <th>Repayment Start Date</th>
+                    <th>Repayment End Date</th>
+                    <th>Repayment Amount</th>
+                    <th>Is Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@item.BeneficiaryName</td>
+                        <td>@item.BeneficiaryPhone</td>
+                        <td>@item.BeneficiaryNid</td>
+                        <td>@item.LDFCountInWord</td>
+                        <td>@item.TotalAllocatedLoanAmount.ToBDTCurrency()</td>
+                        <td>@item.RepaymentStartDate.ToUIDateString()</td>
+                        <td>@item.RepaymentEndDate.ToUIDateString()</td>
+                        <td>@item.TotalRepaymentAmount.ToBDTCurrency()</td>
+                        <td>@(item.IsPaymentCompleted ? "Yes" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="6" class="text-center">Total:</td>
+                    <td colspan="3" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

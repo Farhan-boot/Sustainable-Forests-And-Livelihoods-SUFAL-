@@ -1,0 +1,231 @@
+﻿@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.InternalLoan;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.InternalLoan.InternalLoanInformationVM
+
+@{
+	ViewBag.Title = "Internal Loan Repayments Details";
+	var Message = ViewBag.Message;
+}
+
+<style>
+	label {
+		margin-bottom: 0.2rem;
+	}
+
+	.repayments-container {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-auto-rows: 200px;
+		grid-column-gap: 5px;
+		grid-row-gap: 5px;
+		padding: 10px 25px;
+	}
+
+		.repayments-container form {
+			display: flex;
+			flex-direction: column;
+			border: 1px solid #b1c5bb;
+			border-radius: 7px;
+			padding: 10px;
+		}
+
+	.two-col {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-column-gap: 5px;
+		grid-row-gap: 5px;
+	}
+</style>
+
+<div class="card">
+	<div class="card-header">
+		<h4>
+			<a href="/InternalLoanInformation/Index" class="mr-1 back">
+				<svg width="20" height="20" viewBox="0 0 32 32">
+					<path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+				</svg>
+			</a>
+			Internal Loan Repayments Details
+		</h4>
+	</div>
+
+    <div class="card-body my-2">
+        <div class="p-2 custom green-card" style="border-radius: 5px;">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Beneficiary Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Beneficiary name
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@Model.Survey?.BeneficiaryName"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+							Mobile number
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@Model.Survey?.BeneficiaryPhone"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            NID
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@Model.Survey?.BeneficiaryNid"
+                               disabled />
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="LoanInfo">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Loan Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+							Total allocated loan(TK)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               value="@Model.TotalAllocatedLoanAmount"
+                               placeholder="Enter loan amount (TK)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Start date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               value="@Model.StartDate.ToUIDateString()"
+                               placeholder="Enter Start Date"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            End date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               value="@Model.EndDate.ToUIDateString()"
+                               placeholder="Enter End Date"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                        <label>
+							Months for total repayment
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               value="@Model.MaximumRepaymentMonth"
+                               placeholder="Enter Total Repayment Month"
+                               disabled />
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Service charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               value="@Model.ServiceChargePercentage"
+                               placeholder="Enter service charge (%)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Security charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               value="@Model.SecurityChargePercentage"
+                               placeholder="Enter service charge (%)"
+                               disabled />
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+	<h5 style="padding: 0px 25px;">Repayments</h5>
+	<div class="repayments-container">
+        @{var endDateCount=0;}
+        @foreach (var repayment in Model.RepaymentInternalLoans.OrderBy(x => x.RepaymentSerial) ?? Enumerable.Empty<RepaymentInternalLoanVM>())
+		{
+			<form asp-controller="InternalLoanInformation" asp-action="CompletePayment" class="custom green-card" id="form-@repayment.Id">
+				<input type="hidden" name="repaymentId" value="@repayment.Id" />
+
+				<div class="d-flex justify-content-between align-content-center mb-2" style="border-bottom: 1px solid #b1c5bb;">
+					<h5>@repayment.RepaymentSerial</h5>
+                    <h6>@(repayment.RepaymentStartDate.AddMonths(endDateCount) is DateTime ? ((DateTime)repayment.RepaymentStartDate.AddMonths(endDateCount)).ToShortDateString() : "") - @(repayment.RepaymentEndDate.AddMonths(endDateCount) is DateTime ? ((DateTime)repayment.RepaymentEndDate.AddMonths(endDateCount)).ToShortDateString() : "")</h6>
+				</div>
+
+				<div class="two-col">
+					<div>Total Payment to recieve:</div>
+					<div class="font-bold text-right">@repayment.RepaymentAmount</div>
+				</div>
+
+				<div class="d-flex flex-row mt-auto justify-content-between">
+					@if (repayment.IsPaymentCompleted == true)
+					{
+						<div class="font-bold" style="color: green;">Payment completed at: @repayment.PaymentCompletedDateTime</div>
+					}
+					else
+					{
+						<div class="font-bold" style="color: red;">Payment not completed</div>
+						<div class="ml-auto d-flex" style="gap: 5px;">
+							<button type="button" onclick="confirmPayment(@repayment.Id)" class="btn btn-sm btn-green save">
+								<span>Complete Payment</span>
+							</button>
+						</div>
+					}
+				</div>
+			</form>
+            endDateCount++;
+		}
+	</div>
+</div>
+
+<script>
+	function confirmPayment(id) {
+		swal({
+			title: "Are you sure?",
+			text: "This will change your payment status",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes, Confirm",
+			closeOnConfirm: false
+		}, function () {
+			$(".loader").fadeIn("fast");
+
+			$.ajax({
+				cache: false,
+				type: "POST",
+				url: "/InternalLoanInformation/CompletePayment",
+				data: { id: id },
+				success: function (data) {
+					$(".loader").fadeOut("fast");
+
+					window.location.reload();
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					$(".loader").fadeOut("fast");
+				}
+			});
+		});
+	}
+</script>
+

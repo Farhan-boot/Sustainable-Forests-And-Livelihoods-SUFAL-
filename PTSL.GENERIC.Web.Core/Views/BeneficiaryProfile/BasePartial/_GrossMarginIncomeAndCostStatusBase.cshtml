@@ -1,0 +1,78 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.GrossMarginIncomeAndCostStatusVM>
+
+@{ var index = 0; }
+
+@foreach (var gross in Model)
+{
+    index++;
+
+    <div class="card GrossMarginIncomeAndCostStatusChild" data-id="@index">
+        <input class="Id" type="hidden" value="@gross.Id" />
+        <div class="card-body mt-3">
+            <h5 class="d-inline-block">@index</h5>
+            <button type="button" class="remove-item btn btn-danger btn-sm float-right" onclick="RemoveGrossMarginIncomeAndCostStatus(@index, @gross.Id)">x</button>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label>
+                        Name of the Products
+                    </label>
+                    <input type="text" class="form-control ProductName" value="@gross.ProductName" name="ProductName" placeholder="Product Name">
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        Area (decimals)
+                    </label>
+                    <input type="number" min="0" class="form-control LandArea" name="LandArea" value="@(gross.Id == 0 ? "" : gross.LandArea)" placeholder="Land area">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Production Unit of measurement (Q unit)
+                    </label>
+                    <input type="text" class="form-control MeasurementOfProduct" name="MeasurementOfProduct" value="@gross.MeasurementOfProduct" placeholder="Measurement unit">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Total production of household (in Q unit)
+                    </label>
+                    <input type="number" min="0" class="form-control TotalProductionHousehold" name="TotalProductionHousehold" value="@(gross.Id == 0 ? "" : gross.TotalProductionHousehold)" placeholder="Total production household">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Total cost of production (Tk)
+                    </label>
+                    <input type="number" min="0" class="form-control TotalCostOfProduction" name="TotalCostOfProduction" value="@(gross.Id == 0 ? "" : gross.TotalCostOfProduction)" placeholder="Total cost production">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Total consumption (in Q unit)
+                    </label>
+                    <input type="number" min="0" class="form-control TotalConsumption" name="TotalConsumption" value="@(gross.Id == 0 ? "" : gross.TotalConsumption)" placeholder="Total consumption">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Quantity sold (in Q unit)
+                    </label>
+                    <input type="number" min="0" class="form-control QuantitySold" name="QuantitySold" value="@(gross.Id == 0 ? "" : gross.QuantitySold)" placeholder="Quantity sold">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Total value sold (Tk)
+                    </label>
+                    <input type="number" min="0" class="form-control TotalValueSold" name="TotalValueSold" value="@(gross.Id == 0 ? "" : gross.TotalValueSold)" placeholder="Total value sold">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Net income (BDT):
+                    </label>
+                    <input type="number" class="form-control TotalNetIncome" name="TotalNetIncome" value="@(gross.Id == 0 ? "" : gross.TotalNetIncome)" placeholder="Net income" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+}

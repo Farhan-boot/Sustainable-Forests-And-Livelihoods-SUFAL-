@@ -1,0 +1,87 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.IndividualLDFInfoFormVM
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+			<a href="/IndividualLDFInfoForm/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Individual LDF Information Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Circle: <b>@Model.ForestCircle?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Division: <b>@Model.ForestDivision?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Range: <b>@Model.ForestRange?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Beat: <b>@Model.ForestBeat?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest FCV/VCF: <b>@Model.ForestFcvVcf?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil Division: <b>@Model.Division?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil District: <b>@Model.District?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil Upazilla: <b>@Model.Upazilla?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil Union: <b>@Model.Union?.Name</b></label>
+            </div>
+
+            <div class="form-group">
+                <label style="font-size:15px;">NGO: <b>@Model.Ngo?.Name</b></label>
+            </div>
+        </div>
+		<br />
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Beneficiary Name: <b>@Model.Survey?.BeneficiaryName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Beneficiary NID: <b>@Model.Survey?.BeneficiaryNid</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Beneficiary Mobile: <b>@Model.Survey?.BeneficiaryPhone</b></label>
+            </div>
+        </div>
+		<br />
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Requested Loan Amount: <b>@Model.RequestedLoanAmount</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Approved Loan Amount: <b>@Model.ApprovedLoanAmount</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Submitted Date: <b>@Model.SubmittedDate.ToUIDateString()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Status: <b>@Model.IndividualLDFInfoStatus.ToString()</b></label>
+            </div>
+            <div class="form-group">
+				<label style="font-size:15px;">Status Updated Date: <b>@(Model.StatusDate is not null ? ((DateTime)Model.StatusDate).ToUIDateString() : "None")</b></label>
+            </div>
+            <div class="form-group">
+				<label style="font-size:15px;">Document: <a href="@Model.DocumentInfoURL">@Model.DocumentInfoURL</a></label>
+            </div>
+        </div>
+    </div>
+</div>
+

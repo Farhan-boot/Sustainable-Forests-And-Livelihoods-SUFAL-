@@ -1,0 +1,201 @@
+﻿@model IEnumerable<PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Nursery.DistributionVM>
+@{
+    ViewBag.Title = "Nursery Distribution List";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10 px-0">
+                    <h4>Nursery  Distribution List </h4>
+                </div>
+                <div class="col-md-2 text-right px-0">
+                    <a id="createBtn" href="#" class="badge badge-success badge-shadow">Create New</a>
+                </div>
+            </div>
+            <form asp-action="IndexFilter" asp-controller="NurseryDistribution" class="mb-4 green-card p-2 m-4" style="border-radius: 5px;">
+
+                <div class="row custom ml-1">
+                    <div class="col-md-6 float-right ">
+
+                        <label class="col-md-4 m-0 p-0">Distribution Date</label>
+                        <input hidden name="id" value="@ViewBag.Id" class="form-control" />
+                        <input type="date" name="DistributionDate" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="col d-flex mt-3">
+                    <button type="submit" class="btn btn-sm btn-green save">Search</button>
+                </div>
+            </form>
+            <div class="card-body">
+                <label class="" style="font-size:15px;font-weight:700"> Number of Seedling: @Model?.FirstOrDefault()?.TotalSeedlingRaised</label>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Nursary Name</th>
+                                <th>Distribution Date</th>
+
+                                <th>Total Number of Seedling Distributed </th>
+                                <th class="not-export-col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                int i = 1;
+                                foreach (var data in Model)
+                                {
+                                    <tr>
+                                        @if (data.NurseryName != null && data.DistributionDate != DateTime.MinValue && data.TotalNumberOfSeedlingToBeDistributed != 0)
+                                        {
+                                            <td>@i</td>
+                                            <td>@data.NurseryName</td>
+                                            <td>@(data.DistributionDate.ToShortDateString())</td>
+                                            <td>@data.TotalNumberOfSeedlingToBeDistributed</td>
+                                            <td class="not-export-col">
+                                                <a href="/NurseryDistribution/Details?id=@ViewBag.Id&dateParam=@data.DistributionDate.Date.ToString()" class="btn btn-info btn-sm">Details</a>
+                                                <a href="/NurseryDistribution/Edit?id=@ViewBag.Id&dateParam=@data.DistributionDate.Date.ToString()" class="btn btn-info btn-sm">Edit</a>
+                                                <button onclick="showDeleteConfirmMessage(@ViewBag.Id)" class="btn btn-danger btn-sm">Delete</button>
+
+                                            </td>
+
+                                        }
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $("#createBtn").click(function () {
+        if (@Model?.FirstOrDefault()?.TotalSeedlingRaised<= 0) {
+            return swal(
+                'Failed',
+                'No seedling available for distribute',
+                'error'
+            );
+        }
+        else {
+            $("#createBtn").attr("href", `/NurseryDistribution/Create/${@ViewBag.Id}`)
+        }
+    });
+    $(document).ready(function () {
+
+
+
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Nursery Distribution List',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Nursery Distribution List',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Nursery Distribution List',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Nursery Distribution List',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
+                }
+            ],
+            columnDefs: [
+                { targets: [1], searchable: true } // Index 2 corresponds to the third column (0-indexed)
+            ]
+        });
+    });
+
+    function distributionEdit(id, distributionDate) {
+        var data = {
+            NurseryId: id,
+            DistributionDate: distributionDate
+        };
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: `/NurseryDistribution/Edit/${id}`,
+            data: data,
+            datatype: "json",
+            success: function (result) {
+                if (result) {
+
+                }
+            },
+            error: function (xmlhttprequest, textstatus, errorthrown) {
+                swal("Not Deleted!", "Item has not been deleted.", "error");
+            }
+        });
+    }
+
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/NurseryDistribution/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+</script>

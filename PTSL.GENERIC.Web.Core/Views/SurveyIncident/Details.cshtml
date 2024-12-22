@@ -1,0 +1,50 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyIncidentVM
+@{
+    ViewBag.Title = "Beneficiary Incident Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/SurveyIncident/Index@(Model.SurveyId == default ? "" : $"?surveyId={Model.SurveyId}")" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Beneficiary Incident Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Beneficiary Name: <b>@Model.Survey?.BeneficiaryName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Beneficiary NID: <b>@Model.Survey?.BeneficiaryNid</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Mobile Number: <b>@Model.Survey?.BeneficiaryPhone</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Year: <b>@Model.Year</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Month: <b>@Model.Month</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Incident: <b>@Model.Incident</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Decision: <b>@Model.Decision</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Action: <b>@Model.Action</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Status: <b>@Model.SurveyIncidentStatusString</b></label>
+            </div>
+        </div>
+    </div>
+</div>
+

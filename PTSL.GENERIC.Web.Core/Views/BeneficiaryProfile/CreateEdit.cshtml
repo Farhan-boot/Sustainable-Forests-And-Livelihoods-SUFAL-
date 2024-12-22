@@ -1,0 +1,1316 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+@{
+    var createOrEdit = Model.Id > 0 ? "Edit Beneficiary Profile" : "Create Beneficiary Profile";
+    ViewBag.Title = createOrEdit;
+    var Message = ViewBag.Message;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/multiselect/jquery.multiselect.css">
+}
+@section Scripts {
+    <script src="~/multiselect/jquery.multiselect.js" defer></script>
+}
+
+<style>
+	#BenProfilePic-error {
+		display: block;
+	}
+    .ben_collapse {
+        font-size: 15px !important;
+    }
+        .ben_collapse i {
+            margin-right: 5px;
+        }
+
+    label.error {
+        color: red !important;
+    }
+    .radio {
+        position: relative;
+    }
+    .radio label.error {
+        position: absolute;
+        top: 0;
+        width: max-content;
+        left: 120px;
+    }
+
+    input[type=file] {
+        border: 1px solid #d1cfcf;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/BeneficiaryProfile/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+			@createOrEdit
+		</h4>
+    </div>
+    <div class="card-body">
+        <div>
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mb-2" data-toggle="collapse" href="#ForestAdministration" role="button" aria-expanded="true" aria-controls="ForestAdministration">
+                <i class="fa fa-plus"></i>Forest Administrative Unit
+            </a>
+            @await Html.PartialAsync("_ForestAdministration", Model)
+
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#BeneficiaryDocuments" role="button" aria-expanded="false" aria-controls="BeneficiaryDocuments">
+				<i class="fa fa-plus"></i>Beneficiary Profile Picture & Documents
+            </a>
+			<form id="BeneficiaryDocuments" class="collapse">
+				<div class="row">
+					<div class="form-group col-md-3">
+						<label>
+							Beneficiary Profile Picture
+							<span style="color:red;">*</span>
+						</label>
+						<img id="BenProfilePicPreview" src="@(string.IsNullOrEmpty(Model.BeneficiaryProfileURL) ? "/img/profile.webp" : Model.BeneficiaryProfileURL)" style="height: 250px;" class="img-thumbnail form-control" alt="...">
+					</div>
+					<div class="form-group col-md-9 row">
+						<div class="col-md-6">
+                            <div>
+                                <label>
+                                    Choose Beneficiary Profile Picture
+                                    <span style="color:red;">*</span>
+                                </label>
+                                <input id="BenProfilePic" type="file" accept="image/png, image/gif, image/jpeg" @(Model.Id == 0 ? "required" : "") />
+                                <input type="hidden" value="@Model.BeneficiaryProfileURL" id="@nameof(Model.BeneficiaryProfileURL)" />
+                            </div>
+                            <div class="mt-3">
+                                <label>
+                                    Upload NID Front Image
+                                    <span style="color:red;">*</span>
+                                </label>
+                                <input id="BenNIDFrontPic" type="file" accept="image/png, image/gif, image/jpeg" @(Model.Id == 0 ? "required" : "") />
+                                <input type="hidden" value="@Model.BeneficiaryNIDFrontURL" id="@nameof(Model.BeneficiaryNIDFrontURL)" />
+                                @if (string.IsNullOrEmpty(Model.BeneficiaryNIDFrontURL) == false)
+                                {
+                                    <a style="display: block;width: max-content;" class="btn btn-sm btn-secondary mt-2" href="@Model.BeneficiaryNIDFrontURL" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.BeneficiaryNIDFrontURL))">Download Current NID Front Image</a>
+                                }
+                            </div>
+                            <div class="mt-3">
+                                <label>
+                                    Upload NID Back Image
+                                    <span style="color:red;">*</span>
+                                </label>
+                                <input id="BenNIDBackPic" type="file" accept="image/png, image/gif, image/jpeg" @(Model.Id == 0 ? "required" : "") />
+                                <input type="hidden" value="@Model.BeneficiaryNIDBackURL" id="@nameof(Model.BeneficiaryNIDBackURL)" />
+                                @if (string.IsNullOrEmpty(Model.BeneficiaryNIDBackURL) == false)
+                                {
+                                    <a style="display: block;width: max-content;" class="btn btn-sm btn-secondary mt-2" href="@Model.BeneficiaryNIDBackURL" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.BeneficiaryNIDBackURL))">Download Current NID Back Image</a>
+                                }
+                            </div>
+                        </div>
+
+						<div class="col-md-6">
+							<label>
+								Upload Document(s)
+								<span style="color:red;">*</span>
+							</label>
+							<input id="BenDocument" name="SurveyDocuments[]" type="file" multiple @(Model.Id == 0 ? "required" : "") />
+
+							@if (Model.SurveyDocuments?.Count > 0)
+							{
+								var index = 1;
+								foreach (var doc in Model.SurveyDocuments)
+								{
+									<div class="d-flex">
+										<p class="mr-2">@(index++).</p>
+										<a href="@doc.DocumentNameURL">@(doc.DocumentName)</a>
+									</div>
+								}
+							}
+						</div>
+					</div>
+				</div>
+			</form>
+
+			<script>
+				var imgInp = document.getElementById("BenProfilePic");
+				var blah = document.getElementById("BenProfilePicPreview");
+
+				imgInp.onchange = evt => {
+					const [file] = imgInp.files;
+					if (file) {
+						blah.src = URL.createObjectURL(file);
+					}
+				}
+			</script>
+
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#GeneralInformation" role="button" aria-expanded="false" aria-controls="GeneralInformation">
+                <i class="fa fa-plus"></i>1. General Information
+            </a>
+            @await Html.PartialAsync("_GeneralInformation", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#HouseholdsMembers" role="button" aria-expanded="false" aria-controls="HouseholdsMembers">
+                <i class="fa fa-plus"></i>2. Household Member
+            </a>
+            @await Html.PartialAsync("_HouseholdsMembers", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#EconomicStatus" role="button" aria-expanded="false" aria-controls="EconomicStatus">
+                <i class="fa fa-plus"></i>3. Economic Status (own land, livestock and other assets)
+            </a>
+            @await Html.PartialAsync("_EconomicStatus", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#AccessToResource" role="button" aria-expanded="false" aria-controls="AccessToResource">
+                <i class="fa fa-plus"></i>4. Access to Resources and services
+            </a>
+            @await Html.PartialAsync("_AccessToResource", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#CrossCuttingIssue" role="button" aria-expanded="false" aria-controls="CrossCuttingIssue">
+                <i class="fa fa-plus"></i>5. Cross-cutting issues
+            </a>
+            @await Html.PartialAsync("_CrossCuttingIssue", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#SocioEconomicStatus" role="button" aria-expanded="false" aria-controls="SocioEconomicStatus">
+                <i class="fa fa-plus"></i>6. Socio-economic status
+            </a>
+            @await Html.PartialAsync("_SocioEconomicStatus", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#Remittance" role="button" aria-expanded="false" aria-controls="Remittance">
+                <i class="fa fa-plus"></i>7. Remittances
+            </a>
+            @await Html.PartialAsync("_Remittance", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#HouseholdExpenditure" role="button" aria-expanded="false" aria-controls="HouseholdExpenditure">
+				<i class="fa fa-plus"></i>8. Annual household expenditure
+            </a>
+            @await Html.PartialAsync("_HouseholdExpenditure", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#FoodSecurity" role="button" aria-expanded="false" aria-controls="FoodSecurity">
+                <i class="fa fa-plus"></i>9. Food Consumption & Security
+            </a>
+            @await Html.PartialAsync("_FoodSecurity", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#VulnerabilitySituation" role="button" aria-expanded="false" aria-controls="VulnerabilitySituation">
+                <i class="fa fa-plus"></i>10. Vulnerability situation
+            </a>
+            @await Html.PartialAsync("_VulnerabilitySituation", Model)
+
+            <a class="ben_collapse btn btn-secondary btn-lg btn-block text-left mt-4 mb-2" data-toggle="collapse" href="#EnumeratorDataCollection" role="button" aria-expanded="false" aria-controls="EnumeratorDataCollection">
+                <i class="fa fa-plus"></i>11. Enumerator and Data collection
+            </a>
+            @await Html.PartialAsync("_EnumeratorDataCollection", Model)
+
+			<h5 class="mt-4">Gross value</h5>
+
+			<h6>Total Land (Decimal) from Economic Status (own land, livestock and other asstets): <span class="GrandTotalLandOccupancy">@Model.GrandTotalLandOccupancy</span></h6>
+			<h6>Total Market Value (BDT) from Livestock: <span class="GrandTotalLivestockCost">@Model.GrandTotalLivestockCost</span> TK</h6>
+            <h6>Total Estimated Cost (BDT) from Movable Asset: <span class="GrandTotalAssetsCost">@Model.GrandTotalAssetsCost</span> TK</h6>
+			<h6>Total Annual Return (BDT) from Household Immovable Assets: <span class="GrandTotalImmovableAnnualReturn">@Model.GrandTotalImmovableAnnualReturn</span> TK</h6>
+
+            <h6>Gross margin per ha/per animal/per cage: <span class="GrandTotalGrossMarginAgriculture">@Model.GrandTotalGrossMarginAgriculture</span> TK</h6>
+			<h6>Total Annual Income (BDT) from Manual/Physical work: <span class="GrandTotalAnnualPhysicalIncome">@Model.GrandTotalAnnualPhysicalIncome</span> TK</h6>
+			<h6>Total Net Income (BDT) from collection/use of wild natural resources: <span class="GrandTotalWildResourceIncome">@Model.GrandTotalWildResourceIncome</span> TK</h6>
+			<h6>Total Net Income (BDT) from other source: <span class="GrandTotalOtherIncome">@Model.GrandTotalOtherIncome</span> TK</h6>
+			<h6>Total Net Income (BDT) from business: <span class="GrandTotalBusinessIncome">@Model.GrandTotalBusinessIncome</span> TK</h6>
+
+			<h6>Total Annual Household Expenditure (BDT): <span class="GrandTotalHouseholdExpenditure">@Model.GrandTotalHouseholdExpenditure</span> TK</h6>
+
+            <button type="submit" class="btn btn-sm btn-green save mt-3 float-right" id="SubmitForm">
+				@(Model.Id > 0 ? "Update" : "Submit")
+			</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // jQuery custom function
+    $.fn.customVal = function (value) {
+        if (value) {
+            return $(this).val(value);
+        }
+        return $(this).val();
+    }
+</script>
+
+<script>
+    // For removing fields
+    var DeletedVulnerabilitySituations = [];
+    var DeletedFoodSecurityItems = [];
+    var DeletedAnnualHouseholdExpenditures = [];
+    var DeletedBusinesses = [];
+    var DeletedOtherIncomeSources = [];
+    var DeletedNaturalResourcesIncomeAndCostStatuses = [];
+    var DeletedManualPhysicalWorks = [];
+    var DeletedGrossMarginIncomeAndCostStatuses = [];
+    var DeletedExistingSkills = [];
+    var DeletedEnergyUses = [];
+    var DeletedImmovableAssets = [];
+    var DeletedAssets = [];
+    var DeletedLiveStocks = [];
+    var DeletedLandOccupancy = [];
+    var DeletedHouseholdMembers = [];
+</script>
+
+<script>
+    $("#HouseholdsMembers").validate({
+        ignore: false,
+    });
+
+    $("#SubmitForm").on("click", function (e) {
+        e.preventDefault();
+
+        $("#ForestAdministration").validate({
+            ignore: false,
+            rules: {
+                ForestCircleId: "required",
+                ForestDivisionId: "required",
+                ForestRangeId: "required",
+                ForestBeatId: "required",
+                ForestFcvVcfId: "required",
+
+                ForestVillageName: {
+                    required: true,
+                    minlength: 2,
+					isEnglish: true,
+                },
+                BeneficiaryHouseholdSerialNo: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 3,
+                    mustBeInteger: true,
+                },
+            },
+        });
+
+        $("#GeneralInformation").validate({
+            ignore: false,
+            rules: {
+                BeneficiaryName: {
+                    required: true,
+                    isEnglish: true,
+                },
+                BeneficiaryNid: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 17,
+                    mustBeInteger: true,
+                },
+                BeneficiaryPhone: {
+                    required: false,
+                    minlength: 11,
+                    maxlength: 11,
+                    mustBeInteger: {
+                        depends: function (element) {
+                            return $(element).val().length > 0;
+                        }
+                    },
+                },
+                BeneficiaryGender: "required",
+                BeneficiaryFatherName: {
+                    required: true,
+                    isEnglish: true,
+                },
+                BeneficiaryMotherName: {
+                    required: true,
+                    isEnglish: true,
+                },
+                BeneficiarySpouseName: {
+                    isOptionalEnglish: true,
+                },
+                HeadOfHouseholdName: {
+                    isOptionalEnglish: true,
+                },
+                PresentVillageName: {
+                    required: true,
+                    isEnglish: true,
+                },
+                PresentPostOfficeName: {
+                    required: true,
+                    isEnglish: true,
+                },
+                PresentDivisionId: "required",
+                PresentDistrictId: "required",
+                PresentUpazillaId: "required",
+                PermanentVillageName: {
+                    isOptionalEnglish: true,
+                    required: function (element) {
+                        if ($("#IsPermanentSameAsPresent").is(":checked") == false) {
+                            return !Boolean($("#PermanentVillageNameBn").val())
+                        }
+                        return false;
+                    }
+                },
+                PermanentPostOfficeName: {
+                    isOptionalEnglish: true,
+                    required: function (element) {
+                        if ($("#IsPermanentSameAsPresent").is(":checked") == false) {
+                            return !Boolean($("#PermanentPostOfficeNameBn").val())
+                        }
+                        return false;
+                    }
+                },
+                PermanentDivisionId: {
+                    required: {
+                        depends: function (element) {
+                            return $("#IsPermanentSameAsPresent").is(":checked") == false;
+                        }
+                    },
+                },
+                PermanentDistrictId: {
+                    required: {
+                        depends: function (element) {
+                            return $("#IsPermanentSameAsPresent").is(":checked") == false;
+                        }
+                    },
+                },
+                PermanentUpazillaId: {
+                    required: {
+                        depends: function (element) {
+                            return $("#IsPermanentSameAsPresent").is(":checked") == false;
+                        }
+                    },
+                },
+				BeneficiaryLatitude: "required",
+				BeneficiaryLongitude: "required"
+            },
+        });
+        $("#EconomicStatus").validate({
+            ignore: false,
+            rules: {
+                TypeOfHouseId: "required"
+            }
+        });
+        $("#AccessToResource").validate({
+            ignore: false,
+            rules: {
+                IsProblemToAccessHealthService: "required",
+                IsProblemToAccessDrinkingWater: "required",
+                NearestHealthServiceLocation: "required",
+                NearestDrinkingWaterDistance: "required",
+                NearestHealthServiceDistance: "required",
+                NearestGrowthCenter: "required",
+                IsProblemToAccessEducation: "required",
+                NearestGrowthCenterDistance: "required",
+                HasEducationalInstituteNearby: "required",
+                EducationalInstituteAccessibilityEnum: "required",
+                EducationalInstituteDistance: "required",
+                SanitationFacilitiesEnum: "required",
+				SourceofDrySeasonWaterEnumList: "required",
+				SourceofWetSeasonWaterEnumList: "required",
+            }
+        });
+        $("#CrossCuttingIssue").validate({
+            ignore: false,
+            rules: {
+                ForestMngmtSatisfactionEnum: "required",
+                ForestMngmtEffectivenessEnum: "required",
+                ForestDependencyEnum: "required",
+
+                IsHearedAboutCfm: "required",
+                IsParticipatedInCfm: "required",
+                WillCfmImproveForestMngmnt: "required",
+                WillCfmImproveWellBeing: "required",
+
+                DicisionTakerEnum: "required",
+                ProductiveAssetsOwnerGender: "required",
+                CropTypeDecisionGender: "required",
+                DecisionToTransferAssetsGender: "required",
+                FamilyNeedsDeciderGender: "required",
+                AccessorToCreditGender: "required",
+                ControllerOfCreditGender: "required",
+                OfficeBearerGender: "required",
+                MorePaymentGetterGender: "required",
+                CanAccessLegalSupportForGbv: "required",
+
+                CanUnsufructsRights: "required",
+                FaceLiveAndLivelihoodChallanges: "required",
+                HasLlfmInterest: "required",
+            }
+        });
+		$("#SocioEconomicStatus").validate({
+            ignore: false,
+            rules: {
+                NoOfMaleInsideCountry: {
+					required: false,
+					min: 0,
+				},
+				SentIncomeOfMaleInYearInsideCountry: {
+					required: false,
+					min: 0,
+				},
+				NoOfFemaleInsideCountry: {
+					required: false,
+					min: 0,
+				},
+				SentIncomeOfFemaleInYearInsideCountry: {
+					required: false,
+					min: 0,
+				},
+				NoOfMaleOutsideCountry: {
+					required: false,
+					min: 0,
+				},
+				SentIncomeOfMaleInYearOutsideCountry: {
+					required: false,
+					min: 0,
+				},
+				NoOfFemaleOutsideCountry: {
+					required: false,
+					min: 0,
+				},
+				SentIncomeOfFemaleInYearOutsideCountry: {
+					required: false,
+					min: 0,
+				},
+            }
+		});
+		$("#Remittance").validate({
+            ignore: false,
+            rules: {
+                PersonalSavingsOfAllMembers: {
+					required: false,
+					min: 0,
+				},
+            }
+        });
+        $("#FoodSecurity").validate({
+            ignore: false,
+            rules: {
+                HouseholdFoodCondition: "required",
+                FoodyPersonInFoodCrisis: "required",
+            }
+        });
+        $("#EnumeratorDataCollection").validate({
+            ignore: false,
+            rules: {
+                NameOfTheEnumerator: {
+                    required: true,
+                },
+                CellPhoneNumber: {
+                    required: true,
+                    minlength: 11,
+                    maxlength: 11,
+                    mustBeInteger: true,
+                },
+                DataCollectionDate: {
+                    required: true,
+                },
+            }
+        });
+		$("#BeneficiaryDocuments").validate({
+            ignore: false,
+            rules: {
+                //BeneficiaryProfileURL: "required",
+                //BeneficiaryDocumentURL: "required",
+            }
+        });
+
+        var hasInvalidForm = false;
+        var formList = ["#ForestAdministration", "#GeneralInformation",
+            "#HouseholdsMembers", "#EconomicStatus",
+            "#AccessToResource", "#CrossCuttingIssue",
+            "#FoodSecurity", "#EnumeratorDataCollection",
+			"#SocioEconomicStatus", "#Remittance", "#BeneficiaryDocuments"];
+
+        for (const f of formList) {
+            if ($(f).valid() == false) {
+                if ($(f).is(':visible') == false) {
+                    $(`a[href="${f}"]`).click();
+                }
+
+                hasInvalidForm = true;
+            }
+        }
+
+        if (hasInvalidForm) {
+			var errors = document.querySelectorAll(".error");
+			if (errors.length > 0) {
+				errors[0].scrollIntoView({
+					behavior: 'smooth',
+					block: "center"
+				});
+			}
+
+            return;
+        }
+
+        var Survey = surveyData(undefined);
+        var formData = new FormData();
+
+        for (var key in Survey) {
+            var value = Survey[key];
+
+            if (Array.isArray(value)) {
+                formData.append(key, JSON.stringify(value));
+            } else {
+                formData.append(key, value);
+            }
+        }
+
+        // add files to form data
+        formData.append("NotesImage", $('#NotesImage')[0].files[0]);
+        formData.append("BeneficiaryHouseFrontImage", $('#BeneficiaryHouseFrontImage')[0].files[0]);
+		formData.append("BeneficiaryProfileImage", $('#BenProfilePic')[0].files[0]);
+        formData.append("BeneficiaryNIDFrontURL", $('#BenNIDFrontPic')[0].files[0]);
+        formData.append("BeneficiaryNIDBackURL", $('#BenNIDBackPic')[0].files[0]);
+
+		for(const file of $('#BenDocument')[0].files) {
+			formData.append('SurveyDocuments[]', file);
+		}
+
+        if (hasInvalidForm == false) {
+            $(".loader").fadeIn("fast");
+
+			formData.append("CreatedAt", '@Model.CreatedAt.ToUIDateString()');
+
+            if (@Model.Id) {
+                $.ajax({
+                    type: "POST",
+                    url: "/BeneficiaryProfile/Edit",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        $(".loader").fadeOut("fast");
+
+                        if (data.RedirectUrl) {
+                            window.location.href = data.RedirectUrl;
+                            return;
+                        }
+
+                        if (data.Success) {
+                            swal(
+                                'Success',
+                                data.Message,
+                                'success'
+                            );
+                        } else {
+                            swal(
+                                'Failed',
+                                data.Message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $(".loader").fadeOut("fast");
+
+                        swal(
+                            'Failed',
+                            data.Message,
+                            'error'
+                        );
+                    }
+                });
+
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/BeneficiaryProfile/Create",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        $(".loader").fadeOut("fast");
+
+                        if (data.RedirectUrl) {
+                            window.location.href = data.RedirectUrl;
+                            return;
+                        }
+
+                        if (data.Success) {
+                            swal(
+                                'Success',
+                                data.Message,
+                                'success'
+                            );
+                        } else {
+                            swal(
+                                'Failed',
+                                data.Message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $(".loader").fadeOut("fast");
+
+                        swal(
+                            'Failed',
+                            data.Message,
+                            'error'
+                        );
+                    }
+                });
+            }
+        }
+    });
+
+    var insertedErrors = {};
+
+    // Custom jQuery validation rules
+    const isInteger = num => /^-?[0-9]+$/.test(num + '');
+    const dateMustBePreviousFromNowFunc = date => {
+        return (new Date(date)).toISOString() >= (new Date(new Date().toDateString())).toISOString();
+    }
+    const dateMustBeGreaterThanStartDateFunc = date => {
+        var startDate = $("#StartDate").val();
+
+        return (new Date(date)).toISOString() >= (new Date(startDate)).toISOString();
+    }
+    function isEmail(email) {
+        return /^\w+@@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email);
+    }
+    function isEnglish(str) {
+        return /^[\x20-\x7E]*$/.test(str);
+    }
+    const isBangla = (str) => {
+        const lang = str.replace(/\s/g, '');
+
+        for (var i = 0; i < lang.length; i++) {
+            if (lang.charCodeAt(i) < 2432 || lang.charCodeAt(i) > 2558) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    $.validator.addMethod(
+        'mustBeInteger',
+        function (value, element, requiredValue) {
+            return isInteger(value);
+        },
+        'Must be a valid number.'
+    );
+    $.validator.addMethod(
+        'dateMustBePreviousFromNow',
+        function (value, element, requiredValue) {
+            return dateMustBePreviousFromNowFunc(value);
+        },
+        'Date must be greater or equal to current date.'
+    );
+    $.validator.addMethod(
+        'dateMustBeGreaterThanStart',
+        function (value, element, requiredValue) {
+            return dateMustBeGreaterThanStartDateFunc(value);
+        },
+        'Date must be greater or equal to start date.'
+    );
+    $.validator.addMethod(
+        'isEmail',
+        function (value) {
+            return isEmail(value);
+        },
+        'Invalid Email'
+    );
+    $.validator.addMethod(
+        'isEnglish',
+        function (value) {
+            return isEnglish(value);
+        },
+        'Please enter English characters'
+    );
+    $.validator.addMethod(
+        'isOptionalEnglish',
+        function (value) {
+            if (!value) return true;
+            return isEnglish(value);
+        },
+        'Please enter English characters'
+    );
+    $.validator.addMethod(
+        'isOptionalBangla',
+        function (value) {
+            if (!value) return true;
+            return isBangla(value);
+        },
+        'Please enter Bangla characters'
+    );
+
+    /**
+     * Survey data
+     * @@param data - Pass data null or undefined to get the values. Pass a valid object to set the values.
+     * */
+    function surveyData(data) {
+        // -- Forest Administrative Unit
+        const ForestCircleId = $("#ForestCircleId").val();
+        const ForestDivisionId = $("#ForestDivisionId").val();
+        const ForestRangeId = $("#ForestRangeId").val();
+        const ForestBeatId = $("#ForestBeatId").val();
+        const ForestFcvVcfId = $("#ForestFcvVcfId").val();
+        const NgoId = $("#NgoId").val();
+		const CipId = $("#CipId").val();
+        const ForestVillageName = $("#ForestVillageName").val();
+        const ForestVillageNameBn = $("#ForestVillageNameBn").val();
+        const BeneficiaryHouseholdSerialNo = $("#BeneficiaryHouseholdSerialNo").val();
+        const BeneficiaryApproveStatus = $("#BeneficiaryApproveStatus").val();
+        const BeneficiaryProfileURL = $("#BeneficiaryProfileURL").val();
+        const BeneficiaryNIDFrontURL = $("#BeneficiaryNIDFrontURL").val();
+        const BeneficiaryNIDBackURL = $("#BeneficiaryNIDBackURL").val();
+
+        // -- GeneralInformation
+        const BeneficiaryName = $("#BeneficiaryName").val();
+        const BeneficiaryNameBn = $("#BeneficiaryNameBn").val();
+        const BeneficiaryNid = $("#BeneficiaryNid").val();
+        const BeneficiaryPhone = $("#BeneficiaryPhone").val();
+        const BeneficiaryGender = $("#BeneficiaryGender").val();
+        const BeneficiaryEthnicityId = $("#BeneficiaryEthnicityId").val();
+        const BeneficiaryAge = $("#BeneficiaryAge").val();
+        const BeneficiaryFatherName = $("#BeneficiaryFatherName").val();
+        const BeneficiaryFatherNameBn = $("#BeneficiaryFatherNameBn").val();
+        const BeneficiaryMotherName = $("#BeneficiaryMotherName").val();
+        const BeneficiaryMotherNameBn = $("#BeneficiaryMotherNameBn").val();
+        const BeneficiarySpouseName = $("#BeneficiarySpouseName").val();
+        const BeneficiarySpouseNameBn = $("#BeneficiarySpouseNameBn").val();
+        const HeadOfHouseholdName = $("#HeadOfHouseholdName").val();
+        const HeadOfHouseholdNameBn = $("#HeadOfHouseholdNameBn").val();
+        const HeadOfHouseholdGender = $("#HeadOfHouseholdGender").val();
+		const FcvVcfAddedDate = $("#FcvVcfAddedDate").val();
+        const RecipientStatus = $("#RecipientStatus").val();
+
+        const PresentVillageName = $("#PresentVillageName").val();
+        const PresentVillageNameBn = $("#PresentVillageNameBn").val();
+        const PresentPostOfficeName = $("#PresentPostOfficeName").val();
+        const PresentPostOfficeNameBn = $("#PresentPostOfficeNameBn").val();
+        const PresentDivisionId = $("#PresentDivisionId").val();
+        const PresentDistrictId = $("#PresentDistrictId").val();
+        const PresentUpazillaId = $("#PresentUpazillaId").val();
+
+        const _PresentUnion = $("#PresentUnion").val();
+        const PresentUnion = _PresentUnion ? _PresentUnion : "";
+        const PresentUnionNewId = $("#PresentUnionNewId").val();
+
+        const IsPermanentSameAsPresent = $("#IsPermanentSameAsPresent").is(":checked");
+
+        const PermanentVillageName = $("#PermanentVillageName").val();
+        const PermanentVillageNameBn = $("#PermanentVillageNameBn").val();
+        const PermanentPostOfficeName = $("#PermanentPostOfficeName").val();
+        const PermanentPostOfficeNameBn = $("#PermanentPostOfficeNameBn").val();
+        const PermanentDivisionId = $("#PermanentDivisionId").val();
+        const PermanentDistrictId = $("#PermanentDistrictId").val();
+        const PermanentUpazillaId = $("#PermanentUpazillaId").val();
+
+        const _PermanentUnion = $("#PermanentUnion").val();
+        const PermanentUnion = _PermanentUnion ? _PermanentUnion : "";
+        const PermanentUnionNewId = $("#PermanentUnionNewId").val();
+
+        const BeneficiaryLatitude = $("#BeneficiaryLatitude").val();
+        const BeneficiaryLongitude = $("#BeneficiaryLongitude").val();
+        const BeneficiaryAltitude = $("#BeneficiaryAltitude").val();
+        const BeneficiaryPrecision = $("#BeneficiaryPrecision").val();
+
+        const BeneficiaryHouseFrontImageURL = $("#BeneficiaryHouseFrontImageURL").val();
+
+        // -- Household Member
+        let HouseholdMembersJSON = [];
+        $("#HouseholdsMemberList .HouseholdsMembersChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var FullName = $(this).find(".FullName").val();
+            var FullNameBn = $(this).find(".FullNameBn").val();
+            var RelationWithHeadHouseHoldTypeId = $(this).find(".RelationWithHeadHouseHoldTypeId").val();
+            var Gender = $(this).find(".Gender").val();
+            var Age = $(this).find(".Age").val();
+            var AgeBn = $(this).find(".AgeBn").val();
+            var MaritalSatus = $(this).find(".MaritalSatus").val();
+            var EducationLevel = $(this).find(".EducationLevel").val();
+            var MainOccupationId = $(this).find(".MainOccupationId").val();
+            var SecondaryOccupationId = $(this).find(".SecondaryOccupationId").val();
+
+            var BFDAssociationHouseholdMembersMap = $(this).find(".BFDAssociationHouseholdMembers").val();
+            BFDAssociationHouseholdMembersMap = BFDAssociationHouseholdMembersMap.map(x => { return { BFDAssociationId: x, HouseholdMemberId: Id } });
+
+            var BFDAssociationTxt = $(this).find(".BFDAssociationTxt").val();
+            var HasDisability = $(this).find(".HasDisability").is(":checked");
+
+            var DisabilityTypeHouseholdMembersMap = $(this).find(".DisabilityTypeHouseholdMembers").val();
+            DisabilityTypeHouseholdMembersMap = DisabilityTypeHouseholdMembersMap.map(x => { return { DisabilityTypeId: x, HouseholdMemberId: Id } });
+
+            var SafetyNetTypeId = $(this).find(".SafetyNetTypeId").val();
+
+            HouseholdMembersJSON.push({
+                Id,
+                FullName,
+                FullNameBn,
+                RelationWithHeadHouseHoldTypeId,
+                Gender,
+                Age,
+                AgeBn,
+                MaritalSatus,
+                EducationLevel,
+                MainOccupationId,
+                SecondaryOccupationId,
+                BFDAssociationHouseholdMembersMap,
+                BFDAssociationTxt,
+                HasDisability,
+                DisabilityTypeHouseholdMembersMap,
+                SafetyNetTypeId,
+            });
+        });
+
+        // -- Economic Status
+        // Land Occupancy
+        let LandOccupancyJSON = [];
+        $("#LandoccupancyList .LandoccupancyChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var LandClassificationEnum = $(this).find(".LandClassificationEnum").val();
+            var Homesteads = $(this).find(".Homesteads").val();
+            var ProductiveLand = $(this).find(".ProductiveLand").val();
+            var FallowLand = $(this).find(".FallowLand").val();
+            var ProductiveWetland = $(this).find(".ProductiveWetland").val();
+            var FallowWetland = $(this).find(".FallowWetland").val();
+            var OthersLand = $(this).find(".OthersLand").val();
+            var TotalLand = $(this).find(".TotalLand").val();
+
+            LandOccupancyJSON.push({
+                Id,
+                LandClassificationEnum,
+                Homesteads,
+                ProductiveLand,
+                FallowLand,
+                ProductiveWetland,
+                FallowWetland,
+                OthersLand,
+                TotalLand,
+            });
+        });
+
+        const TypeOfHouseId = $("#TypeOfHouseId").val();
+        // Livestock
+        let LiveStocksJSON = [];
+        $("#LivestockList .LivestockChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var LiveStockTypeId = $(this).find(".LiveStockTypeId").val();
+            var LiveStockQuantity = $(this).find(".LiveStockQuantity").val();
+            var LivestockCost = $(this).find(".LivestockCost").val();
+
+            LiveStocksJSON.push({ Id, LiveStockTypeId, LiveStockQuantity, LivestockCost });
+        });
+        // Assets
+        let AssetsJSON = [];
+        $("#AssetList .AssetsChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var AssetTypeId = $(this).find(".AssetTypeId").val();
+            var AssetQuantity = $(this).find(".AssetQuantity").val();
+            var AssetsCost = $(this).find(".AssetsCost").val();
+
+            AssetsJSON.push({ Id, AssetTypeId, AssetQuantity, AssetsCost });
+        });
+        // Immovable asset
+        let ImmovableAssetsJSON = [];
+        $("#ImmovableAssetList .ImmovableAssetChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var ImmovableAssetTypeId = $(this).find(".ImmovableAssetTypeId").val();
+            var ImmovableAnnualReturn = $(this).find(".ImmovableAnnualReturn").val();
+
+            ImmovableAssetsJSON.push({ Id, ImmovableAssetTypeId, ImmovableAnnualReturn });
+        });
+        // Energy Use
+        let EnergyUsesJSON = [];
+        $("#EnergyUseList .EnergyUseChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var EnergyTypeId = $(this).find(".EnergyTypeId").val();
+            var EnergyUsesMonthly = $(this).find(".EnergyUsesMonthly").val();
+
+            EnergyUsesJSON.push({ Id, EnergyTypeId, EnergyUsesMonthly });
+        });
+
+        // -- Access to resource
+        const IsProblemToAccessHealthService = $('#AccessToResource input[name="IsProblemToAccessHealthService"]:checked').val();
+        const IsProblemToAccessDrinkingWater = $('#AccessToResource input[name="IsProblemToAccessDrinkingWater"]:checked').val();
+        const IsProblemToAccessEducation = $('#AccessToResource input[name="IsProblemToAccessEducation"]:checked').val();
+        const HasEducationalInstituteNearby = $('#AccessToResource input[name="HasEducationalInstituteNearby"]:checked').val();
+
+        const NearestHealthServiceLocation = $('#AccessToResource .NearestHealthServiceLocation').val();
+        const NearestHealthServiceDistance = $('#AccessToResource .NearestHealthServiceDistance').val();
+        const NearestDrinkingWaterDistance = $('#AccessToResource .NearestDrinkingWaterDistance').val();
+        const SourceofDrySeasonWaterEnumList = $('#AccessToResource .SourceofDrySeasonWaterEnumList').val().join(",");
+        const SourceofWetSeasonWaterEnumList = $('#AccessToResource .SourceofWetSeasonWaterEnumList').val().join(",");
+        const SourceofDrySeasonWaterTxt = $('#AccessToResource .SourceofDrySeasonWaterTxt').val();
+        const SourceofWetSeasonWaterTxt = $('#AccessToResource .SourceofWetSeasonWaterTxt').val();
+        const NearestGrowthCenter = $('#AccessToResource .NearestGrowthCenter').val();
+        const NearestGrowthCenterDistance = $('#AccessToResource .NearestGrowthCenterDistance').val();
+        const EducationalInstituteAccessibilityEnum = $('#AccessToResource #EducationalInstituteAccessibilityEnum').val();
+        const EducationalInstituteDistance = $('#AccessToResource .EducationalInstituteDistance').val();
+        const SanitationFacilitiesEnum = $('#AccessToResource #SanitationFacilitiesEnum').val();
+        const PotentialSkillName1 = $('#AccessToResource .PotentialSkillName1').val();
+        const PotentialSkillName2 = $('#AccessToResource .PotentialSkillName2').val();
+        const PotentialSkillName3 = $('#AccessToResource .PotentialSkillName3').val();
+        const PotentialSkillsRemarks = $('#AccessToResource .PotentialSkillsRemarks').val();
+        const PotentialSpecialSkill = $('#AccessToResource .PotentialSpecialSkill').val();
+        // Existing Skill
+        let ExistingSkillsJSON = [];
+        $("#ExistingSkillList .ExistingSkillChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var SkillName = $(this).find(".SkillName").val();
+            var ExistingSkillRemarks = $(this).find(".ExistingSkillRemarks").val();
+            var SkillLevelEnum = $(this).find(".SkillLevelEnum").val();
+
+            ExistingSkillsJSON.push({ Id, SkillName, ExistingSkillRemarks, SkillLevelEnum });
+        });
+
+        // -- Cross cutting issues
+        const ForestMngmtSatisfactionEnum = $("#CrossCuttingIssue #ForestMngmtSatisfactionEnum").val();
+        const ForestMngmtEffectivenessEnum = $("#CrossCuttingIssue #ForestMngmtEffectivenessEnum").val();
+        const ForestDependencyEnum = $("#CrossCuttingIssue #ForestDependencyEnum").val();
+        const IsHearedAboutCfm = $('#CrossCuttingIssue input[name="IsHearedAboutCfm"]:checked').val();
+        const IsParticipatedInCfm = $('#CrossCuttingIssue input[name="IsParticipatedInCfm"]:checked').val();
+        const WillCfmImproveForestMngmnt = $('#CrossCuttingIssue input[name="WillCfmImproveForestMngmnt"]:checked').val();
+        const WillCfmImproveWellBeing = $('#CrossCuttingIssue input[name="WillCfmImproveWellBeing"]:checked').val();
+
+        const DicisionTakerEnum = $("#CrossCuttingIssue #DicisionTakerEnum").val();
+        const ProductiveAssetsOwnerGender = $("#CrossCuttingIssue #ProductiveAssetsOwnerGender").val();
+        const CropTypeDecisionGender = $("#CrossCuttingIssue #CropTypeDecisionGender").val();
+        const DecisionToTransferAssetsGender = $("#CrossCuttingIssue #DecisionToTransferAssetsGender").val();
+        const FamilyNeedsDeciderGender = $("#CrossCuttingIssue #FamilyNeedsDeciderGender").val();
+        const AccessorToCreditGender = $("#CrossCuttingIssue #AccessorToCreditGender").val();
+        const ControllerOfCreditGender = $("#CrossCuttingIssue #ControllerOfCreditGender").val();
+        const OfficeBearerGender = $("#CrossCuttingIssue #OfficeBearerGender").val();
+        const MorePaymentGetterGender = $("#CrossCuttingIssue #MorePaymentGetterGender").val();
+
+        const CanAccessLegalSupportForGbv = $('#CrossCuttingIssue input[name="CanAccessLegalSupportForGbv"]:checked').val();
+        const CanUnsufructsRights = $('#CrossCuttingIssue input[name="CanUnsufructsRights"]:checked').val();
+        const FaceLiveAndLivelihoodChallanges = $('#CrossCuttingIssue input[name="FaceLiveAndLivelihoodChallanges"]:checked').val();
+        const HasLlfmInterest = $('#CrossCuttingIssue input[name="HasLlfmInterest"]:checked').val();
+
+        // -- Socio Economic Status
+        let GrossMarginIncomeAndCostStatusesJSON = [];
+        $("#GrossMarginIncomeAndCostStatusList .GrossMarginIncomeAndCostStatusChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var ProductName = $(this).find(".ProductName").val();
+            var LandArea = $(this).find(".LandArea").val();
+            var MeasurementOfProduct = $(this).find(".MeasurementOfProduct").val();
+            var TotalProductionHousehold = $(this).find(".TotalProductionHousehold").val();
+            var TotalCostOfProduction = $(this).find(".TotalCostOfProduction").val();
+            var TotalConsumption = $(this).find(".TotalConsumption").val();
+            var QuantitySold = $(this).find(".QuantitySold").val();
+            var TotalValueSold = $(this).find(".TotalValueSold").val();
+
+            GrossMarginIncomeAndCostStatusesJSON.push({
+                Id,
+                ProductName,
+                LandArea,
+                MeasurementOfProduct,
+                TotalProductionHousehold,
+                TotalCostOfProduction,
+                TotalConsumption,
+                QuantitySold,
+                TotalValueSold,
+            });
+        });
+        let ManualPhysicalWorksJSON = [];
+        $("#ManualPhysicalWorkList .ManualPhysicalWorkChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var ManualIncomeSourceTypeId = $(this).find(".ManualIncomeSourceTypeId").val();
+            var NoOfMale = $(this).find(".NoOfMale").val();
+            var NoOfFemale = $(this).find(".NoOfFemale").val();
+            var NoOfActiveMonth = $(this).find(".NoOfActiveMonth").val();
+            var AvgNoPersonActivePerMonth = $(this).find(".AvgNoPersonActivePerMonth").val();
+            var AvgDailyIncome = $(this).find(".AvgDailyIncome").val();
+
+            ManualPhysicalWorksJSON.push({
+                Id,
+                ManualIncomeSourceTypeId,
+                NoOfMale,
+                NoOfFemale,
+                NoOfActiveMonth,
+                AvgNoPersonActivePerMonth,
+                AvgDailyIncome,
+            });
+        });
+        let NaturalResourcesIncomeAndCostStatusesJSON = [];
+        $("#NaturalResourcesIncomeAndCostStatusList .NaturalResourcesIncomeAndCostStatusChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var NaturalIncomeSourceTypeId = $(this).find(".NaturalIncomeSourceTypeId").val();
+            var NoOfMale = $(this).find(".NoOfMale").val();
+            var NoOfFemale = $(this).find(".NoOfFemale").val();
+            var NoOfActiveMonth = $(this).find(".NoOfActiveMonth").val();
+            var AvgNoPersonActivePerMonth = $(this).find(".AvgNoPersonActivePerMonth").val();
+            var Unit = $(this).find(".Unit").val();
+            var TotalProduced = $(this).find(".TotalProduced").val();
+            var TotalConsumption = $(this).find(".TotalConsumption").val();
+            var QuantitySold = $(this).find(".QuantitySold").val();
+            var ValueProduceSold = $(this).find(".ValueProduceSold").val();
+            var CostOfActivity = $(this).find(".CostOfActivity").val();
+
+            NaturalResourcesIncomeAndCostStatusesJSON.push({
+                Id,
+                NaturalIncomeSourceTypeId,
+                NoOfMale,
+                NoOfFemale,
+                NoOfActiveMonth,
+                AvgNoPersonActivePerMonth,
+                Unit,
+                TotalProduced,
+                TotalConsumption,
+                QuantitySold,
+                ValueProduceSold,
+                CostOfActivity,
+            });
+        });
+        let OtherIncomeSourcesJSON = [];
+        $("#OtherIncomeSourceList .OtherIncomeSourceChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var OtherIncomeSourceTypeId = $(this).find(".OtherIncomeSourceTypeId").val();
+            var GrossValueOfSales = $(this).find(".GrossValueOfSales").val();
+            var TotalCashCosts = $(this).find(".TotalCashCosts").val();
+
+            OtherIncomeSourcesJSON.push({
+                Id,
+                OtherIncomeSourceTypeId,
+                GrossValueOfSales,
+                TotalCashCosts,
+            });
+        });
+        let BusinessesJSON = [];
+        $("#BusinessList .BusinessChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var BusinessIncomeSourceTypeId = $(this).find(".BusinessIncomeSourceTypeId").val();
+            var BusinessGrossValueOfSales = $(this).find(".BusinessGrossValueOfSales").val();
+            var BusinessTotalCashCosts = $(this).find(".BusinessTotalCashCosts").val();
+
+            BusinessesJSON.push({ Id, BusinessIncomeSourceTypeId, BusinessGrossValueOfSales, BusinessTotalCashCosts });
+        });
+
+        // -- Remittances
+        const NoOfMaleInsideCountry = $('#SocioEconomicStatus .NoOfMaleInsideCountry').val();
+        const SentIncomeOfMaleInYearInsideCountry = $('#SocioEconomicStatus .SentIncomeOfMaleInYearInsideCountry').val();
+        const NoOfFemaleInsideCountry = $('#SocioEconomicStatus .NoOfFemaleInsideCountry').val();
+        const SentIncomeOfFemaleInYearInsideCountry = $('#SocioEconomicStatus .SentIncomeOfFemaleInYearInsideCountry').val();
+
+        const NoOfMaleOutsideCountry = $('#SocioEconomicStatus .NoOfMaleOutsideCountry').val();
+        const SentIncomeOfMaleInYearOutsideCountry = $('#SocioEconomicStatus .SentIncomeOfMaleInYearOutsideCountry').val();
+        const NoOfFemaleOutsideCountry = $('#SocioEconomicStatus .NoOfFemaleOutsideCountry').val();
+        const SentIncomeOfFemaleInYearOutsideCountry = $('#SocioEconomicStatus .SentIncomeOfFemaleInYearOutsideCountry').val();
+
+        const PersonalSavingsOfAllMembers = $('#Remittance .PersonalSavingsOfAllMembers').val();
+        const HouseShareInSavings = $('#Remittance .HouseShareInSavings').val();
+        const BorrowedFromBank = $('#Remittance .BorrowedFromBank').val();
+        const BorrowedFromNGO = $('#Remittance .BorrowedFromNGO').val();
+        const GrantsFromNGO = $('#Remittance .GrantsFromNGO').val();
+        const GrantsFromGob = $('#Remittance .GrantsFromGob').val();
+        const BorrowedFromCoOperatives = $('#Remittance .BorrowedFromCoOperatives').val();
+        const BorrowedFromNonRelatives = $('#Remittance .BorrowedFromNonRelatives').val();
+        const BorrowedFromRelatives = $('#Remittance .BorrowedFromRelatives').val();
+        const SaleOfProducts = $('#Remittance .SaleOfProducts').val();
+        const OtherFinanceName = $('#Remittance .OtherFinanceName').val();
+        const OtherFinanceAmount = $('#Remittance .OtherFinanceAmount').val();
+
+        // -- Household Expenditure
+        let AnnualHouseholdExpendituresJSON = [];
+        $("#HouseholdExpenditureList .HouseholdExpenditureChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var ExpenditureTypeId = $(this).find(".ExpenditureTypeId").val();
+            var ExpenditureRemarks = $(this).find(".ExpenditureRemarks").val();
+            var ExpenditureCost = $(this).find(".ExpenditureCost").val();
+
+            AnnualHouseholdExpendituresJSON.push({ Id, ExpenditureTypeId, ExpenditureRemarks, ExpenditureCost });
+        });
+
+        // -- Food Security
+        const HouseholdFoodCondition = $('#FoodSecurity #HouseholdFoodCondition').val();
+        const FoodyPersonInFoodCrisis = $('#FoodSecurity #FoodyPersonInFoodCrisis').val();
+        let FoodSecurityItemsJSON = [];
+        $("#FoodSecurityList .FoodSecurityChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var FoodItemId = $(this).find(".FoodItemId").val();
+            var Remarks = $(this).find(".Remarks").val();
+            var FoodAvilableMonthInYear = $(this).find(".FoodAvilableMonthInYear").val();
+
+            FoodSecurityItemsJSON.push({ Id, FoodItemId, Remarks, FoodAvilableMonthInYear });
+        });
+
+        // -- Vulnerability Situation
+        let VulnerabilitySituationsJSON = [];
+        $("#VulnerabilitySituationList .VulnerabilitySituationChild").each(function () {
+            var Id = $(this).find(".Id").val();
+            var VulnerabilitySituationTypeId = $(this).find(".VulnerabilitySituationTypeId").val();
+            var EventName = $(this).find(".EventName").val();
+            var MonetaryLoss = $(this).find(".MonetaryLoss").val();
+            var HowDidRecover = $(this).find(".HowDidRecover").val();
+            var Remarks = $(this).find(".Remarks").val();
+
+            VulnerabilitySituationsJSON.push({
+                Id,
+                VulnerabilitySituationTypeId,
+                EventName,
+                MonetaryLoss,
+                HowDidRecover,
+                Remarks,
+            });
+        });
+
+        // Enumerator and Data collection;
+        const NameOfTheEnumerator = $('#NameOfTheEnumerator').val();
+        const CellPhoneNumber = $('#CellPhoneNumber').val();
+        const DataCollectionDate = $('#DataCollectionDate').val();
+
+        const NotesImage = $('#varNotesImage').val();
+		const NotesImageUrl = $('#varNotesImageURL').val();
+
+        const Survey = {
+            Id: @Model.Id,
+            ForestCircleId,
+            ForestDivisionId,
+            ForestRangeId,
+            ForestBeatId,
+            ForestFcvVcfId,
+			NgoId,
+			CipId,
+            ForestVillageName,
+            ForestVillageNameBn,
+            BeneficiaryHouseholdSerialNo,
+            BeneficiaryApproveStatus,
+            BeneficiaryProfileURL,
+            BeneficiaryNIDFrontURL,
+            BeneficiaryNIDBackURL,
+            BeneficiaryName,
+            BeneficiaryNameBn,
+            BeneficiaryNid,
+            BeneficiaryPhone,
+            BeneficiaryGender,
+            BeneficiaryEthnicityId,
+            BeneficiaryAge,
+            BeneficiaryFatherName,
+            BeneficiaryFatherNameBn,
+            BeneficiaryMotherName,
+            BeneficiaryMotherNameBn,
+            BeneficiarySpouseName,
+            BeneficiarySpouseNameBn,
+            HeadOfHouseholdName,
+            HeadOfHouseholdNameBn,
+            HeadOfHouseholdGender,
+			FcvVcfAddedDate,
+            RecipientStatus,
+            PresentVillageName,
+            PresentVillageNameBn,
+            PresentPostOfficeName,
+            PresentPostOfficeNameBn,
+            PresentDivisionId,
+            PresentDistrictId,
+            PresentUpazillaId,
+            PresentUnion,
+			PresentUnionNewId,
+            IsPermanentSameAsPresent,
+            PermanentVillageName,
+            PermanentVillageNameBn,
+            PermanentPostOfficeName,
+            PermanentPostOfficeNameBn,
+            PermanentDivisionId,
+            PermanentDistrictId,
+            PermanentUpazillaId,
+            PermanentUnion,
+			PermanentUnionNewId,
+            BeneficiaryLatitude,
+            BeneficiaryLongitude,
+            BeneficiaryAltitude,
+            BeneficiaryPrecision,
+            BeneficiaryHouseFrontImageURL,
+            HouseholdMembersJSON,
+            LandOccupancyJSON,
+            TypeOfHouseId,
+            LiveStocksJSON,
+            AssetsJSON,
+            ImmovableAssetsJSON,
+            EnergyUsesJSON,
+            IsProblemToAccessHealthService,
+            IsProblemToAccessDrinkingWater,
+            IsProblemToAccessEducation,
+            HasEducationalInstituteNearby,
+            NearestHealthServiceLocation,
+            NearestHealthServiceDistance,
+            NearestDrinkingWaterDistance,
+            SourceofDrySeasonWaterEnumList,
+            SourceofWetSeasonWaterEnumList,
+            SourceofDrySeasonWaterTxt,
+            SourceofWetSeasonWaterTxt,
+            NearestGrowthCenter,
+            NearestGrowthCenterDistance,
+            EducationalInstituteAccessibilityEnum,
+            EducationalInstituteDistance,
+            SanitationFacilitiesEnum,
+            PotentialSkillName1,
+            PotentialSkillName2,
+            PotentialSkillName3,
+            PotentialSkillsRemarks,
+            PotentialSpecialSkill,
+            ExistingSkillsJSON,
+            ForestMngmtSatisfactionEnum,
+            ForestMngmtEffectivenessEnum,
+            ForestDependencyEnum,
+            IsHearedAboutCfm,
+            IsParticipatedInCfm,
+            WillCfmImproveForestMngmnt,
+            WillCfmImproveWellBeing,
+            DicisionTakerEnum,
+            ProductiveAssetsOwnerGender,
+            CropTypeDecisionGender,
+            DecisionToTransferAssetsGender,
+            FamilyNeedsDeciderGender,
+            AccessorToCreditGender,
+            ControllerOfCreditGender,
+            OfficeBearerGender,
+            MorePaymentGetterGender,
+            CanAccessLegalSupportForGbv,
+            CanUnsufructsRights,
+            FaceLiveAndLivelihoodChallanges,
+            HasLlfmInterest,
+            GrossMarginIncomeAndCostStatusesJSON,
+            ManualPhysicalWorksJSON,
+            NaturalResourcesIncomeAndCostStatusesJSON,
+            OtherIncomeSourcesJSON,
+            BusinessesJSON,
+            NoOfMaleInsideCountry,
+            SentIncomeOfMaleInYearInsideCountry,
+            NoOfFemaleInsideCountry,
+            SentIncomeOfFemaleInYearInsideCountry,
+            NoOfMaleOutsideCountry,
+            SentIncomeOfMaleInYearOutsideCountry,
+            NoOfFemaleOutsideCountry,
+            SentIncomeOfFemaleInYearOutsideCountry,
+            PersonalSavingsOfAllMembers,
+            HouseShareInSavings,
+            BorrowedFromBank,
+            BorrowedFromNGO,
+            GrantsFromNGO,
+            GrantsFromGob,
+            BorrowedFromCoOperatives,
+            BorrowedFromNonRelatives,
+            BorrowedFromRelatives,
+            SaleOfProducts,
+            OtherFinanceName,
+            OtherFinanceAmount,
+            AnnualHouseholdExpendituresJSON,
+            HouseholdFoodCondition,
+            FoodyPersonInFoodCrisis,
+            FoodSecurityItemsJSON,
+            VulnerabilitySituationsJSON,
+            NameOfTheEnumerator,
+            CellPhoneNumber,
+            DataCollectionDate,
+			NotesImage,
+			NotesImageUrl,
+            DeletedVulnerabilitySituationsJSON: DeletedVulnerabilitySituations,
+            DeletedFoodSecurityItemsJSON: DeletedFoodSecurityItems,
+            DeletedAnnualHouseholdExpendituresJSON: DeletedAnnualHouseholdExpenditures,
+            DeletedBusinessesJSON: DeletedBusinesses,
+            DeletedOtherIncomeSourcesJSON: DeletedOtherIncomeSources,
+            DeletedNaturalResourcesIncomeAndCostStatusesJSON: DeletedNaturalResourcesIncomeAndCostStatuses,
+            DeletedManualPhysicalWorksJSON: DeletedManualPhysicalWorks,
+            DeletedGrossMarginIncomeAndCostStatusesJSON: DeletedGrossMarginIncomeAndCostStatuses,
+            DeletedExistingSkillsJSON: DeletedExistingSkills,
+            DeletedEnergyUsesJSON: DeletedEnergyUses,
+            DeletedImmovableAssetsJSON: DeletedImmovableAssets,
+            DeletedAssetsJSON: DeletedAssets,
+            DeletedLiveStocksJSON: DeletedLiveStocks,
+            DeletedLandOccupancyJSON: DeletedLandOccupancy,
+            DeletedHouseholdMembersJSON: DeletedHouseholdMembers,
+        };
+
+        return Survey;
+    }
+</script>

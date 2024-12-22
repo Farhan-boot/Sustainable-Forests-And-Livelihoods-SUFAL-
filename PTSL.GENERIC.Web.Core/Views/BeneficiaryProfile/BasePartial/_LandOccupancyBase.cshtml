@@ -1,0 +1,85 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.LandOccupancyVM>
+
+@{ var index = 0; }
+
+@foreach (var land in Model)
+{
+    index++;
+
+    <div class="card LandoccupancyChild" data-id="@index">
+        <input class="Id" type="hidden" value="@land.Id" />
+        <div class="card-body mt-3">
+            <h5 class="d-inline-block">@index</h5>
+            <button type="button" class="remove-item btn btn-danger btn-sm float-right" onclick="RemoveLandOccupancyItem(@index, @land.Id)">x</button>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.a. Land classification
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required LandClassificationEnum" name="LandClassificationEnum[]">
+                        <option value="">Select Classification</option>
+                        @foreach (var item in ViewBag.LandClassificationEnum)
+                        {
+                            <!option value="@item.Id" @((int)land.LandClassificationEnum == item.Id ? "selected" : "")>@item.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.b. Homesteads
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="number" class="form-control required Homesteads" name="Homesteads" value="@(land.Id == 0 ? "" : land.Homesteads)" min="0" placeholder="Enter Homesteads in decimal" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.c. Productive Land (e.g. Agriculture)
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="number" class="form-control required ProductiveLand" name="ProductiveLand" value="@(land.Id == 0 ? "" : land.ProductiveLand)" min="0" placeholder="Enter productive land in Decimal" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.d. Fallow Land
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="number" class="form-control required FallowLand" name="FallowLand" value="@(land.Id == 0 ? "" : land.FallowLand)" min="0" placeholder="Enter Fallow land in decimal" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.e. Productive Weltland (Pond)
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="number" class="form-control required ProductiveWetland" name="ProductiveWetland" value="@(land.Id == 0 ? "" : land.ProductiveWetland)" min="0" placeholder="Enter Productive wet land in decimal" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.f. Fallow Wetland (Pond)
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="number" class="form-control required FallowWetland" name="FallowWetland" value="@(land.Id == 0 ? "" : land.FallowWetland)" min="0" placeholder="Enter Fallow wet land in decimal" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        3.1.g. Other lands (pls specify)
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="number" class="form-control required OthersLand" name="OthersLand" value="@(land.Id == 0 ? "" : land.OthersLand)" min="0" placeholder="Enter Other lands in decimal" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+						3.1.f. Total Land (Decimal)
+                    </label>
+                    <input type="text" class="m-0 form-control TotalLand" name="TotalLand" value="@land.TotalLand" readonly="" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

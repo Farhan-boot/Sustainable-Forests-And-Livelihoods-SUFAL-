@@ -1,0 +1,376 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.ForestManagement.CommitteeManagementVM
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+    }
+
+        fieldset legend {
+            width: auto;
+        }
+</style>
+
+<style>
+    input, select {
+        height: 30px !important;
+        line-height: 10px !important;
+        font-weight: 400 !important;
+        color: black !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/CommitteeManagement/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Committee Management Details
+        </h4>
+    </div>
+
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Forest Administrative Unit</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Circles: <b>@Model?.ForestCircle?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Division: <b>@Model?.ForestDivision?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Range: <b>@Model?.ForestRange?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Beat: <b>@Model?.ForestBeat?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">NGO: <b>@Model?.Ngo?.Name</b></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Committee Type: <b>@Model?.CommitteeTypeConfiguration?.CommitteeTypeName</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Committee Name: <b>@Model?.CommitteesConfiguration?.CommitteeName</b></label>
+                    </div>
+
+
+
+                </div>
+
+                <div class="col-md-6">
+                    <h5>Civil Administrative Unit</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Division: <b>@Model?.Division?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">District: <b>@Model?.District?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Upazilla: <b>@Model?.Upazilla?.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Union: <b>@Model?.Union?.Name</b></label>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="card-body">
+
+        <div class="form-horizontal">
+            <fieldset style="padding-bottom: 10px;">
+                <legend>Committee Member Information</legend>
+                @if (Model?.CommitteeManagementMembers != null)
+                {
+
+                    @foreach (var member in Model.CommitteeManagementMembers.Where(x => x.IsDeleted == false))
+                    {
+                        <div style="border-bottom:1px solid black">
+                            <div class="form-group">
+                                <label style="font-size:15px;">Committee Designation: <b>@member.CommitteeDesignationsConfiguration!.DesignationName</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Member Name: <b>@(member.Survey?.BeneficiaryName ?? member.OtherCommitteeMember?.FullName)</b></label>
+                            </div>
+
+                            @if (member.Survey != null)
+                            {
+                                <div class="form-group">
+                                    <label style="font-size:15px;">Office Bearers</label>
+                                </div>
+                            }
+                            @if (member.OtherCommitteeMember != null)
+                            {
+                                <div class="form-group">
+                                    <label style="font-size:15px;">
+                                        Other Member
+                                    </label>
+                                </div>
+                            }
+
+                            <div class="form-group">
+                                <label style="font-size:15px;">Father Name: <b>@(member.Survey?.BeneficiaryFatherName ?? member.OtherCommitteeMember?.FatherOrSpouse)</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Gender: <b>@(member.Survey?.BeneficiaryGender.ToString() ?? member?.OtherCommitteeMember?.Gender.ToString())</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Ethnicity: <b>@(member.Survey?.BeneficiaryEthnicity?.Name ?? member.OtherCommitteeMember?.Ethnicity?.Name)</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">NID: <b>@(member.Survey?.BeneficiaryNid ?? member.OtherCommitteeMember?.NID)</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Phone Number: <b>@(member.Survey?.CellPhoneNumber ?? member.OtherCommitteeMember?.PhoneNumber)</b></label>
+                            </div>
+                        </div>
+
+
+                    }
+                }
+
+            </fieldset>
+        </div>
+
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Other Information</legend>
+
+                @*<div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label style="font-size:15px;">Name Of Bank AC: <b>@(Model.NameOfBankAC)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Account Number: <b>@(Model.AccountNumber)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Account Type : <b>@(Model.AccountType)</b></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Bank Name: <b>@(Model.BankName)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Branch Name: <b>@(Model.BranchName)</b></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label style="font-size:15px;">Account Opening Date: <b>@(Model.AccountOpeningDate)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Remark: <b>@(Model.Remark)</b></label>
+                        </div>
+                    </div>
+                </div>*@
+
+                <div class="row">
+                    <div class="col-md-12" style="padding-bottom:15px">
+                        <table class="reportTable" id="grid" role="grid" aria-describedby="tableExport_filter_info" style="width: 1018px;">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SL: activate to sort column descending" style="min-width: 50px;">SL NO</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Department: activate to sort column ascending" style="min-width: 80px;">Name of the Bank A/C</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Range: activate to sort column ascending" style="min-width: 100px;">A/C Number</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Beat: activate to sort column ascending" style="min-width: 95px;">A/C Type</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Name Of FCV: activate to sort column ascending" style="min-width: 100px;">Bank Name</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Financial Year: activate to sort column ascending" style="min-width: 50%;">Branch Name</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Total Scheme: activate to sort column ascending" style="min-width: 60px">A/C Opening Date</th>
+                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Name Of Approveld Project / Sub Project: activate to sort column ascending" style="min-width: 50px;">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyForBankInfo">
+                                @*  <tr role="row" class="trClass">
+                                <td class="sorting_1">1</td>
+                                <td class="DesignationId"></td>
+                                <td class="MemberNameId"></td>
+                                <td class="MemberTypeId"></td>
+                                <td class="FatherNameId"></td>
+                                <td class="GenderId"></td>
+                                <td class="EthnicityId"></td>
+                                <td class="NidNoId"></td>
+                                <td class="MobileNoId"></td>
+                                <td>
+                                <div>
+                                <button style="background-color:red" class="btn btn-danger btn-sm">Remove</button>
+                                </div>
+                                </td>
+                                </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+
+
+
+
+
+
+        <div class="col-md-12">
+            <h4 style="float:left">Approval History</h4>
+            <h5 style="float:right">Last Pending At: @Model?.ApprovalLogForCfms?.LastOrDefault()?.Receiver?.UserName</h5>
+        </div>
+
+        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="tableExport_filter" style="width: 100%;" role="grid" aria-describedby="tableExport_filter_info">
+            <thead>
+                <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sl No.: activate to sort column descending" style="width: 22.2px;">Sl No.</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Team Name: activate to sort column ascending" style="width: 37.2px;">Sender Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Ngo: activate to sort column ascending" style="width: 27.2px;">Receiver Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Forest Circle: activate to sort column ascending" style="width: 38.2px;">Sending Date</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Forest Division: activate to sort column ascending" style="width: 50.2px;">Sending Time</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Forest Range: activate to sort column ascending" style="width: 39.2px;">Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 1;
+                }
+                @foreach (var approveLogData in Model?.ApprovalLogForCfms)
+                {
+                    <tr style="" role="row" class="odd">
+                        <td class="sorting_1">@index</td>
+                        <td class="sorting_1">@approveLogData?.Sender?.UserName</td>
+                        <td>@approveLogData?.Receiver?.UserName</td>
+                        <td>@approveLogData?.SendingDate?.ToUIDateString()</td>
+                        <td>@approveLogData?.SendingTime?.ToUITimeString()</td>
+                        <td>@approveLogData?.Remark</td>
+                    </tr>
+                    index++;
+                }
+            </tbody>
+        </table>
+
+
+
+    </div>
+</div>
+
+
+@*<script>
+    $(document).ready(function () {
+        var committeeTypeId = $("#CommitteeTypeId").val();
+        if (committeeTypeId == 1) {
+            $("#lblSubDesignation").hide();
+        }
+        //else{
+        //   // alert(designatinId);
+
+        //    $.ajax({
+        //        cache: false,
+        //        type: "GET",
+        //        url: "/Dropdown/ListBySubCommitteeType",
+        //        data: { "id": designatinId },
+        //        success: function (data) {
+        //            console.log(data);
+        //           // $("#SubCommitteeDesignationId").remove();
+        //            $('#SubCommitteeDesignationId option').remove();
+
+        //            $.each(data, function (i, item) {
+        //                $('#SubCommitteeDesignationId').append($('<option>', {
+        //                    value: item.Id,
+        //                    text: item.Name
+        //                }));
+        //            });
+        //        },
+        //        error: function (xhr, ajaxOptions, thrownError) {
+        //            alert('Failed to retrieve data.');
+        //        }
+        //    });
+
+        //}
+
+    });
+</script>*@
+
+
+<script>
+    $(document).ready(function () 
+    {
+        //alert("Test");
+        //Get Bank Account data
+        var formData = new FormData();
+        formData.append('ForestCircleId', '@Model.ForestCircleId');
+        formData.append('ForestDivisionId', '@Model.ForestDivisionId');
+        formData.append('ForestRangeId', '@Model.ForestRangeId');
+        formData.append('ForestBeatId',  '@Model.ForestBeatId');
+        formData.append('ForestFcvVcfId', '@Model.ForestFcvVcfId');
+        //formData.append('DivisionId', '@Model.DivisionId');
+        //formData.append('DistrictId', '@Model.DistrictId');
+        //formData.append('UpazillaId', '@Model.UpazillaId');
+        //formData.append('UnionId', '@Model.UnionId');
+        //formData.append('NgoId', '@Model.NgoId');
+        formData.append('CommitteeTypeId', '@Model.CommitteeTypeId');
+        //formData.append('CommitteeFormDate', '@Model.CommitteeFormDate');
+        //formData.append('CommitteeEndDate', '@Model.CommitteeEndDate');
+        formData.append('SubCommitteeTypeId', '@Model.SubCommitteeTypeId');
+        //New Fild Logic
+        formData.append('CommitteeTypeConfigurationId', '@Model.CommitteeTypeConfigurationId');
+        formData.append('CommitteesConfigurationId', '@Model.CommitteesConfigurationId');
+
+        $.ajax({
+            type: "POST",
+            url: "/CommitteeManagement/GetBankAccountInfo",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                //window.location.href = "/CommitteeManagement/Index";
+                //location.reload();
+                var count = 0;
+                var tbodyforBankInfo = $("#tbodyForBankInfo");
+
+                $("#tbodyForBankInfo > tr").remove();
+                $.each(response.Data, function (id, option) {
+                    count++;
+                    tbodyforBankInfo.append(`
+                                         <tr role="row" class="trClass">
+                                                    <td class="Id">${count}</td>
+                                                        <td class="DesignationId">${option.BankAccountName}</td>
+                                                        <td>${option.AccountNumber}</td>
+                                                        <td>${option.AccountType}</td>
+                                                        <td>${option.BankName}</td>
+                                                        <td>${option.BranchName}</td>
+                                                        <td>${option.AccountOpeningDate}</td>
+                                                        <td>${option.Remarks}</td>
+                                                </tr>
+                                   `);
+                   
+                });
+            }
+        });
+
+    });
+</script>

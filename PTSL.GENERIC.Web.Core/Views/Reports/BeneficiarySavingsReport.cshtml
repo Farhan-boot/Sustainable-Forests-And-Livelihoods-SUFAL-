@@ -1,0 +1,99 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.BeneficiarySavingsAccount.SavingsAccountVM>
+@{
+    ViewBag.Title = "Beneficiary Saving Reports";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Beneficiary Saving Report</h5>
+        </div>
+        <div class="">
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="10">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Beneficiary Saving</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Beneficiary Name</th>
+                    @* <th>Forest Circle</th>*@
+                    <th>Division Name</th>
+                    <th>Beat Name</th>
+                    <th>Range Name</th>
+                    <th>Fcv Name</th>
+                    <th>NGO</th>
+                    <th>Total Savings<br />Amount(Tk)</th>
+                    <th>Total Withdrawal<br />Amount(Tk)</th>
+                    @* <th>Total Account<br />Balance(TK)</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                    var totalSaving = 0.0;
+                    var totalWithdraw = 0.0;
+                }
+
+                @foreach (var data in Model)
+                {
+                    var saving = @data.SavingsAmountInformations?.Select(x => x.SavingsAmount).Sum() ?? 0;
+                    var withdraw = @data.WithdrawAmountInformations?.Select(x => x.WithdrawAmount).Sum() ?? 0;
+                    var totalAccountBalance = @saving - @withdraw;
+
+                    totalSaving += saving;
+                    totalWithdraw += withdraw;
+
+
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@data.Survey?.BeneficiaryName</td>
+                        @* <td>@data.Survey?.ForestCircle.Name</td>*@
+                        <td>@data.Survey?.ForestDivision.Name</td>
+                        <td>@data.Survey?.ForestBeat.Name</td>
+                        <td>@data.Survey?.ForestRange.Name</td>
+                        <td>@data.Survey?.ForestFcvVcf.Name</td>
+                        <td>@data.Ngos?.Name</td>
+                        <td>@saving</td>
+                        <td>@withdraw</td>
+                        @* <td>@totalAccountBalance</td>*@
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="7" class="text-center"></td>
+                    @* <td colspan="2" class="text-center">@(Model.Count)</td>*@
+                    <td colspan="1">Total Saving: @totalSaving</td>
+                    <td colspan="1">Total Withdraw: @totalWithdraw</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

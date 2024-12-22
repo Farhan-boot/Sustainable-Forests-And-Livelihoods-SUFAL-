@@ -1,0 +1,487 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountVM>
+
+@{
+	ViewBag.Title = "Account List";
+}
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<div class="col-md-10">
+					<h4>Account List</h4>
+				</div>
+				<div class="col-md-2 text-right">
+                    <a href="/Accounts/Create" class="badge badge-success badge-shadow">Create New</a>
+				</div>
+			</div>
+			<div class="card-body">
+               @*  asp-action="IndexFilter" asp-controller="Accounts" *@
+                <div class="mb-4 green-card p-2" style="border-radius: 5px;">
+					<div class="row custom">
+						<div class="col-6 p-1">
+							@await Html.PartialAsync(
+							"~/Views/Shared/_ForestAdministration.cshtml",
+							(
+							ViewBag.ForestCircleId as SelectList,
+							ViewBag.ForestDivisionId as SelectList,
+							ViewBag.ForestRangeId as SelectList,
+							ViewBag.ForestBeatId as SelectList,
+							ViewBag.ForestFcvVcfId as SelectList
+							)
+							)
+						</div>
+
+						<div class="col-6 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Committee</legend>
+                                <div class="row">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Committee Type</label>
+                                        @Html.DropDownList("CommitteeTypeId", null, "Select Committee Type", htmlAttributes: new { @class = "" })
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Committee</label>
+                                        @Html.DropDownList("CommitteeId", null, "Select Committee", htmlAttributes: new { @class = "" })
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+					</div>
+
+					<div class="row custom">
+						<div class="col-12 p-1">
+							<fieldset class="p-2">
+								<legend class="float-none w-auto">Basic Information</legend>
+								<div class="row">
+									<div class="col pr-1">
+										<label class="m-0">Account Type</label>
+                                        @Html.DropDownList("AccountType", null, "Select Account Type", htmlAttributes: new { @class = "" })
+									</div>
+									<div class="col px-1">
+                                        <label class="m-0">Account Number</label>
+                                        <input type="text" id="AccountNumber" value="@ViewBag.AccountNumber" name="AccountNumber" placeholder="Enter Account Number" />
+									</div>
+									<div class="col px-1">
+                                        <label class="m-0">Bank Account Name</label>
+                                        <input type="text" id="BankAccountName" value="@ViewBag.BankAccountName" name="BankAccountName" placeholder="Enter Account Name" />
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-end mt-2" style="gap: 3px;">
+                        <a href="/Accounts/Index" class="btn btn-sm btn-green-light save">Clear</a>
+                        <button id="submit" type="submit" class="btn btn-sm btn-green save">Search</button>
+					</div>
+				</div>
+
+				<div class="table-responsive">
+					@* <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+						<thead>
+							<tr>
+								<th>SL</th>
+								<th>Account<br/>Number</th>
+								<th>Type</th>
+								<th>Balance</th>
+								<th>Account<br/>Name</th>
+								<th>Branch</th>
+								<th>Opening<br/>Date</th>
+								<th class="not-export-col">Action</th>
+							</tr>
+						</thead> @{
+							int i = 1;
+						}
+						<tbody>
+							@if (Model != null)
+							{
+								foreach (var data in Model)
+								{
+									<tr>
+										<td>@i</td>
+										<td>@data.AccountNumber</td>
+										<td>@data.AccountType.GetEnumDisplayName()</td>
+										<td>@data.CurrentAvailableBalance.ToBDTCurrency()</td>
+										<td>@data.BankAccountName</td>
+										<td>@data.BranchName</td>
+                                        <td>@data.AccountOpeningDate?.ToUIDateString()</td>
+										<td class="not-export-col">
+											<a href="/Accounts/Edit?id=@data.Id" class="btn btn-sm btn-primary">Edit</a>
+											<a href="/Accounts/Details?id=@data.Id" class="btn btn-sm btn-info">Details</a>
+											<button onclick="showDeleteConfirmMessage(@data.Id)" class="btn btn-sm btn-danger">Delete</button>
+                                            <a href="/Accounts/AccountsUserTagLog?accountId=@data.Id" class="btn btn-sm btn-warning">User Log</a>
+										</td>
+									</tr>
+									i++;
+								}
+							}
+						</tbody>
+					</table>
+ *@
+
+
+                    <table id="foodTable" class="display">
+                        <thead class="table-content">
+                            <tr class="table-row">
+                                <th scope="col">SL</th>
+                                <th scope="col">Account<br />Number</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Balance</th>
+                                <th scope="col">Account<br />Name</th>
+                                <th scope="col">Branch</th>
+                                <th scope="col">Opening<br />Date</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-content">
+                        </tbody>
+                    </table>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+	$(document).ready(function () {
+		$('#tableExport_filter').DataTable({
+			pageLength: 5,
+			dom: 'lBfrtip',
+			buttons: [
+				{
+					extend: 'csv',
+					title: 'Accounts List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4]
+					}
+				},
+				{
+					extend: 'excel',
+                    title: 'Accounts List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4]
+					}
+				},
+				{
+					extend: 'pdf',
+                    title: 'Accounts List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4]
+					}
+				},
+				{
+					extend: 'print',
+                    title: 'Accounts List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4]
+					}
+				}
+			]
+		});
+	});
+	function showDeleteConfirmMessage(id) {
+		swal({
+			title: "Are you sure?",
+			text: "You will not be able to recover this item!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes, delete it!",
+			closeOnConfirm: false
+		}, function () {
+			var data = {
+				'id': id
+			};
+			$.ajax({
+				type: "GET",
+				contentType: "application/json; charset=utf-8",
+				url: "/Accounts/Delete",
+				data: data,
+				datatype: "json",
+				success: function (result) {
+					var message = result.Message;
+					var executionState = result.executionState;
+					if (executionState != null) {
+						if (executionState != 10) {
+							swal("Deleted!", "Item has been deleted.", "success");
+						} else {
+							swal("Deleted Failed!", message, "success");
+						}
+						$(".confirm").on('click', function () {
+							window.location.reload();
+						});
+					}
+				},
+				error: function (xmlhttprequest, textstatus, errorthrown) {
+					swal("Not Deleted!", "Item has not been deleted.", "error");
+				}
+			});
+		});
+	}
+
+    $("#FcvVcfType").on("change", function () {
+        const fcvVcfTypeId = $(this).val();
+        const committeeTypeConfigurationId = $("#CommitteeTypeId");
+
+        $("#CommitteeTypeId").trigger("change");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteeTypeConfigurationByFcvOrVcfId",
+            data: { "id": fcvVcfTypeId },
+            success: function (data) {
+                committeeTypeConfigurationId.html('<option value="">Select Committee Type</option>');
+                $.each(data.Data, function (id, option) {
+                    committeeTypeConfigurationId.append($('<option></option>').val(option.Id).html(option.CommitteeTypeName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+
+    $("#CommitteeTypeId").on("change", function () {
+        const committeeTypeConfigurationId = Number($(this).val());
+        const committeesConfigurationId = $("#CommitteeId");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteesConfigurationByCommitteeTypeConfigurationId",
+            data: { "id": committeeTypeConfigurationId },
+            success: function (data) {
+                committeesConfigurationId.html('<option value="">Select Committee</option>');
+                $.each(data.Data, function (id, option) {
+                    committeesConfigurationId.append($('<option></option>').val(option.Id).html(option.CommitteeName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+</script>
+
+
+
+
+
+<script>
+    // var $j = jQuery.noConflict();
+    $(document).ready(function () {
+        var data;
+        $('#foodTable').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Accounts List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Accounts List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Accounts List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Accounts List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
+            ],
+
+            "sAjaxSource": "/Accounts/GetAccountsListByPagination",
+            "bDestroy": true,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bSearchable": true,
+            "order": [[1, 'asc']],
+            "language": {
+                "emptyTable": "No record found.",
+                "processing":
+                    '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+            },
+
+            "fnDrawCallback": function (oSettings) {
+                //alert(oSettings.aoData[1]._aData.Id);
+                data = oSettings.jqXHR.responseJSON.aaData;
+            },
+
+            aoColumns: [
+                {
+                    title: 'Id',
+                    data: null,
+                    render: (data, type, row, meta) => meta.row
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.AccountNumber;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.AccountTypeText;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.CurrentAvailableBalanceBdtText;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.BankAccountName;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.BranchName;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return moment(row.AccountOpeningDate).format("DD-MM-YYYY");
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+
+                        return "<a  href='/Accounts/Edit?id=" + row.Id + " ' $ type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-sm btn-primary'> Edit </a> <a href='/Accounts/Details?id=" + row.Id + " ' class='btn btn-sm btn-info'>Details</a>  <button onclick='showDeleteConfirmMessage(" + row.Id + ")' class='btn btn-sm btn-danger'>Delete</button>  <a href='/Accounts/AccountsUserTagLog?accountId="+row.Id+"'  class='btn btn-sm btn-warning'> User Log </a>"
+                    },
+                },
+            ],
+        });
+
+
+
+        //Filter
+        $("#submit").click(function () {
+            //Extra Filter;
+            var forestCircleId = Number($("#ForestCircleId").val());
+            var forestDivisionId = Number($("#ForestDivisionId").val());
+            var forestRangeId = Number($("#ForestRangeId").val());
+            var forestBeatId = Number($("#ForestBeatId").val());
+            //var fcvVcfType = Number($("#FcvVcfType").val());
+            var forestFcvVcfId = Number($("#ForestFcvVcfId").val());
+            var CommitteeTypeId = Number($("#CommitteeTypeId").val());
+            var CommitteeId = Number($("#CommitteeId").val());
+            var AccountType = Number($("#AccountType").val());
+            var AccountNumber = $("#AccountNumber").val();
+            var BankAccountName = $("#BankAccountName").val();
+
+            var labourDatabaseFilterVM =
+            {
+                ForestCircleId: forestCircleId,
+                ForestDivisionId: forestDivisionId,
+                ForestRangeId: forestRangeId,
+                ForestBeatId: forestBeatId,
+                //FcvVcfType: fcvVcfType,
+                ForestFcvVcfId: forestFcvVcfId,
+                CommitteeTypeId: CommitteeTypeId,
+                CommitteeId: CommitteeId,
+                AccountType: AccountType,
+                AccountNumber: AccountNumber,
+                BankAccountName: BankAccountName
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Accounts/IndexFilterAccountsListByPagination",
+                data: labourDatabaseFilterVM,
+                cache: false,
+                dataType: 'json',
+                success: function (response) {
+                    $('#foodTable').DataTable({
+                        "bDestroy": true,
+
+                        //"bServerSide": true,
+                        //"bProcessing": true,
+                        //"bSearchable": true,
+                        //"order": [[1, 'asc']],
+                        // "language": {
+                        //     "emptyTable": "No record found.",
+                        //     "processing":
+                        //         '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                        // },
+                        data: response.aaData,
+
+                        aoColumns: [
+                            {
+                                title: 'Id',
+                                data: null,
+                                render: (data, type, row, meta) => meta.row
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.AccountNumber;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.AccountTypeText;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.CurrentAvailableBalanceBdtText;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.BankAccountName;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.BranchName;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return moment(row.AccountOpeningDate).format("DD-MM-YYYY");
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+
+                                    return "<a  href='/Accounts/Edit?id=" + row.Id + " ' $ type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-sm btn-primary'> Edit </a> <a href='/Accounts/Details?id=" + row.Id + " ' class='btn btn-sm btn-info'>Details</a>  <button onclick='showDeleteConfirmMessage(" + row.Id + ")' class='btn btn-sm btn-danger'>Delete</button>  <a href='/Accounts/AccountsUserTagLog?accountId=" + row.Id + "'  class='btn btn-sm btn-warning'> User Log </a>"
+                                },
+                            },
+                        ],
+                    });
+                },
+                error: function () {
+                    $(".loader").fadeOut("slow");
+                    swal(
+                        'Unexpected',
+                        'Unknown error occurred',
+                        'error'
+                    );
+                }
+            });
+
+        });
+
+
+    });
+</script>

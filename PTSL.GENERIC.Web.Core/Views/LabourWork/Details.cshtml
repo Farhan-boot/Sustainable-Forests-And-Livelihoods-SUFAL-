@@ -1,0 +1,47 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Labour.LabourWorkVM
+@{
+    ViewBag.Title = "Details of Labour Work";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/LabourWork/Index?labourDatabaseId=@Model.LabourDatabaseId" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Details of Labour Work
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Work Type: <b>@Model.WorkType</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Man Days: <b>@Model.ManDays</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Payment Per Day: <b>@Model.PaymentAmountPerDay</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Payment Type: <b>@Model.PaymentType</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Total Amount: <b>@Model.TotalAmount</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Form Date: <b>@Model.FormDate.ToShortDateString()</b></label>
+            </div>
+             <div class="form-group">
+                <label style="font-size:15px;">To Date: <b>@Model.ToDate.ToShortDateString()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Remarks: <b>@Model.Remarks</b></label>
+            </div>
+        </div>
+    </div>
+</div>
+

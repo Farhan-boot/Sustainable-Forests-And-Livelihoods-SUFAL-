@@ -1,0 +1,546 @@
+﻿@using PTSL.GENERIC.Web.Core.Controllers.AIG;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.RepaymentLDFVM>
+@{
+    ViewBag.Title = "AIG Repayments Details";
+    var Message = ViewBag.Message;
+
+    var aigInfo = ViewData.ContainsKey("AIGBasicInformation") == false ? new AIGBasicInformationVM() : ViewData["AIGBasicInformation"] as AIGBasicInformationVM;
+}
+
+<style>
+    label {
+        margin-bottom: 0.2rem;
+    }
+
+    .repayments-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 240px;
+        grid-column-gap: 5px;
+        grid-row-gap: 5px;
+        padding: 10px 25px;
+    }
+
+        .repayments-container form {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #b1c5bb;
+            border-radius: 7px;
+            padding: 10px;
+        }
+
+    .two-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 5px;
+        grid-row-gap: 5px;
+    }
+
+    .btn-custom-warning {
+        color: white !important;
+        background: #1dc48f !important;
+        border: none !important;
+    }
+
+    .btn-cutom-info {
+        color: white !important;
+        background: #0da8ee !important;
+        border: none !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/AIGBasicInformation/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Repayments Details
+        </h4>
+    </div>
+
+    <div class="card-body my-2">
+        <div class="p-2 custom green-card" style="border-radius: 5px;">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Beneficiary Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Beneficiary name
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@(string.IsNullOrEmpty(aigInfo!.Survey?.BeneficiaryName) ? aigInfo!.Survey?.BeneficiaryNameBn : aigInfo!.Survey?.BeneficiaryName)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Mobile number
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@(string.IsNullOrEmpty(aigInfo!.Survey?.BeneficiaryPhone) ? aigInfo!.Survey?.BeneficiaryPhoneBn : aigInfo!.Survey?.BeneficiaryPhone)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            NID
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@aigInfo!.Survey?.BeneficiaryNid"
+                               disabled />
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="LoanInfo">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Loan Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Total allocated loan(TK)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               value="@aigInfo!.TotalAllocatedLoanAmount"
+                               placeholder="Enter loan amount (TK)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Start date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               value="@aigInfo!.StartDate.ToString("yyyy-MM-dd")"
+                               placeholder="Enter Start Date"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            End date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               value="@aigInfo!.EndDate.ToString("yyyy-MM-dd")"
+                               placeholder="Enter End Date"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                        <label>
+                            Months for total repayment
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               value="@aigInfo!.MaximumRepaymentMonth"
+                               placeholder="Enter Total Repayment Month"
+                               disabled />
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Service charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               value="@aigInfo!.ServiceChargePercentage"
+                               placeholder="Enter service charge (%)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Security charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               value="@aigInfo!.SecurityChargePercentage"
+                               placeholder="Enter service charge (%)"
+                               disabled />
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="historyModalLabel">Repayment logs</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>User Name</th>
+                                <th>Event Type</th>
+                                <th>Event Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5 style="padding: 0px 25px;">Repayments</h5>
+    <div class="repayments-container">
+        @foreach (var repayment in Model)
+        {
+            <form asp-controller="AIGBasicInformation" asp-action="@(repayment.IsPaymentCompleted ? "RemovePayment" : "CompletePayment")" class="custom green-card" id="form-@repayment.Id">
+                <input type="hidden" name="RepaymentId" value="@repayment.Id" />
+                <input type="hidden" name="AigId" value="@repayment.AIGBasicInformationId" />
+
+                <div class="d-flex justify-content-between align-content-center mb-2" style="border-bottom: 1px solid #b1c5bb;">
+                    <h5>@repayment.RepaymentSerial</h5>
+                    <h6>@repayment.RepaymentStartDate.ToShortDateString() - @repayment.RepaymentEndDate.ToShortDateString()</h6>
+                </div>
+
+                <div class="two-col pb-2" style="grid-column-gap: 10px;border-bottom: 1px solid #b1c5bb;">
+                    <div>60% LDF Amount (in TK) -</div>
+                    <div class="font-bold text-right">
+                        @if (repayment.IsPaymentCompleted)
+                        {
+                            <span>@repayment.FirstSixtyPercentRepaymentAmount</span> <span>/</span> <span>@repayment.FirstSixtyPercentRepaymentAmountReceived</span>
+                        }
+                        else
+                        {
+                            <input height="30" name="FirstSixtyPercentRepaymentAmountReceived" type="number" value="@repayment.FirstSixtyPercentRepaymentAmount" />
+                        }
+                    </div>
+
+                    @if (repayment.SecondFourtyPercentageLDF is not null)
+                    {
+                        <div>40% LDF Amount (in TK) -</div>
+                        <div class="font-bold text-right">
+                            @if (repayment.IsPaymentCompleted)
+                            {
+                                <span>@repayment.SecondFortyPercentRepaymentAmount</span> <span>/</span> <span>@repayment.SecondFortyPercentRepaymentAmountReceived</span>
+                            }
+                            else
+                            {
+                                <input height="30" name="SecondFortyPercentRepaymentAmountReceived" type="number" value="@repayment.SecondFortyPercentRepaymentAmount" />
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="two-col">
+                    <div>Total Payment to receive @(repayment.IsPaymentCompleted ? " / received" : ""):</div>
+                    <div class="font-bold text-right">
+                        <span>@repayment.RepaymentAmount</span>
+                        @if (repayment.IsPaymentCompleted)
+                        {
+                            <span>/</span>
+                            <span>@repayment.TotalRepaymentAmountReceived</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column mt-auto">
+                    @if (repayment.IsPaymentCompleted)
+                    {
+                        <div class="font-bold">@($"Payment completed at: {repayment.PaymentCompletedDateTime?.ToString()}")</div>
+                    }
+                    else
+                    {
+                        <div class="font-bold" style="color: red;">Payment not completed</div>
+                    }
+                    <div class="d-flex flex-row justify-content-between mt-2">
+                        <button type="button" class="btn btn-cutom-info btn-sm save" onclick="loadHistories(@(repayment.Id))" data-toggle="modal" data-target="#historyModal">
+                            History
+                        </button>
+
+                        <div class="ml-auto d-flex" style="gap: 5px;">
+                            @if (repayment.IsPaymentCompleted == false)
+                            {
+                                <button type="button" onclick="repaymentLDFFile(@repayment.Id)" class="btn btn-sm btn-custom-warning save" data-toggle="modal" data-target="#largeShoes">
+                                    <i class="fa fa-upload mr-1"></i>
+                                    Files
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" onclick="repaymentLDFFileList(@repayment.Id)" class="btn btn-sm btn-custom-warning save" data-toggle="modal" data-target="#largeShoes1">
+                                    <i class="fa fa-upload mr-1"></i>
+                                    Files
+                                </button>
+                            }
+                            @if (repayment.IsLocked)
+                            {
+                                <button type="button" class="btn btn-sm btn-custom-warning save" onclick="unlockLockPayment(@repayment.Id, @repayment.AIGBasicInformationId)">
+                                    <i class="fa fa-key mr-1"></i>
+                                    Unlock
+                                </button>
+                            }
+                            <button type="button" onclick="confirmPayment('#form-@(repayment.Id)')" class="btn btn-sm @(repayment.IsPaymentCompleted ? "btn-red" : "btn-green") save" @(repayment.IsLocked ? "disabled" : "")>
+                                @if (repayment.IsPaymentCompleted)
+                                {
+                                    <span>
+                                        @if (repayment.IsLocked)
+                                        {
+                                            <i class="fa fa-lock mr-2"></i>
+                                        }
+                                        Remove Payment
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>Complete Payment</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+<!-- Modal Start -->
+<div class="modal fade" id="largeShoes" tabindex="-1" role="dialog" aria-labelledby="modalLabelLarge" aria-hidden="true">
+    <form id="Form" asp-controller="AIGBasicInformation" asp-action="UploadRepaymentLDFFile" enctype="multipart/form-data" class="card-body mt-2">
+
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="" style="padding:10px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="">Document Files</h4>
+                </div>
+
+                <div id="uploadDivId">
+                    <div class="modal-body">
+                        <div class="col-md-3 col-sm-12 px-1">
+                            <label>
+                                Document Files
+                            </label>
+                            <input type="file" multiple name="RepaymentLDFFiles[]" />
+                        </div>
+                        <input id="aigFileId" type="hidden" name="aigFileId" />
+                        <input id="repaymentFileId" type="hidden" name="repaymentFileId" />
+                    </div>
+                    <div class="">
+                        <button type="submit" id="submit-btn" class="btn btn-sm btn-green save" style="width: 100px;margin: 10px;float: right;">
+                            Save
+                        </button>
+                    </div>
+                </div>
+
+                <div class="containar" id="fileDownloadId" style="padding: 10px;">
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<!-- Modal End-->
+
+<!-- Modal Start 2-->
+<div class="modal fade" id="largeShoes1" tabindex="-1" role="dialog" aria-labelledby="modalLabelLarge" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="" style="padding:10px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="">Document Files</h4>
+            </div>
+
+            <div class="containar" id="fileDownloadId2" style="padding: 10px;">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal End 2-->
+
+<script>
+    function repaymentLDFFile(repaymentId) {
+        $("#repaymentFileId").val(repaymentId);
+        var aigId = $('[name=aigId]').val();
+        $("#aigFileId").val(aigId);
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/AIGBasicInformation/GetRepaymentLDFFileBy",
+            data: { repaymentId },
+            success: function (result) {
+                if (result.length > 0) {
+                    $('#fileDownloadId div').empty();
+                    console.log(result);
+                    for (let i = 0; i < result.length; i++) {
+                        var e = $('<div data-fileid=' + result[i].Id + '><a href=' + result[i].FileNameUrl + ' download>' + result[i].FileName + '</a><input type="button" onclick=deleteFile(' + result[i].Id + ') value="Delete" class="btn btn-danger btn-sm" /> </br></div>');
+                        $('#fileDownloadId').append(e);
+                    }
+                }
+                else {
+                    $('#fileDownloadId div').empty();
+                }
+            }
+        });
+    }
+
+    function repaymentLDFFileList(repaymentId) {
+        $("#repaymentFileId").val(repaymentId);
+        var aigId = $('[name=aigId]').val();
+        $("#aigFileId").val(aigId);
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/AIGBasicInformation/GetRepaymentLDFFileBy",
+            data: { repaymentId },
+            success: function (result) {
+                if (result.length > 0) {
+                    $('#fileDownloadId2 div').empty();
+                    console.log(result);
+                    for (let i = 0; i < result.length; i++) {
+                        var e = $('<div data-fileid=' + result[i].Id + '><a href=' + result[i].FileNameUrl + ' download>' + result[i].FileName + '</a><input type="button" onclick=deleteFile(' + result[i].Id + ') value="Delete" class="btn btn-danger btn-sm" /> </br></div>');
+                        $('#fileDownloadId2').append(e);
+                    }
+                }
+                else {
+                    $('#fileDownloadId2 div').empty();
+                }
+            }
+        });
+    }
+
+    function deleteFile(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                method: "GET",
+                url: `/AIGBasicInformation/DeleteImageOrDocument/${id}`,
+            })
+                .done(function (data) {
+                    if (data.Success) {
+                        swal("Deleted!", "Item has been deleted.", "success");
+                        $(`[data-fileid=${id}]`).remove();
+                    } else {
+                        swal("Deleted Failed!", data.Message, "error");
+                    }
+                });
+        });
+    }
+</script>
+
+<script>
+    function loadHistories(repaymentId) {
+        $(".loader").fadeIn("fast");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/AIGBasicInformation/ListHistory",
+            data: { repaymentId },
+            success: function (result) {
+                $(".loader").fadeOut("fast");
+                $("#historyTable").empty();
+
+                if (Array.isArray(result.Data)) {
+                    result.Data.forEach((value, index) => {
+                        var formattedDate = new Intl.DateTimeFormat('en-US',
+                            {
+                                hour12: true,
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'numeric',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                second: 'numeric',
+                            }
+                        ).format(new Date(value.EventOccurredDate));
+
+                        $("#historyTable").append(`
+                                            <tr>
+                                                <td>${index + 1}</td>
+                                                <td>${value.EventUser.UserName || ""}</td>
+                                                <td>${value.RepaymentLDFEventTypeString}</td>
+                                                <td>${formattedDate}</td>
+                                            </tr>
+                                        `);
+                    });
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        });
+    }
+
+    function confirmPayment(formId) {
+        swal({
+            title: "Are you sure?",
+            text: "This will change your payment status",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, Confirm",
+            closeOnConfirm: false
+        }, function () {
+            $(formId).submit();
+        });
+    }
+    function unlockLockPayment(repaymentId, aigId, shouldLock = false) {
+        swal({
+            title: "Are you sure?",
+            text: "Anyone can remove payment after this action",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, Confirm",
+            closeOnConfirm: false
+        }, function () {
+            $(".loader").fadeIn("fast");
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/AIGBasicInformation/LockUnlockPayment",
+                data: { repaymentId, shouldLock, aigId },
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    if (data?.Success == false) {
+                        swal("Error", data.Message, "error");
+                    }
+                    else {
+                        window.location.reload();
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            });
+        });
+    }
+</script>

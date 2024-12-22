@@ -1,0 +1,28 @@
+﻿<fieldset class="mt-2 p-2 col-12">
+    <legend class="float-none w-auto">Images and Attachments</legend>
+    <button x-on:click="addPlantationFile" type="button" class="btn btn-sm">Add Image/Attachment</button>
+
+    <div class="plantation_images_container mt-2" x-show="PlantationFiles.length > 0">
+        <template x-for="(data, index) in PlantationFiles" :key="data">
+            <div class="plantation_image_item">
+                <span x-text="++index"></span>
+                <span><input type="file" class="PlantationImageOrDocument" :id="data" /></span>
+                <span><button x-on:click="removePlantationFile(data)" type="button" class="btn btn-sm">Remove</button></span>
+            </div>
+        </template>
+    </div>
+</fieldset>
+
+<script>
+    function imageAndAttachment() {
+        return {
+            PlantationFiles: [],
+            addPlantationFile() {
+                this.PlantationFiles.push(this.getRandomString());
+            },
+            removePlantationFile(image) {
+                this.PlantationFiles.splice(this.PlantationFiles.indexOf(image), 1);
+            },
+        };
+    }
+</script>

@@ -1,0 +1,130 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.BeneficiarySavingsAccount.SavingsAccountVM
+@{
+    ViewBag.Title = "Withdraw Savings";
+    long.TryParse(Context.Request.Query["id"], out var id);
+}
+
+<div>
+    @{
+        var TotalSaving = @Model.SavingsAmountInformations?.Select(x => x.SavingsAmount).Sum();
+        var TotalWithdraw = @Model.WithdrawAmountInformations?.Select(x => x.WithdrawAmount).Sum();
+        var AccountBalance = TotalSaving - TotalWithdraw;
+    }
+
+    <input id="yourAccountBalanceId" type="text" value="@AccountBalance" hidden />
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/SavingsAccount/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Withdrawal Amount Information
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <form id="SavingsAmountForm">
+                <div class="col-12 p-1">
+                    <fieldset class="p-2">
+                        <legend class="float-none w-auto">
+                            Account Holder Name :
+                            <b> @Model.Survey?.BeneficiaryName </b>
+                        </legend>
+                        <legend class="float-none w-auto">
+                            Your Current Balance :
+                            @AccountBalance Taka Only
+                        </legend>
+
+                        <input id="savingsAccountId" placeholder="Savings Account" type="text" value="@id" class="form-control col-md-12" hidden />
+
+                        <div class="row mt-2">
+                            <div class="col-6 pl-1">
+                                <label class="m-0">Withdrawal amount*</label>
+                                <input id="withdrawAmountId" name="withdrawAmountId" placeholder="Withdrawal amount" type="text" value="" class="form-control col-md-12" />
+                            </div>
+                            <div class="col-6 pr-1">
+                                <label class="m-0">Withdrawal Date*</label>
+                                <input id="withdrawDateId" name="withdrawDateId" placeholder="Withdrawal Date" type="date" class="form-control col-md-12" />
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-6 pl-1">
+                                <label class="m-0">Remarks</label>
+                                <input id="remarkId" name="remarkId" placeholder="Remarks" type="text" class="form-control col-md-12" />
+                            </div>
+
+                            <div class="col-6 pr-1">
+                                <label class="m-0">Upload Document</label>
+                                <input type="file" class="form-control" name="DocumentFileUrl" id="DocumentFileUrl" placeholder="Enter files" accept=".doc,.docx,.xls,.xlsx" />
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-2">
+                            <button type="button" id="SavingsAmountId" class="btn btn-sm btn-green mr-2">
+                                Withdraw
+                            </button>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#SavingsAmountId").on("click", function () {
+        var yourAccountBalance = parseFloat($("#yourAccountBalanceId").val());
+        var yourWithdrawAmount = parseFloat($("#withdrawAmountId").val());
+
+        if (yourAccountBalance < yourWithdrawAmount) {
+            swal(
+                'Error',
+                'Sufficient amount is not available in your account!',
+                'error'
+            );
+            return;
+        }
+
+        var WithdrawAmountInformationVM = {
+            SavingsAccountId: $("#savingsAccountId").val(),
+            WithdrawDate: $("#withdrawDateId").val(),
+            WithdrawAmount: $("#withdrawAmountId").val(),
+            Remark: $("#remarkId").val()
+        };
+
+        var formData = new FormData();
+        formData.append('DocumentFileUrl', $('#DocumentFileUrl')[0].files[0]);
+
+        for (var key in WithdrawAmountInformationVM) {
+            var value = WithdrawAmountInformationVM[key];
+            formData.append(key, value);
+        }
+
+        $("#SavingsAmountForm").validate({
+            rules: {
+                withdrawDateId: "required",
+                withdrawAmountId: "required",
+            }
+        });
+
+        if ($("#SavingsAmountForm").valid()) {
+            $.ajax({
+                type: "POST",
+                url: "/SavingsAccount/Withdraw",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (response) {
+                    window.location.href = '/SavingsAccount/Index/';
+                }
+            });
+        }
+    });
+</script>
+

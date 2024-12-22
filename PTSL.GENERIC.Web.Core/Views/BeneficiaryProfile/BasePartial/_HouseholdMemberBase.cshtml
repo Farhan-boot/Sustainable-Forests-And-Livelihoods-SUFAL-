@@ -1,0 +1,181 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.HouseholdMemberVM>
+
+@{
+    var index = 0;
+}
+
+@foreach (var member in Model)
+{
+    index++;
+
+    <div class="card HouseholdsMembersChild" data-id="@index">
+        <input class="Id" type="hidden" value="@member.Id" />
+        <div class="card-body mt-3">
+            <h5 class="d-inline-block">@index</h5>
+            <button type="button" class="remove-item btn btn-danger btn-sm float-right"
+            onclick="RemoveHouseholdsMembers(@index, @member.Id)">x</button>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label>
+                        2.1. Name
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="text" class="form-control FullName" name="FullName[]" value="@(member?.FullName ?? "")"
+                    placeholder="Enter Name" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        2.2. Relation with Head of the Household
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required RelationWithHeadHouseHoldTypeId"
+                    name="RelationWithHeadHouseHoldTypeId[]">
+                        <option value="">Select Relation</option>
+                        @foreach (var item in ViewBag.RelationWithHeadHouseHoldTypeId)
+                        {
+                            <!option value="@item.Id" @(member.RelationWithHeadHouseHoldTypeId == item.Id ? "selected" : "")>
+                                @item.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        2.3. Gender
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required Gender" name="Gender[]">
+                        <option value="">Select</option>
+                        @foreach (var item in ViewBag.Gender)
+                        {
+                            <!option value="@item.Id" @((int)member.Gender == item.Id ? "selected" : "")>@item.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        2.4. Age (years)
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input type="text" class="form-control Age" value="@(member?.Age ?? "")" name="Age[]" placeholder="Enter Age" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label>
+                        2.5. Marital Status
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required MaritalSatus" name="MaritalSatus[]">
+                        <option value="">Choose</option>
+                        @foreach (var item in ViewBag.MaritalSatus)
+                        {
+                            <!option value="@item.Id" @((int)member.MaritalSatus == item.Id ? "selected" : "")>@item.Name
+                            </!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        2.6. Education
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required EducationLevel" name="EducationLevel[]">
+                        <option value="">Select Type</option>
+                        @foreach (var item in ViewBag.EducationLevel)
+                        {
+                            <!option value="@item.Id" @((int)member.EducationLevel == item.Id ? "selected" : "")>@item.Name
+                            </!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        2.7. Main Occupation
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required MainOccupationId" name="MainOccupationId[]">
+                        <option value="">Select</option>
+                        @foreach (var item in ViewBag.MainOccupationId)
+                        {
+                            <!option value="@item.Id" @((int)member.MainOccupationId == item.Id ? "selected" : "")>@item.Name
+                            </!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        2.8. Secondary Occupation
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required SecondaryOccupationId" name="SecondaryOccupationId[]">
+                        <option value="">Select</option>
+                        @foreach (var item in ViewBag.SecondaryOccupationId)
+                        {
+                            <!option value="@item.Id" @((int)member.SecondaryOccupationId == item.Id ? "selected" : "")>
+                                @item.Name</!option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        2.9. Association with BFD
+                    </label>
+                    <select multiple id="BfdSelect-@index" class="form-control BFDAssociationHouseholdMembers"
+                    name="BFDAssociationHouseholdMembers[]">
+                        @foreach (var item in ViewBag.BFDAssociationHouseholdMembers)
+                        {
+                            <!option value="@item.Id" @(member?.BFDAssociationHouseholdMembersMap?.FindIndex(x =>
+                        x.BFDAssociationId == item.Id) > -1 ? "selected" : "" )>@item.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        2.9.a Other Associations with BFD (Please Specify)
+                    </label>
+                    <input type="text" class="form-control BFDAssociationTxt" value="@(member?.BFDAssociationTxt ?? "")"
+                    name="BFDAssociationTxt[]" placeholder="Other BFD Association" />
+                </div>
+            </div>
+            <div class="form-row DisabilityCheck">
+                <div class="form-group col-md-6">
+                    <label>
+						2.10. Select this If has disability
+                    </label>
+                    <input type="checkbox" class="HasDisability" name="HasDisability[]" @(member?.HasDisability == true ? "checked" : "") />
+                </div>
+                <div class="form-group col-md-6 hidden DisabilitySelect">
+                    <label>
+                        2.10.a Select Disability Types
+                    </label>
+                    <select multiple class="form-control DisabilityTypeHouseholdMembers"
+                    name="DisabilityTypeHouseholdMembers[]">
+                        @foreach (var item in ViewBag.DisabilityTypeHouseholdMembers)
+                        {
+                            <!option value="@item.Id" @(member?.DisabilityTypeHouseholdMembersMap?.FindIndex(x =>
+                        x.DisabilityTypeId == item.Id) > -1 ? "selected" : "" )>@item.Name</!option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        2.11. Safety net
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select class="form-control required SafetyNetTypeId" name="SafetyNetTypeId[]">
+                        <option value="">Choose</option>
+                        @foreach (var item in ViewBag.SafetyNetTypeId)
+                        {
+                            <!option value="@item.Id" @((int)member.SafetyNetTypeId == item.Id ? "selected" : "")>@item.Name
+                            </!option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+}

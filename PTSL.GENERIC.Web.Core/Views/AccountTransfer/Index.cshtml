@@ -1,0 +1,177 @@
+﻿@using PTSL.GENERIC.Web.Core.Controllers.AIG;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountTransferVM>
+
+@{
+    ViewBag.Title = "Account Transfer List";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Account Transfer List</h4>
+                </div>
+                <div class="col-md-2 text-right">
+                    <a href="/AccountTransfer/Transfer" class="badge badge-success badge-shadow">New Transfer</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="IndexFilter" asp-controller="AccountTransfer" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save">Search</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>From Account</th>
+                                <th>To Account</th>
+                                <th>Total Transfer<br />Amount</th>
+                                <th>Transfer Date</th>
+                                <th>Transfer Status</th>
+                                <th class="not-export-col">Action</th>
+                            </tr>
+                        </thead> @{
+                            int i = 1;
+                        }
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var data in Model)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@data.FromAccount?.AccountNumber</td>
+                                        <td>@data.ToAccount?.AccountNumber</td>
+                                        <td>@data.TransferAmount.ToBDTCurrency()</td>
+                                        <td>@data.TransferDate.ToUIDateString()</td>
+                                        <td>@data.AccountTransferStatus.GetEnumDisplayName()</td>
+
+                                        <td class="not-export-col">
+                                            <a href="/AccountTransfer/Details?id=@data.Id" class="btn btn-sm btn-info">Details</a>
+                                            <button onclick="showDeleteConfirmMessage(@data.Id)" class="btn btn-sm btn-danger">Delete</button>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                }
+            ]
+        });
+    });
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/AccountTransfer/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+</script>
+

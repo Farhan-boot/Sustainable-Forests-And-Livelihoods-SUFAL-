@@ -1,0 +1,316 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<style>
+    select[multiple] + div div.ms-options li label input {
+        margin-right: 8px !important;
+        margin-top: 5px !important;
+    }
+</style>
+
+<form id="CrossCuttingIssue" class="collapse">
+    <h5>Satisfaction of the stakeholders</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                5.1.a. How much are you satisfied in existing forest management?
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestMngmtSatisfactionEnum", null, "Choose", htmlAttributes: new { @class = "form-control required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                5.1.b. How much effective do you think existing Forest Management is?
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestMngmtEffectivenessEnum", null, "Choose", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                5.1.c. How much are you dependent on forests currently?
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("ForestDependencyEnum", null, "Choose", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+
+    <h5 class="mt-5">5.2. Awareness about Collaborative Forest Management/Co-Management in Protected Areas</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                5.2.a. Have you heard about Collaborative Forest Management (CFM)/ PA Co-Management of Forest Department?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.IsHearedAboutCfm)" id="cfm1" value="true" @(Model.IsHearedAboutCfm && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="cfm1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.IsHearedAboutCfm)" id="cfm2" value="false" @(!Model.IsHearedAboutCfm && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="cfm2">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                5.2.b. Did you participate in any CFM/ PA Co-Management discussion?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.IsParticipatedInCfm)" id="cfm3" value="true" @(Model.IsParticipatedInCfm && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="cfm3">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.IsParticipatedInCfm)" id="cfm4" value="false" @(!Model.IsParticipatedInCfm && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="cfm4">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                5.2.c. Do you think the CFM/ PA Co-Management will improve Forest Management?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.WillCfmImproveForestMngmnt)" id="WillCfmImprove1" value="true" @(Model.WillCfmImproveForestMngmnt && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="WillCfmImprove1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.WillCfmImproveForestMngmnt)" id="WillCfmImprove2" value="false" @(!Model.WillCfmImproveForestMngmnt && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="WillCfmImprove2">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                5.2.d. Do you think CFM/ PA Co-Management will bring improvement in your well-being?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.WillCfmImproveWellBeing)" id="WillCfmImproveWellBeing1" value="true" @(Model.WillCfmImproveWellBeing && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="WillCfmImproveWellBeing1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+					<input class="form-check-input required" type="radio" name="@nameof(Model.WillCfmImproveWellBeing)" id="WillCfmImproveWellBeing2" value="false" @(!Model.WillCfmImproveWellBeing && Model.Id != 0 ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="WillCfmImproveWellBeing2">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mt-5">5.3. Gender & Ethnicity</h5>
+	<h6 class="">5.3.a Gender Status</h6>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                1. Who takes final decision in family affairs?
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("DicisionTakerEnum", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                2. Who mostly owns productive assets?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("ProductiveAssetsOwnerGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                3. Who takes final decision in selecting production process for income generation? What to grow in crop field?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("CropTypeDecisionGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                4. Who takes final decision in sale or transfer of productive assets? e.g. land, livestock etc.
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("DecisionToTransferAssetsGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                5. Who decides the daily family needs?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("FamilyNeedsDeciderGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                6. Who gets priority accessing to Credit (from different donors)?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("AccessorToCreditGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7. Who controls use of credits or money earned?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("ControllerOfCreditGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                8. Who, in general, is representing in any organization, as office bearer or member?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("OfficeBearerGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                9. Who gets more payment for same work?
+                <span style="color:red;">*</span>
+            </label>
+			@Html.DropDownList("MorePaymentGetterGender", null, "Select Gender", htmlAttributes: new { @class = "form-control required" })
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                10. Do you get access to legal support in case of Gender Based Violence (GBV) events?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.CanAccessLegalSupportForGbv)" id="CanAccessLegalSupportForGbv1" value="true" @(Model.CanAccessLegalSupportForGbv != null && (bool)Model.CanAccessLegalSupportForGbv ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="CanAccessLegalSupportForGbv1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.CanAccessLegalSupportForGbv)" id="CanAccessLegalSupportForGbv2" value="false" @(Model.CanAccessLegalSupportForGbv != null && (bool)Model.CanAccessLegalSupportForGbv == false ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="CanAccessLegalSupportForGbv2">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h6 class="mt-5">5.3.b. Small Ethnic Community</h6>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                1. Do you enjoy Usufructs rights in Forests?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.CanUnsufructsRights)" id="CanUnsufructsRights1" value="true" @(Model.CanUnsufructsRights != null && (bool)Model.CanUnsufructsRights ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="CanUnsufructsRights1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.CanUnsufructsRights)" id="CanUnsufructsRights2" value="false" @(Model.CanUnsufructsRights != null && (bool)Model.CanUnsufructsRights == false ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="CanUnsufructsRights2">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                2. Do you face challenges in life and livelihood?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.FaceLiveAndLivelihoodChallanges)" id="FaceLiveAndLivelihoodChallanges1" value="true" @(Model.FaceLiveAndLivelihoodChallanges != null && (bool)Model.FaceLiveAndLivelihoodChallanges ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="FaceLiveAndLivelihoodChallanges1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.FaceLiveAndLivelihoodChallanges)" id="FaceLiveAndLivelihoodChallanges2" value="false" @(Model.FaceLiveAndLivelihoodChallanges != null && (bool)Model.FaceLiveAndLivelihoodChallanges == false ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="FaceLiveAndLivelihoodChallanges2">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                3. Are you interested in local (Forest Beat) level Forest Management?
+                <span style="color:red;">*</span>
+            </label>
+            <div class="d-flex radio">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.HasLlfmInterest)" id="HasLlfmInterest1" value="true" @(Model.HasLlfmInterest != null && (bool)Model.HasLlfmInterest ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="HasLlfmInterest1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input required" type="radio" name="@nameof(Model.HasLlfmInterest)" id="HasLlfmInterest2" value="false" @(Model.HasLlfmInterest != null && (bool)Model.HasLlfmInterest == false ? "checked" : "")>
+                    <label class="form-check-label pl-3" for="HasLlfmInterest2">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    // Load dropdown data only once
+    $("[href='#CrossCuttingIssue']").one("click", function () {
+        // Load Satisfaction Level
+        //$.ajax({
+        //    cache: false,
+        //    type: "GET",
+        //    url: "/Dropdown/GetSatisfactionLevelEnumList",
+        //    success: function (data) {
+        //        var ForestMngmtSatisfactionEnum = $(".ForestMngmtSatisfactionEnum");
+        //        var ForestMngmtEffectivenessEnum = $(".ForestMngmtEffectivenessEnum");
+
+        //        ForestMngmtSatisfactionEnum.html('<option value="">Choose..</option>');
+        //        ForestMngmtEffectivenessEnum.html('<option value="">Choose..</option>');
+        //        $.each(data, function (id, option) {
+        //            ForestMngmtSatisfactionEnum.append($('<option></option>').val(option.Id).html(option.Name));
+        //            ForestMngmtEffectivenessEnum.append($('<option></option>').val(option.Id).html(option.Name));
+        //        });
+        //    },
+        //    error: function (xhr, ajaxOptions, thrownError) {
+        //        alert('Failed to retrieve data.');
+        //    }
+        //});
+
+        // Load Forest Dependency Enum
+        //$.ajax({
+        //    cache: false,
+        //    type: "GET",
+        //    url: "/Dropdown/GetForestDependencyEnumList",
+        //    success: function (data) {
+        //        var ForestDependencyEnum = $(".ForestDependencyEnum");
+
+        //        ForestDependencyEnum.html('<option value="">Choose..</option>');
+        //        $.each(data, function (id, option) {
+        //            ForestDependencyEnum.append($('<option></option>').val(option.Id).html(option.Name));
+        //        });
+        //    },
+        //    error: function (xhr, ajaxOptions, thrownError) {
+        //        alert('Failed to retrieve data.');
+        //    }
+        //});
+
+    //    // Load Gender MF
+    //    $.ajax({
+    //        cache: false,
+    //        type: "GET",
+    //        url: "/Dropdown/GetGenderMfEnumList",
+    //        success: function (data) {
+    //            var GenderMf = $(".GenderMf");
+
+    //            GenderMf.html('<option value="">Choose..</option>');
+    //            $.each(data, function (id, option) {
+    //                GenderMf.append($('<option></option>').val(option.Id).html(option.Name));
+    //            });
+    //        },
+    //        error: function (xhr, ajaxOptions, thrownError) {
+    //            alert('Failed to retrieve data.');
+    //        }
+    //    });
+    })
+</script>
+

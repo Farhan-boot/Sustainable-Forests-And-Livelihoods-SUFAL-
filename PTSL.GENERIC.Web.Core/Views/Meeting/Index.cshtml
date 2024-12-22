@@ -1,0 +1,462 @@
+﻿@model IEnumerable<PTSL.GENERIC.Web.Core.Entity.MeetingManagement.MeetingVM>
+@{
+    ViewBag.Title = "Meeting List";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10 p-0">
+                    <h4>Meeting Information List</h4>
+                </div>
+                <div class="col-md-2 text-right p-0">
+                    <a href="/Meeting/Create" class="badge badge-success badge-shadow">Create New</a>
+                </div>
+            </div>
+            <div class="card-body">
+               @*  asp-action="IndexFilter" asp-controller="Meeting" *@
+                <div class="mb-4 green-card p-2"
+                      style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+                    <div class="row custom">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Basic Information</legend>
+                                <div class="row">
+                                    <div class="col-md-4 pr-1">
+                                        <label class="m-0">NGO</label>
+                                        @Html.DropDownList("NgoId", null, "Select NGO", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col-md-4 px-1">
+                                        <label class="m-0">Meeting Type</label>
+										@Html.DropDownList("MeetingTypeId", null, "Select Meeting", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col-md-4 pl-1">
+                                        <label class="m-0">Meeting Date</label>
+										<input type="date" id="NID" value="@(ViewBag.MeetingDate is DateTime ? ((DateTime)ViewBag.MeetingDate).ToUIDateString() : null)" name="MeetingDate" placeholder="Enter meeting date" />
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button id="submit" type="submit" class="btn btn-sm btn-green save">Search</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+
+                    <table id="foodTable" class="display">
+                        <thead class="table-content">
+                            <tr class="table-row">
+                                <th scope="col">SL</th>
+                                <th scope="col">Meeting Title</th>
+                                <th scope="col">Meeting Date</th>
+                                <th scope="col">Start Time</th>
+                                <th scope="col">End Time</th>
+                                <th scope="col">Duration</th>
+                                <th>Meeting Type</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-content">
+                        </tbody>
+                    </table>
+
+
+
+                   @*  <table class="table table-striped table-bordered table-hover" id="tableExport_filter"
+                           style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Meeting Title</th>
+                                <th>Meeting Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration</th>
+                                <th>Meeting Type</th>
+                                <th class="not-export-col">Action</th>
+                            </tr>
+                        </thead> @{
+                            int i = 1;
+                        }
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var data in Model)
+                                {
+                                    var difference = Math.Abs((data.EndTime - data.StartTime).TotalMinutes);
+                                    var differenceRedable = difference >= 60 ? $"{(Math.Ceiling(difference / 60))} hour" :
+                                    $"{difference} minute";
+
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@data.MeetingTitle</td>
+                                        <td>@data.MeetingDate.ToShortDateString()</td>
+                                        <td>@(data.StartTime.ToString("hh:mm tt"))</td>
+                                        <td>@(data.EndTime.ToString("hh:mm tt"))</td>
+                                        <td>@differenceRedable</td>
+                                        <td>@(data.MeetingType?.Name)</td>
+
+                                        <td class="not-export-col">
+                                            <a href="/Meeting/Edit?id=@data.Id" class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="/Meeting/Details?id=@data.Id" class="btn btn-info btn-sm" style="color:white">Details</a>
+                                            <button onclick="showDeleteConfirmMessage(@data.Id)"
+                                            class="btn btn-danger btn-sm">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                'copy',
+                {
+                    extend: 'csv',
+                    title: 'Meeting List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Meeting List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Meeting List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Meeting List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
+            ]
+        });
+    });
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Meeting/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        $('.buttons-copy').hide();
+    });
+</script>
+
+
+
+<script>
+    // var $j = jQuery.noConflict();
+    $(document).ready(function () {
+        $('#foodTable').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Meeting Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Meeting Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Meeting Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Meeting Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
+            ],
+
+            "sAjaxSource": "/Meeting/GetMeetingListByPagination",
+            "bDestroy": true,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bSearchable": true,
+            "order": [[1, 'asc']],
+            "language": {
+                "emptyTable": "No record found.",
+                "processing":
+                    '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+            },
+            // "fnDrawCallback": function (oSettings) {
+            //     alert(oSettings.aoData[1]._aData.Id);
+            // },
+            "columns": [
+                {
+                    title: 'Id',
+                    data: null,
+                    render: (data, type, row, meta) => meta.row
+                },
+                // {
+                //     "data": "Id",
+                //     "autoWidth": true,
+                //     "searchable": true
+                // },
+
+                {
+                    "data": "MeetingTitle",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return moment(row.MeetingDate).format("DD-MM-YYYY");
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return moment(row.StartTime).format("hh:mm:ss");
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return moment(row.EndTime).format("hh:mm:ss");
+                    },
+                },
+                {
+                    "data": "DifferenceRedable",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    "data": "MeetingType.Name",
+                    "autoWidth": true,
+                    "searchable": true
+                },
+                {
+                    render: (data, type, row, meta) => {
+
+                        return "<a  href='/Meeting/Edit?id=" + row.Id + " ' $ type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-sm btn-primary'> Edit </a> <a href='/Meeting/Details?id=" + row.Id + " ' class='btn btn-sm btn-info'>Details</a>  <button onclick='showDeleteConfirmMessage(" + row.Id + ")' class='btn btn-sm btn-danger'>Delete</button>"
+                    },
+                },
+            ]
+        });
+
+
+
+        //Filter
+        $("#submit").click(function () {
+            var forestCircleId = Number($("#ForestCircleId").val());
+            var forestDivisionId = Number($("#ForestDivisionId").val());
+            var forestRangeId = Number($("#ForestRangeId").val());
+            var forestBeatId = Number($("#ForestBeatId").val());
+            //var fcvVcfType = Number($("#FcvVcfType").val());
+            var forestFcvVcfId = Number($("#ForestFcvVcfId").val());
+            var divisionId = Number($("#DivisionId").val());
+            var districtId = Number($("#DistrictId").val());
+            var upazillaId = Number($("#UpazillaId").val());
+            var unionId = Number($("#UnionId").val());
+            //Extra Filter;
+            var NgoId = Number($("#NgoId").val());
+            var MeetingTypeId = Number($("#MeetingTypeId").val());
+            var MeetingDate = Number($("#NID").val());
+
+            var labourDatabaseFilterVM =
+            {
+                ForestCircleId: forestCircleId,
+                ForestDivisionId: forestDivisionId,
+                ForestRangeId: forestRangeId,
+                ForestBeatId: forestBeatId,
+                //FcvVcfType: fcvVcfType,
+                ForestFcvVcfId: forestFcvVcfId,
+                DivisionId: divisionId,
+                DistrictId: districtId,
+                UpazillaId: upazillaId,
+                UnionId: unionId,
+                NgoId: NgoId,
+                MeetingTypeId: MeetingTypeId,
+                MeetingDate: MeetingDate
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Meeting/IndexFilterMeetingListByPagination",
+                data: labourDatabaseFilterVM,
+                cache: false,
+                dataType: 'json',
+                success: function (response) {
+                    $('#foodTable').DataTable({
+                        "bDestroy": true,
+
+                        //"bServerSide": true,
+                        //"bProcessing": true,
+                        //"bSearchable": true,
+                        //"order": [[1, 'asc']],
+                        // "language": {
+                        //     "emptyTable": "No record found.",
+                        //     "processing":
+                        //         '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                        // },
+                        data: response.aaData,
+                        "columns": [
+                            {
+                                title: 'Id',
+                                data: null,
+                                render: (data, type, row, meta) => meta.row
+                            },
+                            // {
+                            //     "data": "Id",
+                            //     "autoWidth": true,
+                            //     "searchable": true
+                            // },
+
+                            {
+                                "data": "MeetingTitle",
+                                "autoWidth": true,
+                                "searchable": true
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return moment(row.MeetingDate).format("DD-MM-YYYY");
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return moment(row.StartTime).format("hh:mm:ss");
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return moment(row.EndTime).format("hh:mm:ss");
+                                },
+                            },
+                            {
+                                "data": "DifferenceRedable",
+                                "autoWidth": true,
+                                "searchable": true
+                            },
+                            {
+                                "data": "MeetingType.Name",
+                                "autoWidth": true,
+                                "searchable": true
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+
+                                    return "<a  href='/Meeting/Edit?id=" + row.Id + " ' $ type='button' data-bs-toggle='modal' data-bs-target='#exampleModal' class='btn btn-sm btn-primary'> Edit </a> <a href='/Meeting/Details?id=" + row.Id + " ' class='btn btn-sm btn-info'>Details</a>  <button onclick='showDeleteConfirmMessage(" + row.Id + ")' class='btn btn-sm btn-danger'>Delete</button>"
+                                },
+                            },
+                        ]
+
+                    });
+                },
+                error: function () {
+                    $(".loader").fadeOut("slow");
+                    swal(
+                        'Unexpected',
+                        'Unknown error occurred',
+                        'error'
+                    );
+                }
+            });
+
+        });
+
+
+    });
+</script>

@@ -1,0 +1,75 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountDepositVM
+@{
+    ViewBag.Title = "Account Deposit Details";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+    }
+
+    fieldset legend {
+        width: auto;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/AccountDeposit/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Account Deposit Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Account Details</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Number: <b>@Model.Account?.AccountNumber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Account Name: <b>@Model.Account?.BankAccountName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Bank Name: <b>@Model.Account?.BankName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Branch Name: <b>@Model.Account?.BranchName</b></label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="form-horizontal mt-3">
+            <fieldset>
+                <legend>Deposit Information</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Deposit Amount: <b>@Model.DepositAmount.ToBDTCurrency()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Deposit Date: <b>@Model.DepositDate.ToUIDateString()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Deposit Created Date/Time:
+                        <b>@Model.DepositTransactionTime.ToUIDateString() - @Model.DepositTransactionTime.ToUITimeString()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Financial Year: <b>@Model.FinancialYear?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Deposited By: <a href="/Account/Details?id=@Model.TransactionBy">@Model.TransactionBy?.UserName</a></label>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>

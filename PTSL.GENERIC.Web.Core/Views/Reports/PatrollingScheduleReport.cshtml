@@ -1,0 +1,83 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.PatrollingSchedulingInformetion.PatrollingSchedulingVM>
+@{
+    ViewBag.Title = "Patrolling Schedule Reports";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Patrolling Schedule Report</h5>
+        </div>
+        <div class="">
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="9">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Patrolling Schedule Report</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Patrolling Area</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Allocated Amount Per Month</th>
+                    <th>Total</th>
+                    <th>Total Male</th>
+                    <th>Total Female</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@data.PatrollingArea</td>
+                        <td>@data.Date.ToUITimeStringNullable()</td>
+                        <td>@data.StartTime.ToUITimeStringNullable()</td>
+                        <td>@data.EndTime.ToUITimeStringNullable()</td>
+                        <td>@data.AllocatedAmountMonth</td>
+                        <td>@data.TotalParticipants</td>
+                        <td>@data.TotalMale</td>
+                        <td>@data.TotalFemale</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="5" class="text-center">Total:</td>
+                    <td colspan="4" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

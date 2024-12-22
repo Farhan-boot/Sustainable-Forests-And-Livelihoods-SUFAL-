@@ -1,0 +1,58 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.IndividualGroupFormSetupVM
+@{ ViewBag.Title = "Edit"; }
+
+<div class="card">
+	<div class="card-header">
+		<h4>
+			<a href="/IndividualGroupFormSetup/Index" class="back">
+				<svg width="20" height="20" viewBox="0 0 32 32">
+					<path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+				</svg>
+			</a>
+			Edit Individual and Group Form Setup
+		</h4>
+	</div>
+
+    <div class="card-body">
+		<form asp-controller="IndividualGroupFormSetup" asp-action="Edit" id="Form" enctype="multipart/form-data">
+			<input type="hidden" name="Id" id="Id" value="@Model.Id" />
+			<input type="hidden" name="CreatedAt" id="CreatedAt" value="@Model.CreatedAt" />
+			<div class="form-horizontal">
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>
+								Individual Document
+							</label>
+							<input type="file" class="form-control" id="Name" name="@nameof(Model.IndividualDocument)" placeholder="Enter Individual document">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>
+								Group Document
+							</label>
+							<input type="file" class="form-control" id="NameBn" name="@nameof(Model.GroupDocument)" placeholder="Enter Group document">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group col-md-12">
+					<button type="submit" class="btn btn-primary submit-btn pull-right btn-sm">Submit</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+    $(".submit-btn").on("click", function () {
+        if ($("#Form").valid()) {
+            $(".loader").fadeIn("slow");
+        }
+    });
+    $("#Form").validate({
+        rules: {
+        },
+    });
+</script>

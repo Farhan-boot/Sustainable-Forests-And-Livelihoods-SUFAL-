@@ -1,0 +1,446 @@
+﻿@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.AIGBasicInformationVM
+@{
+    ViewBag.Title = "Add Second LDF";
+    var Message = ViewBag.Message;
+
+    var lDFAmount = Model.TotalAllocatedLoanAmount * 0.4;
+    var serviceChargeAmount = (Model.TotalAllocatedLoanAmount * Model.ServiceChargePercentage) / 100;
+    var securityChargeAmount = (Model.TotalAllocatedLoanAmount * Model.SecurityChargePercentage) / 100;
+
+    var repayments = ViewData.ContainsKey("StartRepaymentLDFId") == false ? new List<RepaymentLDFVM>() : ViewData["StartRepaymentLDFId"] as List<RepaymentLDFVM>;
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<style>
+	label {
+		margin-bottom: 0.2rem;
+	}
+
+	._select2_option {
+		line-height: 20px;
+	}
+
+		._select2_option span {
+			font-weight: 300;
+		}
+
+			._select2_option span:first-child {
+				font-weight: 500;
+			}
+
+	.flex-basis-content {
+		flex-basis: content;
+	}
+
+	.gap-5 {
+		gap: 5px;
+	}
+	.custom-input input {
+		height: auto;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+</style>
+
+<div class="card">
+	<div class="card-header">
+		<h4>
+			<a href="/AIGBasicInformation/Index" class="mr-1 back">
+				<svg width="20" height="20" viewBox="0 0 32 32">
+					<path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+				</svg>
+			</a>
+			Generate repayment information for 40% LDF
+		</h4>
+	</div>
+
+    <form id="Form" asp-controller="AIGBasicInformation" asp-action="SecondFourtyPercentage" class="card-body mt-2">
+        <input type="hidden" value="@Model.Id" name="AIGBasicInformationId" />
+
+		<div class="p-2 custom green-card" style="border-radius: 5px;">
+			<fieldset class="p-2 col-12">
+				<legend class="float-none w-auto">Beneficiary Information</legend>
+				<div class="row">
+					<div class="col-md-3 col-sm-12 pr-1">
+						<label>
+                            Beneficiary name
+							<span style="color:red;">*</span>
+						</label>
+						<input type="text"
+							   value="@(string.IsNullOrEmpty(Model.Survey?.BeneficiaryName) ? Model.Survey?.BeneficiaryNameBn : Model.Survey?.BeneficiaryName)"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+                            Mobile number
+							<span style="color:red;">*</span>
+						</label>
+						<input type="text"
+							   value="@(string.IsNullOrEmpty(Model.Survey?.BeneficiaryPhone) ? Model.Survey?.BeneficiaryPhoneBn : Model.Survey?.BeneficiaryPhone)"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+                            NID
+							<span style="color:red;">*</span>
+						</label>
+						<input type="text"
+							   value="@(Model.Survey?.BeneficiaryNid)"
+							   disabled />
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="LoanInfo">
+			<fieldset class="p-2 col-12">
+				<legend class="float-none w-auto">Loan Information</legend>
+				<div class="row">
+					<div class="col-md-3 col-sm-12 pr-1">
+						<label>
+							Total allocated loan(TK)
+							<span style="color:red;">*</span>
+						</label>
+						<input type="number"
+							   min="0"
+							   id="@nameof(Model.TotalAllocatedLoanAmount)"
+							   value="@Model.TotalAllocatedLoanAmount"
+							   placeholder="Enter loan amount (TK)"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+							Start date
+							<span style="color:red;">*</span>
+						</label>
+						<input type="date"
+							   id="@nameof(Model.StartDate)"
+							   value="@(Model.StartDate.ToString("yyyy-MM-dd"))"
+							   placeholder="Enter Start Date"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+							End date
+							<span style="color:red;">*</span>
+						</label>
+						<input type="date"
+							   id="@nameof(Model.EndDate)"
+							   value="@(Model.EndDate.ToString("yyyy-MM-dd"))"
+							   placeholder="Enter End Date"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 pl-1">
+						<label>
+							Months for total repayment
+							<span style="color:red;">*</span>
+						</label>
+						<input type="number"
+							   id="@nameof(Model.MaximumRepaymentMonth)"
+							   value="@Model.MaximumRepaymentMonth"
+							   placeholder="Enter Total Repayment Month"
+							   disabled />
+					</div>
+				</div>
+
+				<div class="row mt-3">
+					<div class="col-md-3 col-sm-12 pr-1">
+						<label>
+							Service charge (in percentage)
+							<span style="color:red;">*</span>
+						</label>
+						<input type="number"
+							   min="0"
+							   id="@nameof(Model.ServiceChargePercentage)"
+							   value="@Model.ServiceChargePercentage"
+							   placeholder="Enter service charge (%)"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+							Security charge (in percentage)
+							<span style="color:red;">*</span>
+						</label>
+						<input type="number"
+							   min="0"
+							   id="@nameof(Model.SecurityChargePercentage)"
+							   value="@Model.SecurityChargePercentage"
+							   placeholder="Enter service charge (%)"
+							   disabled />
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="p-2 green-card custom custom-input mt-2" style="border-radius: 5px;">
+			<fieldset class="p-2 col-12" id="SecondLDFLandmarks">
+				<legend class="float-none w-auto">Landmarks for 40% LDF</legend>
+
+				<div class="d-flex justify-content-start mb-3">
+					<div class="d-flex gap-5 ml-3">
+						<input class="flex-basis-content" type="checkbox" id="CheckAllLandmarks" />
+						<div class="flex-basis-content" style="font-size: 17px; font-weight: 500;">Select all to enter 40% LDF information</div>
+					</div>
+				</div>
+
+                <div class="d-flex gap-5 flex-column">
+                    <div class="d-flex justify-content-start align-items-center gap-5">
+                        <div class="flex-basis-content">1.</div>
+                        <input class="flex-basis-content"
+                               type="checkbox"
+                               name="HasInvestedSeventyPercentageOfTheLoan"
+                               id="HasInvestedSeventyPercentageOfTheLoan" />
+                        <div class="flex-basis-content">
+							70% of the loan taken has been invested in selected trade
+                        </div>
+                    </div>
+					<!--
+                    <div class="d-flex justify-content-start align-items-center gap-5">
+                        <div class="flex-basis-content">2.</div>
+                        <input class="flex-basis-content"
+                               type="checkbox"
+                               name="IsPaidTheLoanInstallmentThreeConsecutiveMonths"
+                               id="IsPaidTheLoanInstallmentThreeConsecutiveMonths" />
+                        <div class="flex-basis-content">
+							Is paid the loan installment three consecutive months (will delete) - Depositing savings regularly
+                        </div>
+                    </div>-->
+                    <div class="d-flex justify-content-start align-items-center gap-5">
+                        <div class="flex-basis-content">2.</div>
+                        <input class="flex-basis-content"
+                               type="checkbox"
+                               name="IsAttendedRegularMeetings"
+                               id="IsAttendedRegularMeetings" />
+                        <div class="flex-basis-content">
+							Attending Regular FCV/VCF Meetings
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center gap-5">
+                        <div class="flex-basis-content">3.</div>
+                        <input class="flex-basis-content"
+                               type="checkbox"
+                               name="DidNotBreakTheTenPrinciples"
+                               id="DidNotBreakTheTenPrinciples" />
+                        <div class="flex-basis-content">
+							Doesn't break the 'Ten Core Values'
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center gap-5">
+                        <div class="flex-basis-content">4.</div>
+                        <input class="flex-basis-content"
+                               type="checkbox"
+                               name="IsLivelihoodDevelopmentFundCertifiedAndApproved"
+                               id="IsLivelihoodDevelopmentFundCertifiedAndApproved" />
+                        <div class="flex-basis-content">
+							The application for the 40% LDF loan has been recommended by VCSC, examined by SAC and approved by CFMC/VCF-EC
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center gap-5">
+                        <div class="flex-basis-content">5.</div>
+                        <input class="flex-basis-content"
+                               type="checkbox"
+                               name="IncomeExpenditureFundLoansUpdatedAndCertified"
+                               id="IncomeExpenditureFundLoansUpdatedAndCertified" />
+                        <div class="flex-basis-content">
+							Income-expenditure daybook has been kept properly and examined by SAC
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+		</div>
+
+		<div class="p-2 custom green-card mt-2" style="border-radius: 5px; display: none;" id="LDFInfo">
+			<fieldset class="p-2 col-12">
+				<legend class="float-none w-auto">Landmarks for 40% LDF</legend>
+				<div class="row">
+					<div class="col-md-3 col-sm-12 pr-1">
+						<label>
+                            Amount for 40% LDF
+							<span style="color:red;">*</span>
+						</label>
+						<input type="number"
+							   name="LDFAmount"
+                               id="LDFAmount"
+							   value="@lDFAmount"
+							   placeholder="Enter loan amount (TK)"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+                        <label>
+							Service charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+						<input type="number"
+							   name="ServiceChargePercentage"
+							   id="ServiceChargePercentageForForty"
+							   value="@Model.ServiceChargePercentage"
+							   placeholder="Enter Service Charge in %" />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+                        <label>
+							Security charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+						<input type="number"
+							   name="SecurityChargePercentage"
+							   id="SecurityChargePercentageForForty"
+							   value="@Model.SecurityChargePercentage"
+							   placeholder="Enter Security Charge in %" />
+					</div>
+					<div class="col-md-3 col-sm-12 pl-1">
+						<label>
+							Starting month for repayment
+							<span style="color:red;">*</span>
+						</label>
+                        <select id="StartRepaymentLDFId" name="StartRepaymentLDFId">
+                            <!option value="">Choose..</!option>
+                            @foreach (var item in repayments!)
+                            {
+								<!option value="@item.Id"
+									data-serial="@item.RepaymentSerial"
+									data-ispaid="@item.IsPaymentCompleted"
+									data-val="@item.RepaymentStartDate.ToString("yyyy-MM-dd")"
+									@(item.IsPaymentCompleted ? "disabled" : "")>
+										@item.RepaymentStartDate.ToShortDateString() - @item.RepaymentEndDate.ToShortDateString() (@(item.IsPaymentCompleted ? "Paid" : "Not Paid"))
+								</!option>
+							}
+                        </select>
+					</div>
+				</div>
+
+				<div class="row mt-3">
+					<div class="col-md-3 col-sm-12 pr-1">
+						<label>
+							Repayment start date
+							<span style="color:red;">*</span>
+						</label>
+						<input type="date"
+							   id="RepaymentStartDate"
+							   value="@(Model.StartDate.ToString("yyyy-MM-dd"))"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+							Repayment end date
+							<span style="color:red;">*</span>
+						</label>
+						<input type="date"
+							   id="RepaymentEndDate"
+							   value="@(Model.EndDate.ToString("yyyy-MM-dd"))"
+							   disabled />
+					</div>
+					<div class="col-md-3 col-sm-12 pl-1">
+						<label>
+                            Repayment amount per month
+						</label>
+						<input type="number"
+							   id="PerMonthRepaymentAmount"
+							   value=""
+							   disabled />
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="d-flex justify-content-end py-2">
+			<button type="button" id="generate-btn" onclick="confirmLDF('#Form')" class="btn btn-sm btn-green save" style="display: none;">
+				Generate
+			</button>
+		</div>
+	</form>
+</div>
+
+<script>
+	$("#Form").validate({
+		rules: {
+			StartRepaymentLDFId: {
+				required: true,
+			}
+		},
+	});
+
+	$("#submit-btn").on("click", function (event) {
+		event.preventDefault();
+		if ($("#Form").valid() == false) return;
+
+		$(".loader").fadeIn("fast");
+		$("#Form").submit();
+	});
+</script>
+<script>
+	function confirmLDF(formId) {
+		swal({
+			title: "Are you sure?",
+			text: "This will generate your repayments for 40% LDF",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes, Confirm",
+			closeOnConfirm: true
+		}, function () {
+			$(".loader").fadeIn("fast");
+			$(formId).submit();
+		});
+	}
+</script>
+
+<script>
+	$("#ServiceChargePercentageForForty").on("change", calculatePerMonthLDFRepayment);
+
+	function calculatePerMonthLDFRepayment() {
+		var ldfAmount = Number.parseFloat($("#LDFAmount").val());
+		var serviceCharge = Number.parseFloat($("#ServiceChargePercentageForForty").val());
+
+		var selectedVal = $("#StartRepaymentLDFId option:selected").data("serial");
+		var month = 0;
+
+		$("#StartRepaymentLDFId option").each(function () {
+			if ($(this).data("serial") >= selectedVal && $(this).data("ispaid") == 'False') {
+				month++;
+			}
+		});
+
+		var perMonthRepaymentAmount = (ldfAmount + ((ldfAmount * serviceCharge) / 100)) / month;
+		$("#PerMonthRepaymentAmount").val(perMonthRepaymentAmount.toFixed(2));
+	}
+
+    $("#StartRepaymentLDFId").on("change", function() {
+        var val = $(this).find(":selected").data("val");
+		var start = new Date(val);
+
+        $("#RepaymentStartDate").val(start.toISOString().slice(0, 10));
+		calculatePerMonthLDFRepayment();
+    });
+</script>
+
+<script>
+	$("#CheckAllLandmarks").on("click", function() {
+		var isTrue = $(this).is(":checked");
+		$("#SecondLDFLandmarks").find("input:not(#CheckAllLandmarks)").each(function () {
+			if (isTrue) $(this).prop('checked', true);
+			else $(this).prop('checked', false);
+		});
+
+        $('#SecondLDFLandmarks input:not(#CheckAllLandmarks)').trigger("change");
+	})
+	$('#SecondLDFLandmarks input:not(#CheckAllLandmarks)').on('change', function () {
+		$('#SecondLDFLandmarks input:not(#CheckAllLandmarks)').each(function() {
+			var v = $(this).is(":checked");
+			if (v) $(this).val("true");
+			else $(this).val("false");
+		});
+
+		const allSelected = $('#SecondLDFLandmarks input:not(#CheckAllLandmarks)').filter(':checked').length === $('#SecondLDFLandmarks input:not(#CheckAllLandmarks)').length;
+		if (allSelected) {
+			$("#LDFInfo").show();
+			$("#generate-btn").show();
+		} else {
+			$("#LDFInfo").hide();
+			$("#generate-btn").hide();
+		}
+	});
+</script>
+

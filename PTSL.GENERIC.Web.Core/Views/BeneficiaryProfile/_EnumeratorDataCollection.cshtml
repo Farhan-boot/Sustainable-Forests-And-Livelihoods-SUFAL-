@@ -1,0 +1,49 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<form id="EnumeratorDataCollection" class="collapse">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Name of the Enumerator
+                <span style="color:red;">*</span>
+            </label>
+            <input class="form-control required" type="text" id="@nameof(Model.NameOfTheEnumerator)" name="@nameof(Model.NameOfTheEnumerator)" value="@Model.NameOfTheEnumerator" placeholder="Name of the enumerator" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                Mobile number of the Enumerator
+                <span style="color:red;">*</span>
+            </label>
+            <input class="form-control required" type="text" id="@nameof(Model.CellPhoneNumber)" name="@nameof(Model.CellPhoneNumber)" value="@Model.CellPhoneNumber" placeholder="Enter mobile number of enumerator" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                Date of data collection
+                <span style="color:red;">*</span>
+            </label>
+            <input class="form-control required" type="date" id="@nameof(Model.DataCollectionDate)" name="@nameof(Model.DataCollectionDate)" value="@(Model.DataCollectionDate != null ? ((DateTime)Model.DataCollectionDate).ToString("yyyy-MM-dd") : null)" placeholder="Date of data collection" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+				Upload note image
+            </label>
+            <input class="form-control" type="file" id="NotesImage" />
+            <input type="hidden" class="form-control" id="varNotesImage" value="@Model.NotesImage" />
+            <input type="hidden" class="form-control" id="varNotesImageURL" value="@Model.NotesImageUrl" />
+        </div>
+    </div>
+    <div class="form-row">
+        @if (string.IsNullOrEmpty(Model.NotesImageUrl) == false)
+        {
+            <div class="form-group col-md-6">
+            <label>
+                Current Image
+            </label>
+                <img src="@Model.NotesImageUrl" style="width: inherit;" />
+            </div>
+        }
+    </div>
+</form>
+

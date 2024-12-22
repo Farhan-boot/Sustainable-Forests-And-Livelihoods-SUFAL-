@@ -1,0 +1,218 @@
+﻿<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Cost information</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Cost Type
+                    <span style="color:red;">*</span>
+                </label>
+                <select name="Cost_CostType" x-model="new_cost_information.CostTypeId" required>
+                    <!option value="">Select Cost Type</!option>
+                    <template x-for="data in CostInformationDropdowns.cost_type">
+                        <!option :selected="data.value == new_cost_information.CostTypeId" :value="data.value" x-text="data.display"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Date of cost
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="new_cost_information.CostDate"
+                       placeholder="Enter date of cost"
+                       type="date"
+                       name="Cost_DateOfCost"
+                       required />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Cost Amount
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="new_cost_information.CostAmount"
+                       type="number"
+                       placeholder="Enter cost of amount"
+                       name="Cost_Amount"
+                       required />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Remarks
+                </label>
+                <input x-model="new_cost_information.Remarks"
+                       placeholder="Enter remarks"
+                       name="Cost_Remarks"
+                       required />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Cost attachment
+                </label>
+                <input x-on:change="set_new_cost_information_attachment_file_name"
+                       id="cost_attachment_id"
+                       type="file"
+                       placeholder="Enter attachment"
+                       name="Cost_Attachment"
+                       required />
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button @@click="add_cost_information" x-text="new_cost_information.IsUpdating ? 'Update' : 'Add Information'" type="button" class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Cost details</p>
+    <p x-show="CostInformation.filter(x => x.IsDeleted != true).length == 0">No details added yet</p>
+    <p x-show="CostInformation.filter(x => x.IsDeleted != true).length != 0" x-text="'Total cost: ' + CostInformation.filter(x => x.IsDeleted != true).reduce((result, item) => (result + getNumber(item.CostAmount)), 0)"></p>
+
+    <template x-for="(group, category) in (CostInformation.filter(x => x.IsDeleted != true).reduce((result, item) => {
+                    const key = item.CostTypeId;
+                    if (!result[key]) {
+                        result[key] = [];
+                    }
+
+                    result[key].push(item);
+                    return result;
+                }, {}))" :key="category">
+        <div>
+            <p class="m-0" x-text="get_cost_type_label(category)"></p>
+            <table class="table table-sm mb-2" x-show="group.length > 0">
+                <tr>
+                    <th>SL</th>
+                    <th>Cost Type</th>
+                    <th>Cost Date</th>
+                    <th>Cost Amount</th>
+                    <th>Attachment</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+                <tbody>
+                    <template x-for="(data, index) in group" :key="index">
+                        <tr class="">
+                            <td x-text="++index"></td>
+                            <td x-text="data.cost_type_display || data.CostType.Name || 'None'"></td>
+                            <td x-text="data.CostDate"></td>
+                            <td x-text="data.CostAmount"></td>
+                            <td x-text="data.attachment"></td>
+                            <td x-text="data.Remarks"></td>
+                            <td>
+                                <button @@click="remove_cost_information(data)" type="button" class="btn btn-sm btn-remove">Remove</button>
+                                <button @@click="edit_cost_information(data)" type="button" class="btn btn-sm btn-primary">Edit</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+</fieldset>
+
+<script>
+    function addCostInformation() {
+        return {
+            // Cost information
+            CostInformation: [],
+            init_cost_information: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+                Index: null,
+                IsDeleted: false,
+
+                CostTypeId: "",
+                CostDate: "",
+                CostAmount: "",
+                Remarks: "",
+
+                // Display
+                cost_type_display: "",
+                cost_type_label: "",
+                attachment: "",
+            },
+            new_cost_information: {},
+            set_new_cost_information_attachment_file_name(event) {
+                const name = getFileName(event.target);
+                this.new_cost_information.attachment = name;
+            },
+            CostInformationDropdowns: {
+                cost_type: [],
+            },
+
+            set_cost_type_display() {
+                const data = this.CostInformationDropdowns.cost_type.find(x => x.value == this.new_cost_information.CostTypeId);
+                const display = data?.display ?? "";
+                const label = data?.label ?? "";
+
+                this.new_cost_information.cost_type_display = display;
+                this.new_cost_information.cost_type_label = display;
+            },
+            get_cost_type_label(cost_type) {
+                const data = this.CostInformationDropdowns.cost_type.find(x => x.value == cost_type);
+                const label = data?.label ?? "";
+
+                return label;
+            },
+            add_cost_information() {
+                let hasError = 0;
+
+                for (const key of Object.keys(CostInformationFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.set_cost_type_display();
+
+                debugger;
+                const index = this.CostInformation.length;
+                const file = document.getElementById("cost_attachment_id").files[0];
+                
+                if (this.new_cost_information.IsUpdating) {
+                    this.CostInformation[this.new_cost_information.UpdateIndex] = { ...this.new_cost_information, Index: this.new_cost_information.UpdateIndex };
+                    this.new_cost_information.IsUpdating = false;
+
+                    if (file) {
+                        this.tempFormData.set(`CostInformation[${this.new_cost_information.UpdateIndex}][FormFiles]`, file);
+                    }
+                } else {
+                    if (file) {
+                        this.tempFormData.append(`CostInformation[${index}][FormFiles]`, file);
+                    }
+
+                    this.new_cost_information.Index = index;
+                    this.CostInformation.push(this.new_cost_information);
+                }
+
+                this.new_cost_information = { ...this.init_cost_information };
+
+                clearFileInput("cost_attachment_id");
+            },
+            remove_cost_information(data) {
+                const index = this.CostInformation.indexOf(data);
+
+                this.CostInformation[index].IsDeleted = true;
+
+                this.tempFormData.delete(`CostInformation[${index}][FormFiles]`);
+            },
+            edit_cost_information(data) {
+                const index = this.CostInformation.indexOf(data);
+
+                data.IsUpdating = true;
+                data.UpdateIndex = index;
+                data.CostDate = convertToDate(data.CostDate);
+
+                this.new_cost_information = data;
+            },
+        }
+    }
+</script>

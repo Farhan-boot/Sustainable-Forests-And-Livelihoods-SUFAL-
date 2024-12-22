@@ -1,0 +1,72 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountVM
+@{
+    ViewBag.Title = "Account Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+			<a href="/Accounts/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Account Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Circle: <b>@Model.ForestCircle?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Division: <b>@Model.ForestDivision?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Range: <b>@Model.ForestRange?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Beat: <b>@Model.ForestBeat?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest FCV/VCF: <b>@Model.ForestFcvVcf?.Name</b></label>
+            </div>
+
+            <div class="form-group">
+                <label style="font-size:15px;">Committee Type: <b>@Model.CommitteeType?.CommitteeTypeName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Committee Name: <b>@Model.Committee?.CommitteeName</b></label>
+            </div>
+        </div>
+		<br />
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label style="font-size:15px;">Account Number: <b>@Model.AccountNumber</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Account Name: <b>@Model.BankAccountName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Bank Name: <b>@Model.BankName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Branch Name: <b>@Model.BranchName</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Account Type: <b>@Model.AccountType.GetEnumDisplayName()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Account Opening Date: <b>@Model.AccountOpeningDate.ToUIDateStringNullable()</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Allowed Expense Types: <b>@string.Join(", ", Model.AccountAllowedFundExpenses.Select(x => x.GetEnumDisplayName()))</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Remarks: <b>@Model.Remarks</b></label>
+            </div>
+        </div>
+    </div>
+</div>
+

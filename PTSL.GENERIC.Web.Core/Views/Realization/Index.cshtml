@@ -1,0 +1,277 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Cutting.DefaultRealizationDataVM
+@inject IHttpContextAccessor Accessor
+@{
+    ViewBag.Title = "Realization List";
+
+    var cuttingIdString = Accessor.HttpContext?.Request.Query["cuttingId"][0];
+    long.TryParse(cuttingIdString, out var cuttingId);
+
+    var totalRealizedAmount = Model.Realizations.Sum(x => x.LotWiseSellingInformation?.TotalSaleValue) ?? 0;
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>
+                    <a href="/CuttingPlantation/Index" class="mr-1 back">
+                        <svg width="20" height="20" viewBox="0 0 32 32">
+                            <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                        </svg>
+                    </a>
+                    Realization List
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <h6>Lot Information</h6>
+                <div style="display: grid;grid-template-columns: 1fr 1fr;">
+                    <p class="m-0">Plantation Id: @Model.PlantationId</p>
+                    <p class="m-0">Total Number of Lots: @Model.TotalNumberOfLots</p>
+                    <p class="m-0">Number of sold Lots: @Model.NumberOfSoldLots</p>
+                    <p class="m-0">Remaining of Lots: @Model.RemainingNumberOfLots</p>
+                </div>
+                <div style="height: 50px;"></div>
+
+                <form asp-action="Create" asp-controller="Realization">
+                    <input type="hidden" name="CuttingPlantationId" value="@cuttingId" />
+                    <input type="hidden" class="form-control" id="SaleValueOfVatPercentage" name="SaleValueOfVatPercentage">
+                    <input type="hidden" class="form-control" id="SaleValueOfTaxPercentage" name="SaleValueOfTaxPercentage">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6>State of Realization</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Lot Number<span style="color:red;">*</span></label>
+                                <select id="LotWiseSellingInformationId" name="LotWiseSellingInformationId" class="form-control">
+                                    <!option value="">Select Lot Number</!option>
+                                    @foreach (var item in ViewBag.LotWiseSellingInformationId)
+                                    {
+                                        <!option value="@item.Id">@item.LotNumber</!option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Value of Sold Lot <span style="color:red;">*</span></label>
+                                <input type="number" class="form-control" id="SaleValueOfLot" name="SaleValueOfLot" value="" placeholder="Enter realized amount" disabled required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Total Vat <span id="TotalVatPercentage"></span></label>
+                                <input type="number" class="form-control" id="TotalVat" name="TotalVat" value="" placeholder="Total vat" disabled required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Total Tax <span id="TotalTaxPercentage"></span></label>
+                                <input type="number" class="form-control" id="TotalTax" name="TotalTax" value="" placeholder="Total tax" disabled required>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Total Vat and Tax</label>
+                                <input type="number" class="form-control" id="TotalVatAndTax" name="TotalVatAndTax" value="" placeholder="Total tax" disabled required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Total Sale Value <span style="color:red;">*</span></label>
+                                <input type="number" class="form-control" id="TotalSaleValue" name="TotalSaleValue" value="" placeholder="Total sale value" disabled required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Realized Date <span style="color:red;">*</span></label>
+                                <input type="date" class="form-control" id="RealizedDate" name="RealizedDate" value="" placeholder="Enter realized date" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary submit-btn pull-right btn-sm">Submit</button>
+                    </div>
+                </form>
+
+                <div style="height: 50px;"></div>
+                <div>
+                    <p class="m-0">Total Unrealized Amount: @Model.TotalUnrealizedAmount.ToBDTCurrency()</p>
+                    <p class="m-0">Total Realized Amount: @Model.TotalRealizedAmount.ToBDTCurrency()</p>
+                </div>
+                <div style="height: 50px;"></div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Lot Number</th>
+                                <th>Realized Amount</th>
+                                <th>Realized Date</th>
+                                <th>Vat</th>
+                                <th>Tax</th>
+                                <th>Vat and Tax</th>
+                                <th class="not-export-col">Action</th>
+                            </tr>
+                        </thead> @{
+                            int i = 1;
+                        }
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var data in Model.Realizations)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@data.LotWiseSellingInformation?.LotNumber</td>
+                                        <td>@data.LotWiseSellingInformation?.TotalSaleValue.ToBDTCurrency()</td>
+                                        <td>@data.RealizedDate.ToUIDateString()</td>
+                                        <td>@data.LotWiseSellingInformation?.TotalVat.ToBDTCurrency()</td>
+                                        <td>@data.LotWiseSellingInformation?.TotalTax.ToBDTCurrency()</td>
+                                        <td>@data.LotWiseSellingInformation?.TotalVatAndTax.ToBDTCurrency()</td>
+                                        <td class="not-export-col">
+                                            <a href="/Realization/Edit?id=@data.Id" class="btn btn-info btn-sm">Edit</a>
+                                            <button onclick="showDeleteConfirmMessage(@data.Id)" class="btn btn-danger btn-sm">Delete</button>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $("#LotWiseSellingInformationId").on("change", function () {
+        const value = $(this).val();
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: `/Realization/GetLotInfoByLotNumber?lotId=${value}`,
+            datatype: "json",
+            success: function (result) {
+                if (result.Data) {
+                    const data = result.Data;
+
+                    $("#SaleValueOfLot").val(data.SaleValueOfLot);
+                    $("#SaleValueOfVatPercentage").val(data.SaleValueOfVatPercentage);
+                    $("#SaleValueOfTaxPercentage").val(data.SaleValueOfTaxPercentage);
+                    $("#TotalVatPercentage").val(data.SaleValueOfVatPercentage);
+                    $("#TotalTaxPercentage").val(data.SaleValueOfTaxPercentage);
+
+                    $("#TotalVat").val(data.TotalVat);
+                    $("#TotalTax").val(data.TotalTax);
+
+                    $("#TotalVatAndTax").val(data.TotalVatAndTax);
+                    $("#TotalSaleValue").val(data.TotalSaleValue);
+                }
+            },
+            error: function (xmlhttprequest, textstatus, errorthrown) {
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Realization List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Realization List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Realization List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Realization List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6]
+                    }
+                }
+            ]
+        });
+    });
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Realization/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+</script>
+
+

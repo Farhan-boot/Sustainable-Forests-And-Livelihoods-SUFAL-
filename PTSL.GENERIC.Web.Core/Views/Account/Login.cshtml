@@ -1,0 +1,122 @@
+﻿@using PTSL.GENERIC.Web.Core.Model
+@model LoginVM
+@{
+    var title = "Log In - SUFAL Project";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title</title>
+    <link rel="stylesheet" href="~/css/sufl/login.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+</head>
+<body>
+    <header id="header">
+        <div class="header-icons">
+            <img src="~/img/login/bon-odidoptor.png" />
+            <img src="~/img/login/bd-govt.png" />
+            <img src="~/img/login/sufal.png" />
+        </div>
+        <h1 class="header-title">Sustainable Forests and Livelihoods (SUFAL) Project</h1>
+    </header>
+
+    <div id="slider" class="swiper">
+        <div class="slider-images swiper-wrapper">
+            <div class="swiper-slide"><img src="~/img/login-slider/1.jpg" loading="eager" decoding="async" /></div>
+            <div class="swiper-slide"><img src="~/img/login-slider/2.jpg" loading="lazy" decoding="async" /></div>
+            <div class="swiper-slide"><img src="~/img/login-slider/3.jpg" loading="lazy" decoding="async" /></div>
+            <div class="swiper-slide"><img src="~/img/login-slider/4.jpg" loading="lazy" decoding="async" /></div>
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+
+    <div id="module-title">
+        <img src="~/img/login/community-module.png" loading="lazy" decoding="async" />
+        <h2>COMMUNITY MODULE (CM)</h2>
+    </div>
+
+    <div id="login">
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "LoginForm", @class = "login-form" }))
+        {
+            <h2 class="login-header">User Login</h2>
+
+            @Html.AntiForgeryToken()
+            if (ViewBag.ErrorMsg != null)
+            {
+                <div class="form-group">
+                    <label style="color:red" for="email">Email or Password is invalid!</label>
+                </div>
+            }
+
+            <label for="UserEmail">
+                <span>Email Address</span>
+                <input id="UserEmail" name="UserEmail" value="" type="text" placeholder="Enter Email Address" required />
+            </label>
+            <label for="UserPassword">
+                <span>Password</span>
+                <input id="UserPassword" name="UserPassword" value="" type="password" placeholder="Enter Password" required />
+            </label>
+            <div class="login-buttons">
+                <div class="button-wrapper">
+                    <button type="submit" id="submitBtn" onclick="submitHandler">Login</button>
+                </div>
+                <a href="#">Forgot your password?</a>
+            </div>
+        }
+    </div>
+
+    <div id="about">
+        <div class="about-wrapper">
+            <h3 class="about-header">About Sustainable Forests & Livelihoods (SUFAL) Project</h3>
+            <p>The project employs a comprehensive approach to scale up action and address the challenges described in the previous sections to: (i) increase the cover, improve quality and management of natural forests and biodiversity and coastal ‘green belt’ through collaboration with communities; (ii) improve living standards through alternative income generation options to forest dependent communities; and, (iii) BFD 4 Bangladesh Sustainable Forest and Livelihood Project improve the policy and regulatory environment to enhance tree planting on private lands. The project will be implemented in selected sites in 147 Upazilas/sub-districts of 28 districts.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js';
+
+        const swiper = new Swiper('.swiper', {
+            loop: true,
+
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+
+            scrollbar: {
+                el: '.swiper-scrollbar',
+            },
+
+            autoplay: {
+                delay: 4000,
+                pauseOnMouseEnter: false
+            }
+        });
+
+        document.getElementById("LoginForm").addEventListener("submit", function (e) {
+            const userEmail = document.getElementById("UserEmail").value;
+            const userPassword = document.getElementById("UserPassword").value;
+
+            if (!userEmail && !userPassword) { 
+                e.preventDefault();
+                return;
+            }
+
+            document.getElementById("submitBtn").innerHTML = "Loggin in";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.NecessaryLinkManagement.NecessaryLinkVM
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/NecessaryLink/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Necessary Link Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <table style="width:100%">
+                <tr>
+                    <td style="width:50px;">Link Title English: <b>@Model.LinkTitleEn</b></td>
+                    <td style="width:50px;">Link Title Bangla: <b>@Model.LinkTitleBn</b></td>
+                    <td style="width:50px;">Site Link: <b>@Model.SiteLink</b></td>
+                    <td style="width:50px;"><a href="@Model.SiteLink" target="_blank" class="btn btn-primary btn-sm">Visit Site</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,237 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.CipManagement.CipTeamVM
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+    }
+
+        fieldset legend {
+            width: auto;
+        }
+</style>
+
+<style>
+    input, select {
+        height: 30px !important;
+        line-height: 10px !important;
+        font-weight: 400 !important;
+        color: black !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/CipTeam/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Cip Team Management Details
+        </h4>
+    </div>
+
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Forest Administrative Unit</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Circles: <b>@Model.ForestCircle.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Division: <b>@Model.ForestDivision.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Range: <b>@Model.ForestRange.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Beat: <b>@Model.ForestBeat.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Forest Fcv Vcf: <b>@Model.ForestFcvVcf.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">NGO: <b>@Model.Ngo.Name</b></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Team Name: <b>@Model.TeamName</b></label>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Document File: <b><a href="@Model.DocumentUrl" download>Download</a></b></label>
+
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+                    <h5>Civil Administrative Unit</h5>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Division: <b>@Model.Division.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">District: <b>@Model.District.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Upazilla: <b>@Model.Upazilla.Name</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Union: <b>@Model.Union.Name</b></label>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="card-body">
+
+        <div class="form-horizontal" style="padding-bottom:30Px">
+            <fieldset style="padding-bottom: 10px;">
+                <legend>Cip Team Member Information</legend>
+                @if (Model?.CipTeamMembers != null)
+                {
+
+                    @foreach (var member in Model.CipTeamMembers.Where(x => x.IsDeleted == false))
+                    {
+                        <div style="border-bottom:1px solid black">
+                            <div class="form-group">
+                                <label style="font-size:15px;">Beneficiary Name: <b>@(member.Cip?.BeneficiaryName ?? member?.OtherCommitteeMember?.FullName)</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Mobile Number: <b>@(member?.Cip?.MobileNumber ?? member?.OtherCommitteeMember?.PhoneNumber)</b></label>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size:15px;">Father Or SpouseName: <b>@(member?.Cip?.FatherOrSpouseName ?? member?.OtherCommitteeMember?.FatherOrSpouse)</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Forest Village Name <b>@(member?.Cip?.ForestVillageName ?? member?.OtherCommitteeMember?.ForestFcvVcf?.Name)</b></label>
+                            </div>
+                        </div>
+
+
+                    }
+                }
+
+            </fieldset>
+        </div>
+
+
+        <div class="col-md-12">
+            <h4 style="float:left">Approval History</h4>
+            <h5 style="float:right">Last Pending At: @Model?.ApprovalLogForCfms?.LastOrDefault()?.Receiver?.UserName</h5>
+        </div>
+
+        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="tableExport_filter" style="width: 100%;" role="grid" aria-describedby="tableExport_filter_info">
+            <thead>
+                <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sl No.: activate to sort column descending" style="width: 22.2px;">Sl No.</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Team Name: activate to sort column ascending" style="width: 37.2px;">Sender Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Ngo: activate to sort column ascending" style="width: 27.2px;">Receiver Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Forest Circle: activate to sort column ascending" style="width: 38.2px;">Sending Date</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Forest Division: activate to sort column ascending" style="width: 50.2px;">Sending Time</th>
+                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-label="Forest Range: activate to sort column ascending" style="width: 39.2px;">Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 1;
+                }
+                @foreach (var approveLogData in Model.ApprovalLogForCfms)
+                {
+                    <tr style="" role="row" class="odd">
+                        <td class="sorting_1">@index</td>
+                        <td class="sorting_1">@approveLogData?.Sender?.UserName</td>
+                        <td>@approveLogData?.Receiver?.UserName</td>
+                        <td>@approveLogData?.SendingDate?.ToUIDateString()</td>
+                        <td>@approveLogData?.SendingTime?.ToUITimeString()</td>
+                        <td>@approveLogData?.Remark</td>
+                    </tr>
+                    index++;
+                }
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+<script>
+    $(document).ready(function () {
+        var committeeTypeId = $("#CommitteeTypeId").val();
+        if (committeeTypeId == 1) {
+            $("#lblSubDesignation").hide();
+        }
+        //else{
+        //   // alert(designatinId);
+
+        //    $.ajax({
+        //        cache: false,
+        //        type: "GET",
+        //        url: "/Dropdown/ListBySubCommitteeType",
+        //        data: { "id": designatinId },
+        //        success: function (data) {
+        //            console.log(data);
+        //           // $("#SubCommitteeDesignationId").remove();
+        //            $('#SubCommitteeDesignationId option').remove();
+
+        //            $.each(data, function (i, item) {
+        //                $('#SubCommitteeDesignationId').append($('<option>', {
+        //                    value: item.Id,
+        //                    text: item.Name
+        //                }));
+        //            });
+        //        },
+        //        error: function (xhr, ajaxOptions, thrownError) {
+        //            alert('Failed to retrieve data.');
+        //        }
+        //    });
+
+        //}
+
+    });
+</script>*@

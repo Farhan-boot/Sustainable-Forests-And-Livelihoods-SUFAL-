@@ -1,0 +1,197 @@
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Reforestation.ReplantationVM;
+
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Replantation Information</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Replantation Year
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="FinancialYearId"
+                    x-on:change="CalculateCuttingYear"
+                    name="FinancialYearId" x-model="FinancialYearId" required>
+                    <!option value="">Select Financial Year</!option>
+                    @foreach (var item in ViewBag.FinancialYearId)
+                    {
+                        <!option data-year="@item.Name" @(Model.FinancialYearId == item.Id ? "selected" : "") value="@item.Id">
+                            @item.Name
+                        </!option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Rotation in years
+                    <span style="color:red;">*</span>
+                </label>
+                <input id="RotationYears" type="number" value="@(Model.Id > 0 ? Model.RotationYears : "")"
+                    name="RotationYears"
+                    x-on:input="CalculateCuttingYear"
+                    placeholder="Enter rotation in years" required />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Expected Year of Felling/Cutting
+                </label>
+                <input id="ExpectedCuttingYear" x-model="ExpectedCuttingYear" type="number" value="" placeholder="Expected Year of Felling/Cutting" disabled />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Rotation No
+                </label>
+                <input type="text" x-model="RotationNo" value="" placeholder="Enter rotation no" disabled />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Plantation Type
+                </label>
+                <select id="PlantationTypeId" name="PlantationTypeId" x-model="PlantationTypeId" required>
+                    <!option value="">Select Plantation Type</!option>
+                    @foreach (var item in ViewBag.PlantationTypeId)
+                    {
+                        <!option @(Model.PlantationTypeId == item.Id ? "selected" : "") value="@item.Id">
+                            @item.Name
+                        </!option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Plantation Area
+                </label>
+                <input id="PlantationArea" type="number" name="PlantationArea" placeholder="Enter area" required />
+            </div>
+            <div class="col-md-3 px-1">
+            </div>
+            <div class="col-md-3 pl-1">
+            </div>
+        </div>
+
+        <div class="mt-3">Nursery Information</div>
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Nursery
+                </label>
+                <select id="ReplantationNurseryInfos_NurseryInformationId"
+                    name="ReplantationNurseryInfos_NurseryInformationId"
+                    x-on:change="GetNurserySpeciesNames"
+                    x-model="NewReplantationNurseryInfo.NurseryInformationId" required>
+                    <!option value="">Select Nursery</!option>
+                    <template x-for="data in ReplantationNurseryInfoDropdowns.Nursery">
+                        <!option :selected="data.Id == NewReplantationNurseryInfo.NurseryInformationId"
+                        :value="data.Id" x-text="data.NurseryName"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Species Name
+                </label>
+                <select id="ReplantationNurseryInfos_NurseryRaisedSeedlingInformationId"
+                    name="ReplantationNurseryInfos_NurseryRaisedSeedlingInformationId"
+                    x-on:change="SetAvailableSeedling"
+                    x-model="NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId" required>
+                    <!option value="">Select Species</!option>
+                    <template x-for="data in ReplantationNurseryInfoDropdowns.SeedlingInformation">
+                        <!option :selected="data.Id == NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId"
+                        :value="data.Id" x-text="data.SpeciesName"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Available Seedling
+                </label>
+                <input x-model="NewReplantationNurseryInfo.AvailableSeedling" type="number" disabled placeholder="Available seedling" />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Number of Seedling Planted
+                </label>
+                <input id="ReplantationNurseryInfos_NumberOfSeedlingPlanted"
+                    name="ReplantationNurseryInfos_NumberOfSeedlingPlanted" type="number"
+                    x-model="NewReplantationNurseryInfo.NumberOfSeedlingPlanted"
+                    placeholder="Enter number of seedling planted" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Remarks
+                </label>
+                <input id="ReplantationNurseryInfos_Remarks" name="ReplantationNurseryInfos_Remarks"
+                    x-model="NewReplantationNurseryInfo.Remarks" type="text" placeholder="Enter remarks" />
+            </div>
+            <div class="col-md-3 px-1">
+            </div>
+            <div class="col-md-3 px-1">
+            </div>
+            <div class="col-md-3 pl-1">
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button x-on:click="AddReplantationNurseryInfo"
+                x-text="NewReplantationNurseryInfo.IsUpdating ? 'Update' : 'Add Information'" type="button"
+                class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Nursery details</p>
+    <p x-show="ReplantationNurseryInfos.length == 0">No details added yet</p>
+
+    <table class="table table-sm mb-2" x-show="ReplantationNurseryInfos.length > 0">
+        <tr>
+            <th>SL</th>
+            <th>Nursery</th>
+            <th>Species Name</th>
+            <th>Seedline Planted</th>
+            <th>Action</th>
+        </tr>
+        <tbody>
+            <template x-for="(data, index) in ReplantationNurseryInfos" :key="index">
+                <tr class="">
+                    <td x-text="++index"></td>
+                    <td x-text="data.NurseryInformationDisplay"></td>
+                    <td x-text="data.SpeciesNameDisplay"></td>
+                    <td x-text="data.NumberOfSeedlingPlanted"></td>
+                    <td>
+                        <button x-on:click="RemoveReplantationNurseryInfo(data)" type="button"
+                            class="btn btn-sm btn-remove">Remove</button>
+                        <button x-on:click="EditReplantationNurseryInfo(data, index - 1)" type="button"
+                            class="btn btn-sm btn-primary">Edit</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+
+</fieldset>
+
+<script>
+    function replantationInformation() {
+        return {
+            CalculateCuttingYear() {
+                let year = $("#FinancialYearId option:selected").data("year");
+                year = year ?? "";
+                year = getNumber(year.split("-").at(1));
+
+                debugger;
+
+                const rotationInYears = getNumber($("#RotationYears").val()) + year;
+                $("#ExpectedCuttingYear").val(rotationInYears);
+                this.ExpectedCuttingYear = rotationInYears;
+            },
+            RotationNo: "",
+            ExpectedCuttingYear: "",
+        }
+    }
+</script>

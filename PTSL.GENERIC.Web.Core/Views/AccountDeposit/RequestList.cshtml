@@ -1,0 +1,197 @@
+﻿@using PTSL.GENERIC.Web.Core.Controllers.AIG;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.PermissionSettings
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountDepositVM>
+
+@{
+    ViewBag.Title = "Request List";
+
+    List<PermissionRowSettingsVM> permissionRowList = ViewBag.PermissionRowsList;
+}
+
+<style>
+    .two-col-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+</style>
+
+<!-- Modal Start -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form class="modal-content" asp-action="ForwardApproval" asp-controller="AccountDeposit">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Permission Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input value="" name="AccountDepositId" id="AccountDepositId" hidden />
+
+                <div class="custom">
+                    <fieldset class="p-2 two-col-grid">
+                        <legend class="float-none w-auto">Forward</legend>
+                        <div>
+                            <label class="m-0">Receiver Role<span style="color: red;">*</span></label>
+                            @Html.DropDownList("NextRequestedUserRoleId", null, "Select Receiver Role", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                        </div>
+                        <div>
+                            <label class="m-0">Receiver<span style="color: red;">*</span></label>
+                            @Html.DropDownList("NextRequestedUserId", null, "Select Receiver", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                        </div>
+                        <div>
+                            <label class="m-0">Sending Date <span style="color: red;">*</span></label>
+                            <input type="date" id="SendingDateId" name="SendingDateId" placeholder="Enter Sending Date" required="">
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="custom mt-3">
+                    <fieldset class="p-2 two-col-grid">
+                        <div>
+                            <label class="m-0">Sending Time <span style="color: red;">*</span></label>
+                            <input class="form-control" type="time" id="SendingTimeId" name="SendingTimeId" placeholder="Enter Sending Time" required="">
+                        </div>
+                        <div>
+                            <label class="m-0">Remark <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="RemarkId" name="RemarkId" placeholder="Enter Remark" required="">
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal End -->
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Request List</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Account Number</th>
+                                <th>Amount</th>
+                                <th>Source Of Fund</th>
+                                <th>Deposit Date</th>
+                                <th class="not-export-col">Action</th>
+                            </tr>
+                        </thead> @{
+                            int i = 1;
+                        }
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var data in Model)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@data.Account?.AccountNumber</td>
+                                        <td>@data.DepositAmount.ToBDTCurrency()</td>
+                                        <td>@data.SourceOfFund?.Name</td>
+                                        <td>@data.DepositDate.ToUIDateString()</td>
+
+                                        <td class="not-export-col">
+                                            <button data-toggle="modal" onclick="SetAccountDepositId(@data.Id)" data-target="#exampleModal" class="btn btn-sm btn-info">Forward</button>
+                                            @if (permissionRowList.LastOrDefault()?.OrderId == data.NextApprovalOrderNo)
+                                            {
+                                                <a href="/AccountDeposit/LastStageApproval?accountDepositId=@data.Id" class="btn btn-sm btn-info">Approve</a>
+                                            }
+                                            <a href="/AccountDeposit/Details?id=@data.Id" class="btn btn-sm btn-info">Details</a>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'Account Transfer List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                }
+            ]
+        });
+    });
+
+    $("#NextRequestedUserRoleId").change(function () {
+        var selectedItem = $(this).val();
+        if (!selectedItem) {
+            return;
+        }
+
+        const NextRequestedUserId = $("#NextRequestedUserId");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Account/GetUserInfoByUserRoleId",
+            data: { "userRoleId": selectedItem },
+            success: function (result) {
+                const data = result.Data;
+
+                NextRequestedUserId.html('<option value="">Select User</option>');
+				$.each(data, function (id, option) {
+                    NextRequestedUserId.append($('<option></option>').val(option.Id).html(option.UserName));
+				});
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+
+    function SetAccountDepositId(id) {
+        $("#AccountDepositId").val(id);
+    }
+</script>
+

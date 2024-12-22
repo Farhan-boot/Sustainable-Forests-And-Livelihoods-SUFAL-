@@ -1,0 +1,109 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.NaturalResourcesIncomeAndCostStatusVM>
+
+@{ var index = 0; }
+
+@foreach (var natural in Model)
+{
+    index++;
+
+    <div class="card NaturalResourcesIncomeAndCostStatusChild" data-id="@index">
+        <input class="Id" type="hidden" value="@natural.Id" />
+        <div class="card-body mt-3">
+            <h5 class="d-inline-block">@index</h5>
+            <button type="button" class="remove-item btn btn-danger btn-sm float-right" onclick="RemoveNaturalResourcesIncomeAndCostStatus(@index, @natural.Id)">x</button>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Activity
+                    </label>
+                    <select class="form-control NaturalIncomeSourceTypeId" name="NaturalIncomeSourceTypeId[]">
+                        <option value="">Choose..</option>
+                        @foreach (var item in ViewBag.NaturalIncomeSourceTypeId)
+                        {
+                            <!option value="@item.Id" @(natural.NaturalIncomeSourceTypeId == item.Id ? "selected" : "")>@item.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        No. of Male
+                    </label>
+                    <input type="number" min="0" class="form-control NoOfMale" name="NoOfMale" value="@(natural.Id == 0 ? "" : natural.NoOfMale)" placeholder="No of male">
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        No. of Female
+                    </label>
+                    <input type="number" min="0" class="form-control NoOfFemale" name="NoOfFemale" value="@(natural.Id == 0 ? "" : natural.NoOfFemale)" placeholder="No of female">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        No of active months involved in collecting NR
+                    </label>
+                    <input type="number" min="0" class="form-control NoOfActiveMonth" name="NoOfActiveMonth" value="@(natural.Id == 0 ? "" : natural.NoOfActiveMonth)" placeholder="No Of Active Month">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Average no of active person days/month
+                    </label>
+                    <input type="number" min="0" class="form-control AvgNoPersonActivePerMonth" name="AvgNoPersonActivePerMonth" value="@(natural.Id == 0 ? "" : natural.AvgNoPersonActivePerMonth)" placeholder="Enter Average no of active person days/month">
+                </div>
+            </div>
+
+			<p class="mt-2">Total man-days for wild resource collection: <span class="totalManDaysForCollection">0</span></p>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Unit
+                    </label>
+                    <input type="text" class="form-control Unit" name="Unit" value="@natural.Unit" placeholder="Enter unit">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Total Produce (in Q Unit) collected (in Q unit)
+                    </label>
+                    <input type="number" min="0" class="form-control TotalProduced" name="TotalProduced" value="@(natural.Id == 0 ? "" : natural.TotalProduced)" placeholder="Enter Total Produce">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Total consumption (in Q unit)
+                    </label>
+                    <input type="number" min="0" class="form-control TotalConsumption" name="TotalConsumption" value="@(natural.Id == 0 ? "" : natural.TotalConsumption)" placeholder="Enter Total consumption">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Quantity sold (in Q unit)
+                    </label>
+                    <input type="number" min="0" class="form-control QuantitySold" name="QuantitySold" value="@(natural.Id == 0 ? "" : natural.QuantitySold)" placeholder="Enter Quantity sold">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Value produce sold (TK)
+                    </label>
+                    <input type="number" min="0" class="form-control ValueProduceSold" name="ValueProduceSold" value="@(natural.Id == 0 ? "" : natural.ValueProduceSold)" placeholder="Enter Value produce sold">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Cash of activity (TK)
+                    </label>
+                    <input type="number" min="0" class="form-control CostOfActivity" name="CostOfActivity" value="@(natural.Id == 0 ? "" : natural.CostOfActivity)" placeholder="Enter Cash of activity">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+						Net Income (BDT):
+                    </label>
+                    <input type="number" class="form-control natural-total-net-income" value="0" placeholder="Net Income" disabled>
+                </div>
+            </div>
+        </div> <!-- card body end -->
+    </div>
+}

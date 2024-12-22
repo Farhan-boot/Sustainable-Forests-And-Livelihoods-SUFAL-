@@ -1,0 +1,434 @@
+﻿@using PTSL.GENERIC.Web.Core.Controllers.AIG;
+@model IEnumerable<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.AIGBasicInformationVM>
+@{
+    ViewBag.Title = "AIG Information List";
+
+    var permissions = userRoleService.CurrentUserHasPermissions(
+        AIGCreatePermission.PermissionNameConst,
+        AIGRepaymentGetListByAIGIdPermission.PermissionNameConst,
+        AIGProgressCreatePermission.PermissionNameConst,
+        AIGProgressUpdatePermission.PermissionNameConst,
+        AIGProgressByBeneficiaryPermission.PermissionNameConst
+    );
+
+    permissions.TryGetValue(AIGProgressByBeneficiaryPermission.PermissionNameConst, out var hasProgressPermission);
+    permissions.TryGetValue(AIGRepaymentGetListByAIGIdPermission.PermissionNameConst, out var hasAIGRepaymentPermission);
+}
+
+<style>
+    .purple {
+        background: #1d9d92 !important;
+        color: white !important;
+    }
+
+        .purple:hover {
+            opacity: 0.8;
+            color: white !important;
+        }
+
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10 p-0">
+                    <h4>AIG Information List</h4>
+                </div>
+                <div class="col-md-2 text-right p-0">
+                    @if (permissions.TryGetValue(AIGCreatePermission.PermissionNameConst, out var hasCreatePermission) && hasCreatePermission)
+                    {
+                        <a href="/AIGBasicInformation/Create" class="badge badge-success badge-shadow">Create New</a>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-4 green-card p-2"
+                      style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+					<div class="row custom">
+						<div class="col-12 p-1">
+							<fieldset class="p-2">
+								<legend class="float-none w-auto">Basic Information</legend>
+								<div class="row">
+									<div class="col pr-1">
+										<label class="m-0">NGO</label>
+										@Html.DropDownList("NgoId", null, "Select NGO", htmlAttributes: new { })
+									</div>
+									<div class="col px-1">
+										<label class="m-0">Mobile Number</label>
+										<input type="text" id="PhoneNumber" value="@ViewBag.PhoneNumber" name="PhoneNumber" placeholder="Enter Beneficiary Mobile Number" />
+									</div>
+									<div class="col px-1">
+										<label class="m-0">NID</label>
+										<input type="text" id="NID" value="@ViewBag.NID" name="NID" placeholder="Enter Beneficiary NID (if any)" />
+									</div>
+									<div class="col pl-1">
+										<label class="m-0">Gender</label>
+										@Html.DropDownList("Gender", null, "Select Gender", htmlAttributes: new { })
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button id="submit" type="submit" class="btn btn-sm btn-green save">Search</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="foodTable" class="display">
+                        <thead class="table-content">
+                            <tr class="table-row">
+                                <th scope="col">SL</th>
+                                <th scope="col">Beneficiary Name</th>
+                                <th scope="col">Mobile Number</th>
+                                <th scope="col">NID</th>
+                                <th scope="col">Allocated<br /> Loan(TK)</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col">Months for<br /> Repayment</th>
+                                <th scope="col">LDF Round</th>
+                                <th scope="col">Loan Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-content">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/AIGBasicInformation/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        var data;
+        $('#foodTable').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'AIG Basic Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'AIG Basic Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'AIG Basic Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'AIG Basic Information List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                }
+            ],
+
+            "sAjaxSource": "/AIGBasicInformation/GetAIGBasicInformationListByPagination",
+            "bDestroy": true,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bSearchable": true,
+            "order": [[1, 'asc']],
+            "language": {
+                "emptyTable": "No record found.",
+                "processing":
+                    '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+            },
+
+            "fnDrawCallback": function (oSettings) {
+                data = oSettings.jqXHR.responseJSON.aaData;
+            },
+            aoColumns: [
+                {
+                    title: 'Id',
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.Survey.BeneficiaryName;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.Survey.BeneficiaryPhone;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.Survey.BeneficiaryNid;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return row.TotalAllocatedLoanAmountTextBD;
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return moment(row.StartDate).format("DD-MM-YYYY");
+                    },
+                },
+                {
+                    render: (data, type, row, meta) => {
+                        return moment(row.EndDate).format("DD-MM-YYYY");
+                    },
+                },
+                { mData: 'MaximumRepaymentMonth' },
+                { mData: 'LDFCountInWord' },
+                { mData: 'BadLoanTypeText' },
+
+                {
+                    render: (data, type, row, meta) => {
+                        const sixty = !row.FirstSixtyPercentageLDF ? `
+                            <a href="/AIGBasicInformation/FirstSixtyPercentage?aigId=${row.Id}" class='btn btn-primary btn-sm'>Add 60% LDF</a>
+                        ` : '';
+                        const forty = !row.SecondFourtyPercentageLDF ? `
+                            <a href="/AIGBasicInformation/SecondFourtyPercentage?aigId=${row.Id}" class="btn btn-primary btn-sm">Add 40% LDF</a>
+                        ` : '';
+                        const progressAndRepayments = ~row.FirstSixtyPercentageLDF ? `
+                            <a href="/AIGBasicInformation/Progress?aigId=${row.Id}" class="btn btn-warning btn-sm">Progress</a>
+                            <a href="/AIGBasicInformation/Repayments?aigId=${row.Id}" class="btn btn-warning btn-sm">Repayments</a>
+                        ` : '';
+
+                        return `
+                            ${sixty}
+                            ${forty}
+                            ${progressAndRepayments}
+                            <a href="/AIGBasicInformation/Details?id=${row.Id}" class="btn btn-info btn-sm">Details</a>
+                        `;
+                    },
+                },
+            ],
+        });
+
+
+
+        //Filter
+        $("#submit").click(function () {
+            //Extra Filter;
+            var forestCircleId = Number($("#ForestCircleId").val());
+            var forestDivisionId = Number($("#ForestDivisionId").val());
+            var forestRangeId = Number($("#ForestRangeId").val());
+            var forestBeatId = Number($("#ForestBeatId").val());
+            //var fcvVcfType = Number($("#FcvVcfType").val());
+            var forestFcvVcfId = Number($("#ForestFcvVcfId").val());
+            var divisionId = Number($("#DivisionId").val());
+            var districtId = Number($("#DistrictId").val());
+            var upazillaId = Number($("#UpazillaId").val());
+            var unionId = Number($("#UnionId").val());
+            //alert(forestCircleId);
+            var NgoId = Number($("#NgoId").val());
+            var PhoneNumber = $("#PhoneNumber").val();
+            var NID = $("#NID").val();
+            var Gender = Number($("#Gender").val());
+
+
+            var labourDatabaseFilterVM =
+            {
+                ForestCircleId: forestCircleId,
+                ForestDivisionId: forestDivisionId,
+                ForestRangeId: forestRangeId,
+                ForestBeatId: forestBeatId,
+                //FcvVcfType: fcvVcfType,
+                ForestFcvVcfId: forestFcvVcfId,
+                DivisionId: divisionId,
+                DistrictId: districtId,
+                UpazillaId: upazillaId,
+                UnionId: unionId,
+                NgoId: NgoId,
+                PhoneNumber: PhoneNumber,
+                NID: NID,
+                Gender: Gender
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/AIGBasicInformation/IndexFilterAIGBasicInformationListByPagination",
+                data: labourDatabaseFilterVM,
+                cache: false,
+                dataType: 'json',
+                success: function (response) {
+                    $('#foodTable').DataTable({
+                        "bDestroy": true,
+
+                        //"bServerSide": true,
+                        //"bProcessing": true,
+                        //"bSearchable": true,
+                        //"order": [[1, 'asc']],
+                        // "language": {
+                        //     "emptyTable": "No record found.",
+                        //     "processing":
+                        //         '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                        // },
+                        data: response.aaData,
+
+                        aoColumns: [
+                            {
+                                title: 'Id',
+                                data: null,
+                                render: (data, type, row, meta) => meta.row
+                            },
+                            // { mData: 'TrainingTitle' },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.Survey.BeneficiaryName;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.Survey.BeneficiaryPhone;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.Survey.BeneficiaryNid;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return row.TotalAllocatedLoanAmountTextBD;
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return moment(row.StartDate).format("DD-MM-YYYY");
+                                },
+                            },
+                            {
+                                render: (data, type, row, meta) => {
+                                    return moment(row.EndDate).format("DD-MM-YYYY");
+                                },
+                            },
+                            { mData: 'MaximumRepaymentMonth' },
+                            { mData: 'LDFCountInWord' },
+                            { mData: 'BadLoanTypeText' },
+
+                            {
+                                render: (data, type, row, meta) => {
+                                    var buttonData = "";
+                                    if (row.FirstSixtyPercentageLDF == null) {
+                                        buttonData = buttonData + "<a href='/AIGBasicInformation/FirstSixtyPercentage?aigId=" + row.Id + " ' class='btn btn-primary btn-sm'> Add 60 % LDF </a>";
+                                    }
+                                    if (row.SecondFourtyPercentageLDF == null && row.FirstSixtyPercentageLDF != null) {
+                                        buttonData = buttonData + "<a href='/AIGBasicInformation/SecondFourtyPercentage?aigId=" + row.Id + " ' class='btn btn-primary btn-sm' > Add 40 % LDF </a>";
+                                    }
+
+                                    if (row.FirstSixtyPercentageLDF != null) {
+                                        //permitions
+                                        buttonData = buttonData + "<a href='/AIGBasicInformation/Progress?aigId=" + row.Id + " ' class='btn btn-warning btn-sm'> Progress </a>";
+
+                                        buttonData = buttonData + "<a href='/AIGBasicInformation/Repayments?aigId=" + row.Id + " ' class='btn purple btn-sm'> Repayments </a>";
+                                    }
+
+                                    buttonData = buttonData + "<a href='/AIGBasicInformation/Details?id=" + row.Id + " ' class='btn btn-info btn-sm'> Details </a>";
+
+                                    return buttonData
+                                },
+                            },
+                        ],
+                    });
+                },
+                error: function () {
+                    $(".loader").fadeOut("slow");
+                    swal(
+                        'Unexpected',
+                        'Unknown error occurred',
+                        'error'
+                    );
+                }
+            });
+
+        });
+
+
+    });
+</script>

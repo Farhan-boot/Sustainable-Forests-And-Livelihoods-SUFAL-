@@ -1,0 +1,2020 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.ForestManagement.CommitteeManagementVM
+
+@{
+    ViewBag.Title = "Create";
+    var Message = ViewBag.Message;
+}
+
+<style>
+    .add-participant-container {
+        display: flex;
+        justify-content: right;
+        align-items: end;
+    }
+
+    label.error {
+        color: red !important;
+    }
+
+</style>
+
+
+@*<style>
+    input, select {
+        height: 30px!important;
+        line-height: 10px !important;
+        font-weight: 400 !important;
+        color: black !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px!important;
+    }
+</style>*@
+
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/CommitteeManagement/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Create Committee Management
+        </h4>
+        <button class="ml-auto reset btn btn-sm" onclick="location.reload()">
+            <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z" fill="currentColor" />
+            </svg>
+            Reset
+        </button>
+    </div>
+    <div style="padding-left: 15px; padding-right: 15px;">
+        @* @using (Html.BeginForm("", "", FormMethod.Post, new { id = "Form" }))
+        {*@
+        <form id="CommitteeManagementForm" class="card-body mt-2 green-card">
+            @*@{ Html.RenderPartial("~/Views/Shared/_ForestCivilLocation.cshtml", "create-member"); }*@
+
+            <div class="row p-1 custom ">
+                <div class="p-2 col-12">
+                    @*<legend class="float-none w-auto">Committees Management</legend>*@
+                    @*<h6 style="margin: 10px 0px 10px 10px;">Committee Management</h6>*@
+                    <div class="row custom forest-location">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                                     "~/Views/Shared/_ForestAdministration.cshtml",
+                                     (
+                                     ViewBag.ForestCircleId as SelectList,
+                                     ViewBag.ForestDivisionId as SelectList,
+                                     ViewBag.ForestRangeId as SelectList,
+                                     ViewBag.ForestBeatId as SelectList,
+                                     ViewBag.ForestFcvVcfId as SelectList
+                                     )
+                                     )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                                     "~/Views/Shared/_CivilAdministration.cshtml",
+                                     (
+                                     ViewBag.DivisionId as SelectList,
+                                     ViewBag.DistrictId as SelectList,
+                                     ViewBag.UpazillaId as SelectList,
+                                     ViewBag.UnionId as SelectList
+                                     )
+                                     )
+                        </div>
+
+                    </div>
+
+
+                    <div class="row custom ">
+
+                        <div class="col-6 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">NGO Information</legend>
+                                <div class="row">
+                                    <div class="col-6 pr-1" style="max-width: 245px;">
+                                        <label class="m-0">NGO <span style="color: red;">*</span></label>
+                                        @Html.DropDownList("NgoId", null, "Choose NGO", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2" style="padding: 10px;">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Committee Information</legend>
+
+                                @* <div class="row mt-2">
+                                <dsiv class="col-3 pr-1">
+                                <label class="m-0">Committee Type <span style="color: red;">*</span></label>
+                                @Html.DropDownList("CommitteeTypeId", null, "Choose Committee Type", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                                </dsiv>
+                                <div class="col-3 pr-1" style="padding-left: 7px;">
+                                <label class="m-0" id="lblExDesignation">Executive Designation <span style="color: red;">*</span></label>
+                                <label class="m-0" id="lblSubExDesignation">Sub Committee <span style="color: red;">*</span></label>
+                                @Html.DropDownList("DesignatinId", null, "Choose Sub Committee", htmlAttributes: new { @class = "form-control col-md-12", style = "width: 235px;" })
+                                @Html.DropDownList("ExDesignatinId", null, "Choose Executive Designation", htmlAttributes: new { @class = "form-control col-md-12", style = "width: 235px;" })
+                                </div>
+                                <div class="col-3 pr-1" style="padding-left: 5px;">
+                                <label class="m-0" id="lblSubDesignation">Designation <span style="color: red;">*</span></label>
+
+                                <select class="form-control col-md-12" id="SubCommitteeDesignationId" name="SubCommitteeDesignationId">
+                                <option value="">Select Designation</option>
+                                </select>
+                                </div>
+                                </div>*@
+
+
+                                <div class="row">
+                                    <!--<dsiv class="col-6 pr-1">-->
+                                    @*@Html.DropDownList("SubDesignatinId", null, "Choose Ex-Designatin..", htmlAttributes: new { @class = "form-control col-md-12", style = "width: 235px;" })*@
+                                    <!--<select id="SubDesignatinId" name="SubDesignatinId">
+                                            <option value="">Select Sub Designatin</option>
+                                        </select>
+                                    </dsiv>-->
+                                    @* <div class="col-3 pr-1">
+                                    <label class="m-0">Committee Type <span style="color: red;">*</span></label>
+                                    @Html.DropDownList("CommitteeTypeId", null, "Choose Committee Type", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                                    </div>
+                                    <div id="DesignatinDivId" class="col-3 pr-1" style="padding-left: 7px;">
+                                    <label class="m-0" id="lblSubExDesignation">Sub Committee <span style="color: red;">*</span></label>
+                                    @Html.DropDownList("DesignatinId", null, "Choose Sub Committee", htmlAttributes: new { @class = "form-control col-md-12", style = "width: 235px;" })
+                                    </div>*@
+
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">Committee Type <span style="color: red;">*</span></label>
+                                        @Html.DropDownList("CommitteeTypeConfigurationId", null, "Choose Committee Type", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                                    </div>
+                                    <div id="DivCommitteesConfigurationId" class="col-3 pr-1" style="padding-left: 7px;">
+                                        <label class="m-0" id="lblCommitteesConfigurationId">Committee Name<span style="color: red;">*</span></label>
+                                        @Html.DropDownList("CommitteesConfigurationId", null, "Choose Committee Name", htmlAttributes: new { @class = "form-control col-md-12", style = "width: 235px;", @required = "required" })
+                                    </div>
+
+
+
+
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">Committee Form Date <span style="color: red;">*</span></label>
+                                        <input type="date" id="CommitteeFormDate" name="CommitteeFormDate" placeholder="Enter Committee Form Date" required="">
+                                    </div>
+
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">Committee End Date <span style="color: red;">*</span></label>
+                                        <input type="date" id="CommitteeEndDate" name="CommitteeEndDate" placeholder="Enter Committee End Date" required="">
+                                    </div>
+
+                                </div>
+                                <div class="row mt-2">
+
+                                    @* <div class="col-3 pr-1">
+                                    <label class="m-0">Designation</label>
+                                    <select class="form-control col-md-12" id="CommitteeDesignationId" name="CommitteeDesignationId">
+                                    <option value="">Select Designation</option>
+                                    </select>
+                                    </div>*@
+
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">Designation</label>
+                                        <select class="form-control col-md-12" id="CommitteeDesignationsConfigurationId" name="CommitteeDesignationsConfigurationId">
+                                            <option value="">Select Designation</option>
+                                        </select>
+                                    </div>
+
+
+
+
+                                    <div class="col-3 pr-1">
+                                        <label class="m-0">FCV Member</label>
+                                        <select class="form-control col-md-12" id="OfficeBearersId" name="OfficeBearersId">
+                                            <option value="">Select Office Bearers</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-3 pr-1" style="padding-left: 8px; max-width: 252px;">
+                                        <label class="m-0">Other Member</label>
+                                        @* <label>Add Other Member</label>*@
+                                        @*<input type="text" class="form-control col-md-12" id="NidNo" name="@nameof(Model.OtherMemberId)" value="@Model.OtherMemberId" placeholder="Enter Other Member Id" required>*@
+                                        @Html.DropDownList("OtherMemberId", null, "Select Other Member", htmlAttributes: new { @class = "form-control col-md-12" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button style="background-color:forestgreen;float: right" class="btn btn-success btn-sm" type="button" onclick="addMore()">Add Member</button>
+                                    </div>
+                                </div>
+
+
+                                <div id="table-show " class="row custom" style="border-radius: 5px;">
+                                    <div class="col-12 p-1">
+                                        <fieldset class="p-2">
+                                            <legend class="float-none w-auto">Male And Female Information</legend>
+
+                                            <div class="row ">
+                                                <div class="col-6 pr-1">
+                                                    <div class="row">
+                                                        <div class="col-6 pr-1">
+                                                            <label>Male</label>
+                                                            <input type="text" class="form-control col-md-12" id="countMale" name="countMale">
+                                                        </div>
+                                                        <div class="col-6 pl-1">
+                                                            <label>Female</label>
+                                                            <input type="text" class="form-control col-md-12" id="countFemail" name="countFemail">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 pl-1">
+                                                    <div class="row">
+                                                        <div class="col-6 pr-1">
+                                                            <label>Male %</label>
+                                                            <input type="text" class="form-control col-md-12" id="malePer" name="malePer">
+                                                        </div>
+                                                        <div class="col-6 pl-1">
+                                                            <label>Female %</label>
+                                                            <input type="text" class="form-control col-md-12" id="femailPer" name="femailPer">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 pr-1">
+                                                    <div class="row">
+                                                        <div class="col-6 pr-1">
+                                                            <label>Total</label>
+                                                            <input type="text" class="form-control col-md-12" id="totalCount" name="totalCount">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                                <div class="row  mt-2" style="padding: 10px;">
+                                    <div class="col-12 p-1">
+
+
+                                        <div class="row mt-3" style="padding-left: 10px!important;">
+                                            <div class="col-6 pl-1">
+                                                <div class="row">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+
+                        <div style="overflow-y: scroll;">
+                            <table class="reportTable" id="grid" role="grid" aria-describedby="tableExport_filter_info" style="width: 1018px;">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SL: activate to sort column descending" style="min-width: 50px;">SL NO</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Department: activate to sort column ascending" style="min-width: 80px;">Designation</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Range: activate to sort column ascending" style="min-width: 100px;">Member Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Beat: activate to sort column ascending" style="min-width: 95px;">Member Type</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Name Of FCV: activate to sort column ascending" style="min-width: 100px;">Father's Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Financial Year: activate to sort column ascending" style="min-width: 50%;">Gender</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Total Scheme: activate to sort column ascending" style="min-width: 60px">Ethnicity</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Name Of Approveld Project / Sub Project: activate to sort column ascending" style="min-width: 50px;">NID No</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Amount(Taka): activate to sort column ascending" style="min-width: 75px;">Mobile No</th>
+                                        <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Comment: activate to sort column ascending" style="min-width: 50px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody">
+                                    @*  <tr role="row" class="trClass">
+                                    <td class="sorting_1">1</td>
+                                    <td class="DesignationId"></td>
+                                    <td class="MemberNameId"></td>
+                                    <td class="MemberTypeId"></td>
+                                    <td class="FatherNameId"></td>
+                                    <td class="GenderId"></td>
+                                    <td class="EthnicityId"></td>
+                                    <td class="NidNoId"></td>
+                                    <td class="MobileNoId"></td>
+                                    <td>
+                                    <div>
+                                    <button style="background-color:red" class="btn btn-danger btn-sm">Remove</button>
+                                    </div>
+                                    </td>
+                                    </tr>*@
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div id="table-show " class="row custom" style="border-radius: 5px;">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Bank Account Information (Optional)</legend>
+
+                                @*<div class="row ">
+                                <div class="col-6 pr-1">
+                                <div class="row">
+                                <div class="col-6 pr-1">
+                                <label>Name of the Bank A/C</label>
+                                <input type="text" class="form-control col-md-12" id="NameOfTheBankAC" name="@nameof(Model.NameOfBankAC)" value="@Model.NameOfBankAC" placeholder="Enter Name of the Bank A/C">
+                                </div>
+                                <div class="col-6 pl-1">
+                                <label>A/C Number</label>
+                                <input type="text" class="form-control col-md-12" id="ACNumber" name="@nameof(Model.AccountNumber)" value="@Model.AccountNumber" placeholder="Enter A/C Number">
+                                </div>
+                                </div>
+                                </div>
+                                <div class="col-6 pl-1">
+                                <div class="row">
+                                <div class="col-6 pr-1">
+                                <label>A/C Type</label>
+                                <input type="text" class="form-control col-md-12" id="AccountType" name="@nameof(Model.AccountType)" value="@Model.AccountType" placeholder="Enter Account Type">
+                                </div>
+                                <div class="col-6 pl-1">
+                                <label>Bank Name</label>
+                                <input type="text" class="form-control col-md-12" id="BankName" name="@nameof(Model.BankName)" value="@Model.BankName" placeholder="Enter Bank Name">
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                <div class="row">
+                                <div class="col-6 pr-1">
+                                <div class="row">
+                                <div class="col-6 pr-1">
+                                <label>Branch Name</label>
+                                <input type="text" class="form-control col-md-12" id="BranchName" name="@nameof(Model.BranchName)" value="@Model.BranchName" placeholder="Enter Branch Name">
+                                </div>
+                                <div class="col-6 pl-1">
+                                <label>A/C Opening Date<span></span></label>
+                                <input type="date" class="form-control col-md-12" id="AccountOpeningDate" name="@nameof(Model.AccountOpeningDate)" value="@(Model.AccountOpeningDate != null ? ((DateTime)Model.AccountOpeningDate).ToString("yyyy-MM-dd") : "")" placeholder="Enter Account Opening Date">
+                                </div>
+                                </div>
+                                </div>
+                                <div class="col-6 pl-1">
+                                <div class="row">
+                                <div class="col-6 pr-1">
+                                <label>Remarks</label>
+                                <input type="text" class="form-control col-md-12" id="Remark" name="@nameof(Model.Remark)" value="@Model.Remark" placeholder="Enter Remarks">
+                                </div>
+                                </div>
+                                </div>
+                                </div>*@
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="reportTable" id="grid" role="grid" aria-describedby="tableExport_filter_info" style="width: 1018px;">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="tableExport_filter" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SL: activate to sort column descending" style="min-width: 50px;">SL NO</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Department: activate to sort column ascending" style="min-width: 80px;">Name of the Bank A/C</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Range: activate to sort column ascending" style="min-width: 100px;">A/C Number</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Forest Beat: activate to sort column ascending" style="min-width: 95px;">A/C Type</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Name Of FCV: activate to sort column ascending" style="min-width: 100px;">Bank Name</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Financial Year: activate to sort column ascending" style="min-width: 50%;">Branch Name</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Total Scheme: activate to sort column ascending" style="min-width: 60px">A/C Opening Date</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="tableExport_filter" aria-label="Name Of Approveld Project / Sub Project: activate to sort column ascending" style="min-width: 50px;">Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbodyForBankInfo">
+                                                @*  <tr role="row" class="trClass">
+                                                <td class="sorting_1">1</td>
+                                                <td class="DesignationId"></td>
+                                                <td class="MemberNameId"></td>
+                                                <td class="MemberTypeId"></td>
+                                                <td class="FatherNameId"></td>
+                                                <td class="GenderId"></td>
+                                                <td class="EthnicityId"></td>
+                                                <td class="NidNoId"></td>
+                                                <td class="MobileNoId"></td>
+                                                <td>
+                                                <div>
+                                                <button style="background-color:red" class="btn btn-danger btn-sm">Remove</button>
+                                                </div>
+                                                </td>
+                                                </tr>*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!--<dsiv class="col-6 pr-1">-->
+                                    @*@Html.DropDownList("SubDesignatinId", null, "Choose Ex-Designatin..", htmlAttributes: new { @class = "form-control col-md-12", style = "width: 235px;" })*@
+                                    <!--<select id="SubDesignatinId" name="SubDesignatinId">
+                                            <option value="">Select Sub Designatin</option>
+                                        </select>
+                                    </dsiv>-->
+                                </div>
+
+
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        @*<h6 style="margin: 10px 0px 10px 10px;">Bank Account Information (Optional)</h6>
+        <div id="table-show px-5" style="padding: 0 10px; margin: 5px;">*@
+        @*@{ Html.RenderPartial("~/Views/Shared/_ForestCivilLocation.cshtml", "create-member"); }*@
+
+        @*<div class="row p-1 custom green-card">
+        <fieldset class="p-2 col-12">
+        <div class="row">
+        <div class="col-6 pr-1">
+        <div class="row" style="margin-left: -8px; margin-right: -8px;">
+        <div class="col-6 pr-1">
+        <label>Name of the Bank A/C</label>
+        <input type="text" class="form-control col-md-12" id="NameOfTheBankAC" name="@nameof(Model.NameOfBankAC)" value="@Model.NameOfBankAC" placeholder="Enter Name of the Bank A/C">
+        </div>
+        <div class="col-6 pl-1">
+        <label>A/C Number</label>
+        <input type="text" class="form-control col-md-12" id="ACNumber" name="@nameof(Model.AccountNumber)" value="@Model.AccountNumber" placeholder="Enter A/C Number">
+        </div>
+        </div>
+        </div>
+        <div class="col-6 pl-1">
+        <div class="row" style="margin-left: -8px; margin-right: -8px;">
+        <div class="col-6 pr-1" style="padding-left: 0px">
+        <label>A/C Type</label>
+        <input type="text" class="form-control col-md-12" id="AccountType" name="@nameof(Model.AccountType)" value="@Model.AccountType" placeholder="Enter Account Type">
+        </div>
+        <div class="col-6 pl-1">
+        <label>Bank Name</label>
+        <input type="text" class="form-control col-md-12" id="BankName" name="@nameof(Model.BankName)" value="@Model.BankName" placeholder="Enter Bank Name">
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="row mt-3">
+        <div class="col-6 pr-1">
+        <div class="row" style="margin-left: -8px; margin-right: -8px;">
+        <div class="col-6 pr-1">
+        <label>Branch Name</label>
+        <input type="text" class="form-control col-md-12" id="BranchName" name="@nameof(Model.BranchName)" value="@Model.BranchName" placeholder="Enter Branch Name">
+        </div>
+        <div class="col-6 pl-1">
+        <label>A/C Opening Date<span></span></label>
+        <input type="date" class="form-control col-md-12" id="AccountOpeningDate" name="@nameof(Model.AccountOpeningDate)" value="@(Model.AccountOpeningDate != null ? ((DateTime)Model.AccountOpeningDate).ToString("yyyy-MM-dd") : "")" placeholder="Enter Account Opening Date">
+        </div>
+        </div>
+        </div>
+        <div class="col-6 pl-1">
+        <div class="row" style="margin-left: -8px; margin-right: -8px;">
+        <div class="col-12 pr-1" style="padding-left: 0px">
+        <label>Remarks</label>
+        <input type="text" class="form-control col-md-6" id="Remark" name="@nameof(Model.Remark)" value="@Model.Remark" placeholder="Enter Remarks">
+        </div>
+        </div>
+        </div>
+        </div>
+        </fieldset>
+        </div>
+        </div>*@
+
+        <div class="d-flex justify-content-end mt-2">
+            <button type="button" onclick="submitFormData()" id="SaveCommitteeManagement" class="btn btn-sm btn-green btn-submit mr-2">
+                @* <i class="fa fa-save mr-2"></i>*@Save
+            </button>
+        </div>
+        @* }*@
+    </div>
+
+    @*@{ Html.RenderPartial("_AddParticipant"); }*@
+
+
+    <div class="card-header pull-left">
+        <!--  <a href="/ExecutiveCommittee/Index" class="btn btn-warning">Return to Index</a> -->
+    </div>
+
+</div>
+
+<script>
+    var mailCount = 0;
+    var femailCount = 0;
+    var totalCount = 0;
+    var mailPer = 0.0;
+    var femailPer = 0.0;
+
+
+    $("#lblExDesignation").hide();
+    $("#lblSubExDesignation").hide();
+    $("#lblSubDesignation").hide();
+
+    //var allParticipants = [];
+    //$("#CloseModal").on("click", function () {
+    //    // clean up
+    //});
+
+    $(".submit-btn").on("click", function () {
+        if ($("#Form").valid()) {
+            var valCell = $("#CellNo").val();
+            alert(valCell);
+        }
+    });
+
+
+    $("#Form").validate({
+        rules: {
+            ForestCircleId: {
+                required: true
+            },
+            ForestDivisionId: {
+                required: true
+            },
+            ForestRangeId: {
+                required: true
+            },
+            ForestBeatId: {
+                required: true
+            },
+            ForestFcvVcfId: {
+                required: true
+            },
+            DistrictId: {
+                required: true
+            },
+            DivisionId: {
+                required: true
+            },
+            UpazillaId: {
+                required: true
+            },
+            UnionId: {
+                required: true
+            },
+            FcvVcfType: {
+                required: true
+            },
+            SubCommitteeDesignationId: {
+                required: true
+            },
+            CommitteeEndDate: {
+                dateMustBeGreaterThanStart: true
+            },
+
+
+
+        },
+
+    });
+
+
+
+
+
+
+    $("#CellNo").keyup(function () {
+        $("#CellNo").val(this.value.match(/[0-9]*/));
+    });
+
+    var BeneficiaryInfo;
+    $("#ForestFcvVcfId").on("change", function () {
+
+        //$("#OfficeBearersId").prop('required', true);
+        //$("#OtherMemberId").prop('required', true);
+        $(".loader").fadeIn("slow");
+        var ForestFcvVcfId = $("#ForestFcvVcfId").val();
+        var OfficeBearersId = $("#OfficeBearersId");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/GetBeneficiaryByFcvVcfId",
+            data: { "id": ForestFcvVcfId },
+            success: function (data) {
+                $(".loader").fadeOut("slow");
+                BeneficiaryInfo = data;
+                console.log(data);
+                OfficeBearersId.html('<option value="">Select FCV Member</option>');
+                $.each(data, function (id, option) {
+                    OfficeBearersId.append($('<option></option>').val(option.Id).html((option.BeneficiaryName || option.BeneficiaryNameBn) + " - " + option.BeneficiaryNid));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    var OtherMemberInfo;
+
+    $("#OtherMemberId").on("change", function () {
+
+        //BeneficiaryInfo = undefined;
+
+        var myOtherMemberId = $("#OtherMemberId").val();
+        //alert(myOtherMemberId);
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetOtherCommitteeMemberById",
+            data: { "id": myOtherMemberId },
+            success: function (data) {
+                console.log(data);
+                OtherMemberInfo = data;
+
+                $("#NidNo").val(data.NID);
+                $("#CellNo").val(data.PhoneNumber);
+                $("#FatherOrSpouse").val(data.FatherOrSpouse);
+                //document.getElementById("GenderId").value = data.Gender;
+                //document.getElementById("EthnicityId").value = data.EthnicityId;
+
+                $("#GenderId").val(data.Gender);
+                $("#GenderId").val(data.EthnicityId);
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                // alert('Failed to retrieve data.');
+            }
+        });
+
+
+        //$("#OfficeBearersId").prop('required', false);
+        //$("#OtherMemberId").prop('required', true);
+
+        var OtherMemberId = $("#OtherMemberId").val();
+        if (OtherMemberId == "" || OtherMemberId == null) {
+            // alert(OtherMemberId);
+            document.getElementById("OfficeBearersId").disabled = false;
+            return true;
+        }
+        else {
+            // alert(OtherMemberId);
+            //$("#OfficeBearersId").val(0);
+            //$("#OfficeBearersId").html('<option value="0">Choose</option>');
+            $('#OfficeBearersId').val(0);
+            //document.getElementById("OfficeBearersId").disabled = true;
+
+        }
+
+        $("#OfficeBearersId").prop("selectedIndex", 0);
+        $('#OtherMemberId').prop("required", true);
+        $('#OfficeBearersId').prop("required", false);
+
+    });
+
+
+
+
+
+
+    $("#OfficeBearersId").on("change", function () {
+
+        OtherMemberInfo = undefined;
+
+        //alert(test);
+        //console.log(BeneficiaryInfo);
+        //$('#OtherMemberId').val(0);
+
+        var myBearersId = $("#OfficeBearersId").val();
+        $.each(BeneficiaryInfo, function (id, option) {
+
+            $(".NidNoId").val(option.BeneficiaryNid);
+
+            if (option.Id === parseInt(myBearersId)) {
+                $(".NidNoId").val(option.BeneficiaryNid);
+                $("#CellNo").val(option.BeneficiaryPhone);
+                document.getElementById("GenderId").value = option.BeneficiaryGender;
+                document.getElementById("EthnicityId").value = option.BeneficiaryEthnicityId;
+
+                if (option.BeneficiaryFatherName == null || option.BeneficiaryFatherName.length === 0) {
+                    $("#FatherOrSpouse").val(option.BeneficiarySpouseName);
+                }
+                else {
+                    $("#FatherOrSpouse").val(option.BeneficiaryFatherName);
+                }
+            };
+
+
+            $("#OtherMemberId").prop("selectedIndex", 0);
+
+        });
+
+        //alert(OfficeBearersId);
+
+    @*if (OfficeBearersId === 0) {
+            $("#OtherMemberId").prop('required', true);
+            $("#OfficeBearersId").prop('required', false);
+            }*@
+
+
+                                                    var OfficeBearersId = $("#OfficeBearersId").val();
+        //alert(OfficeBearersId);
+
+        if (OfficeBearersId == 0) {
+            $('#OtherMemberId').val(0);
+            //document.getElementById("OtherMemberId").disabled = false;
+            return true;
+        }
+        else {
+            $('#OtherMemberId').val(0);
+            //document.getElementById("OtherMemberId").disabled = true;
+            //$("#OtherMemberId").val(null);
+        }
+
+        $("#OtherMemberId").prop("selectedIndex", 0);
+        $('#OtherMemberId').prop("required", false);
+        $('#OfficeBearersId').prop("required", true);
+
+    });
+
+    $("#DesignatinId").hide();
+    $("#ExDesignatinId").hide();
+    $("#DesignatinDivId").hide();
+
+    $("#CommitteeTypeId").on("change", function () {
+
+        var committeeTypeId = parseInt($("#CommitteeTypeId").val());
+
+        $("#CommitteeDesignationId > option").remove();
+        var committeeDesignationId = $("#CommitteeDesignationId");
+        committeeDesignationId.append($('<option></option>').val("").html("Select Designation"));
+
+
+        var committeeData = {
+            "committeeType": committeeTypeId,
+            "subCommitteeType": null
+        }
+
+        $("#lblExDesignation").hide();
+        $("#lblSubExDesignation").hide();
+
+        var CommitteeType = $("#CommitteeTypeId").val();
+        if (CommitteeType == "" || CommitteeType == null) {
+            $("#DesignatinId").hide();
+            $("#ExDesignatinId").hide();
+            $("#SubCommitteeDesignationId").hide();
+            $("#lblSubDesignation").hide();
+            $("#DesignatinDivId").hide();
+
+
+            return true;
+        }
+        else if (CommitteeType == 1) {
+            $("#DesignatinId").hide();
+            $("#ExDesignatinId").show();
+            $("#ExDesignatinId").prop('required', true);
+            $("#SubCommitteeDesignationId").hide();
+
+            $("#lblSubDesignation").hide();
+            $("#lblExDesignation").show();
+            $("#lblSubExDesignation").hide();
+            $("#DesignatinDivId").hide();
+
+            var committeeDesignationId = $("#CommitteeDesignationId");
+            $("#CommitteeDesignationId > option").remove();
+
+            $.ajax({
+                type: "POST",
+                url: "/CommitteeManagement/GetDesignationByDesigOrSubDesigId",
+                data: committeeData,
+                cache: false,
+                dataType: 'json',
+                success: function (response) {
+                    //alert("success");
+                    committeeDesignationId.append($('<option></option>').val("").html("Select Designation"));
+                    $.each(response.Entity, function (id, option) {
+                        committeeDesignationId.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                },
+                error: function () {
+                    $(".loader").fadeOut("slow");
+                    swal(
+                        'Unexpected',
+                        'Unknown error occurred',
+                        'error'
+                    );
+                }
+            });
+
+        }
+        else if (CommitteeType == 2) {
+            $("#DesignatinId").show();
+            $("#ExDesignatinId").hide();
+            $("#DesignatinId").prop('required', true);
+
+            $("#lblExDesignation").hide();
+            $("#lblSubExDesignation").show();
+            $("#DesignatinDivId").show();
+        }
+        else if (CommitteeType == 3) {
+            $("#DesignatinId").hide();
+            $("#ExDesignatinId").show();
+            $("#ExDesignatinId").prop('required', true);
+            $("#SubCommitteeDesignationId").hide();
+
+            $("#lblSubDesignation").hide();
+            $("#lblExDesignation").show();
+            $("#lblSubExDesignation").hide();
+            $("#DesignatinDivId").hide();
+
+            var committeeDesignationId = $("#CommitteeDesignationId");
+            $("#CommitteeDesignationId > option").remove();
+
+            $.ajax({
+                type: "POST",
+                url: "/CommitteeManagement/GetDesignationByDesigOrSubDesigId",
+                data: committeeData,
+                cache: false,
+                dataType: 'json',
+                success: function (response) {
+                    //alert("success");
+                    committeeDesignationId.append($('<option></option>').val("").html("Select Designation"));
+                    $.each(response.Entity, function (id, option) {
+                        committeeDesignationId.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                },
+                error: function () {
+                    $(".loader").fadeOut("slow");
+                    swal(
+                        'Unexpected',
+                        'Unknown error occurred',
+                        'error'
+                    );
+                }
+            });
+
+        }
+
+
+    });
+
+
+
+
+    $('#SubCommitteeDesignationId').hide();
+    $("#DesignatinId").on("change", function () {
+
+        var committeeTypeId = parseInt($("#CommitteeTypeId").val());
+        var subCommitteeId = parseInt($("#DesignatinId").val());
+
+        var committeeData = {
+            "committeeType": committeeTypeId,
+            "subCommitteeType": subCommitteeId
+        }
+
+        var committeeDesignationId = $("#CommitteeDesignationId");
+
+        $.ajax({
+            type: "POST",
+            url: "/CommitteeManagement/GetDesignationByDesigOrSubDesigId",
+            data: committeeData,
+            cache: false,
+            dataType: 'json',
+            success: function (response) {
+                //alert("success");
+                $("#CommitteeDesignationId > option").remove();
+                committeeDesignationId.append($('<option></option>').val("").html("Select Designation"));
+                $.each(response.Entity, function (id, option) {
+                    committeeDesignationId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function () {
+                $(".loader").fadeOut("slow");
+
+                swal(
+                    'Unexpected',
+                    'Unknown error occurred',
+                    'error'
+                );
+            }
+        });
+
+
+
+        $('#SubCommitteeDesignationId').show();
+        $('#lblSubDesignation').show();
+        var designatinId = $("#DesignatinId").val();
+
+        $('#SubCommitteeDesignationId').children().remove().end()
+            .append('<option selected value="">Choose Sub Designation</option>');
+
+
+        //alert(designatinId);
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListBySubCommitteeType",
+            data: { "id": designatinId },
+            success: function (data) {
+
+                // $(".loader").fadeOut("slow");
+                console.log(data);
+                // designatinId.html('<option value="">Choose..</option>');
+
+                $.each(data, function (i, item) {
+                    $('#SubCommitteeDesignationId').append($('<option>', {
+                        value: item.Id,
+                        text: item.Name
+                    }));
+                });
+
+                //$.each(data, function (id, option) {
+                //    SubCommitteeDesignationId.append($('<option></option>').val(option.Id).html(option.Name || option.NameBn));
+                //});
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //alert('Failed to retrieve data.');
+            }
+        });
+    });
+</script>
+
+@*<script>
+    const memberTypeName = "Member";
+    const beneficiaryTypeName = "Beneficiary";
+
+    $("#SaveTraining").on("click", function () {
+        // Validate
+        $("#CommunityTrainingForm").validate({
+            rules: {
+                ForestCircleId: "required",
+                ForestDivisionId: "required",
+                ForestRangeId: "required",
+                ForestBeatId: "required",
+                ForestFcvVcfId: "required",
+                PresentDivisionId: "required",
+                PresentDistrictId: "required",
+                PresentUpazillaId: "required",
+                StartDate: "required",
+                EndDate: "required",
+                TrainingDuration: "required",
+                TrainerName: "required",
+                EventTypeId: "required",
+                TrainingOrganizerId: "required",
+            }
+        });
+
+        var isFormValid = $("#CommunityTrainingForm").valid();
+        if (isFormValid == false) {
+            return;
+        }
+
+        // Check if participants is added
+        if (Array.isArray(allParticipants) == false) {
+            swal(
+                'Invalid Form',
+                'No Participants added.',
+                'error'
+            );
+            return;
+        }
+
+        if (allParticipants.length < 1) {
+            swal(
+                'Invalid Form',
+                'No Participants added.',
+                'error'
+            );
+            return;
+        }
+
+        // Map all participants
+        var participants = allParticipants.map(x => {
+            if (x.type == beneficiaryTypeName) {
+                return {
+                    SurveyId: x.member.Id
+                }
+            }
+            if (x.type == memberTypeName) {
+                return {
+                    CommunityTrainingMember: {
+                        ...x.member,
+                        Id: 0,
+                    }
+                }
+            }
+        });
+
+        var communityTraining = {
+            TrainingTitle: $("#TrainingTitle").val(),
+            TrainingTitleBn: $("#TrainingTitleBn").val(),
+            StartDate: $("#StartDate").val(),
+            EndDate: $("#EndDate").val(),
+            TrainingDuration: $("#TrainingDuration").val(),
+            Location: $("#Location").val(),
+            LocationBn: $("#LocationBn").val(),
+            TrainerName: $("#TrainerName").val(),
+
+            ForestCircleId: $(".create-member select[name=ForestCircleId]").val(),
+            ForestDivisionId: $(".create-member select[name=ForestDivisionId]").val(),
+            ForestRangeId: $(".create-member select[name=ForestRangeId]").val(),
+            ForestBeatId: $(".create-member select[name=ForestBeatId]").val(),
+            ForestFcvVcfId: $(".create-member select[name=ForestFcvVcfId]").val(),
+            DivisionId: $(".create-member select[name=PresentDivisionId]").val(),
+            DistrictId: $(".create-member select[name=PresentDistrictId]").val(),
+            UpazillaId: $(".create-member select[name=PresentUpazillaId]").val(),
+
+            EventTypeId: $("#EventTypeId").val(),
+            CommunityTrainingTypeId: $("#CommunityTrainingTypeId").val(),
+            TrainingOrganizerId: $("#TrainingOrganizerId").val(),
+            CommunityTrainingParticipentsMapsJSON: participants,
+            //CommunityTrainingFiles: ,
+        };
+
+        var formData = new FormData();
+
+        for (var key in communityTraining) {
+            var value = communityTraining[key];
+
+            if (Array.isArray(value)) {
+                formData.append(key, JSON.stringify(value));
+            } else {
+                formData.append(key, value);
+            }
+        }
+
+        $("#imagesList input[type=file]").each(function () {
+            var current = $(this);
+
+            if (current?.length && current.length > 0) {
+                formData.append("CommunityTrainingImageFiles[]", current[0].files[0]);
+            }
+        });
+
+        $("#documentsList input[type=file]").each(function () {
+            var current = $(this);
+
+            if (current?.length && current.length > 0) {
+                formData.append("CommunityTrainingDocumentFiles[]", current[0].files[0]);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/CommunityTraining/Create",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                if (response.Success) {
+                    swal(
+                        'Success',
+                        response.Message,
+                        'success'
+                    );
+                } else {
+                    swal(
+                        'Error',
+                        response.Message,
+                        'error'
+                    );
+                }
+            },
+            error: function () {
+                swal(
+                    'Unexpected',
+                    'Unknown error occurred',
+                    'error'
+                );
+            }
+        });
+
+        // Send data with Ajax
+    });
+</script>*@
+
+@*<script>
+    let eventTypes = [];
+
+    $(document).ready(function () {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/GetEventTypeList",
+            success: function (data) {
+                eventTypes = data;
+
+                var EventTypeId = $("#EventTypeId");
+                EventTypeId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    EventTypeId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/GetCommunityTrainingTypeList",
+            success: function (data) {
+                var CommunityTrainingTypeId = $("#CommunityTrainingTypeId");
+                CommunityTrainingTypeId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    CommunityTrainingTypeId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/GetTrainingOrganizerList",
+            success: function (data) {
+                var TrainingOrganizerId = $("#TrainingOrganizerId");
+                TrainingOrganizerId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    TrainingOrganizerId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#EventTypeId").on("change", function () {
+        const value = $(this).val();
+        const found = eventTypes.find(x => x.Id == value);
+
+        if (found && found.HasTrainingType) {
+            $("#CommunityTrainingTypeId").removeAttr("disabled");
+        } else {
+            $("#CommunityTrainingTypeId").attr("disabled", "");
+            $("#CommunityTrainingTypeId").val("");
+        }
+    });
+</script>*@
+
+@*<script>
+    $(".submit-btn").on("click", function () {
+        if ($("#Form").valid()) {
+            $(".loader").fadeIn("slow");
+        }
+    });
+    $("#Form").validate({
+        rules: {
+        },
+    });
+</script>*@
+
+<script>
+    $("#CircleId").change(function () {
+        var selectedItem = $(this).val();
+        var forestDivisonList = $("#ForestDivisionId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestDivisionByForestCircle",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestDivisonList.html('<option value="">Choose Forest Divison</option>');
+                $.each(data, function (id, option) {
+                    forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestDivisonList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#ForestDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var forestRangeList = $("#RangeId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestRangeByForestDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestRangeList.html('<option value="">Choose Forest Range</option>');
+                $.each(data, function (id, option) {
+                    forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestRangeList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#RangeId").change(function () {
+        var selectedItem = $(this).val();
+        var forestBeatList = $("#BeatId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestBeatByForestRange",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestBeatList.html('<option value="">Choose Forest Beat</option>');
+                $.each(data, function (id, option) {
+                    forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestBeatList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#BeatId").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("#FcvId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+        var FcvVcfType = $("#FcvVcfType").val();
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListByForestBeatAndType",
+            data: { "beatId": selectedItem, "type": FcvVcfType },
+            success: function (data) {
+                forestFcvVcfList.html('<option value="">Choose Forest FCV/VCF</option>');
+                $.each(data, function (id, option) {
+                    forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestFcvVcfList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#CivilDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentDistrictId = $("#CivilDistrictId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListDistrictByDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentDistrictId.html('<option value="">Choose District</option>');
+                $.each(data, function (id, option) {
+                    PresentDistrictId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentDistrictId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#CivilDistrictId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentUpazillaId = $("#CivilUpazillaId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUpazillaByDistrict",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose Upazilla</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+
+    $("#CivilUpazillaId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentUpazillaId = $("#UnionId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUnionByUpazilla",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+
+
+    // FcvVcfType Start
+    $("#FcvVcfType").change(function () {
+        $("#BeatId").trigger("change");
+    });
+
+    $("#BeatId").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("#ForestFcvVcfId");
+        var FcvVcfType = $("#FcvVcfType").val();
+        if (selectedItem == "" || selectedItem == null || FcvVcfType == "" | FcvVcfType == null) {
+            return true;
+        }
+    });
+
+
+    // FcvVcfType End
+
+
+    $('#GenderId').attr("style", "pointer-events: none;");
+    $('#EthnicityId').attr("style", "pointer-events: none;");
+
+
+
+</script>
+
+<script>
+    $.validator.addMethod(
+        'dateMustBeGreaterThanStart',
+        function (value, element, requiredValue) {
+            return dateMustBeGreaterThanStartDateFunc(value);
+        },
+        'Date must be greater or equal to start date.'
+    );
+
+    const dateMustBeGreaterThanStartDateFunc = date => {
+        var startDate = $("#CommitteeFormDate").val();
+
+        return (new Date(date)).toISOString() >= (new Date(startDate)).toISOString();
+    }
+</script>
+
+<!--Commitee Management-->
+<script>
+    var count = 1;
+    var itemDetails = [];
+
+    function addMore(event) {
+        debugger;
+        //document.getElementById("CommitteeTypeId").disabled = true;
+
+
+        var committeeDesignationText = $("#CommitteeDesignationsConfigurationId :selected").text();
+        var committeeDesignationValue = $("#CommitteeDesignationsConfigurationId").val();
+
+
+        var memberNameText = $("#OfficeBearersId :selected").text();
+        var memberNameValue = $("#OfficeBearersId").val();
+
+        var otherMemberText = $("#OtherMemberId :selected").text();
+        var otherMemberValue = $("#OtherMemberId").val();
+
+
+        //check member Validetion
+        var isUserExist = itemDetails.find(x => x.SurveyId == memberNameValue);
+        if (count > 1) {
+            if (isUserExist !== undefined) {
+                alert("Alredy User Added!");
+                return;
+            }
+        }
+
+        var isUserExistOtherMember = itemDetails.find(x => x.OtherCommitteeMemberId == otherMemberValue);
+        if (count > 1) {
+            if (isUserExistOtherMember !== undefined) {
+                alert("Alredy User Added!");
+                return;
+            }
+        }
+
+
+        if (committeeDesignationValue.length <= 0) {
+            alert("Please Select Designation");
+            return;
+        }
+
+        if (memberNameValue.length <= 0 && otherMemberValue.length <= 0) {
+            alert("Please Select Member!");
+            return;
+        }
+
+
+
+
+        var memberType = "";
+
+        var showMemberText = "";
+        var showMemberValue = "";
+        if (memberNameValue == "0" || memberNameValue == "") {
+            showMemberText = otherMemberText;
+            showMemberValue = otherMemberValue;
+            memberType = "Other Member";
+        }
+        if (otherMemberValue == "0" || otherMemberValue == "") {
+            showMemberText = memberNameText;
+            showMemberValue = memberNameValue;
+            memberType = "Office Bearers";
+        }
+        //Other info
+
+        var fatherName = "";
+        var gender = "";
+        var ethnicity = "";
+        var nidNo = "";
+        var mobileNo = "";
+
+        //alert(OtherMemberInfo);
+        console.log(OtherMemberInfo);
+
+        if (OtherMemberInfo === undefined) {
+            $.each(BeneficiaryInfo, function (id, option) {
+                if (option.Id === parseInt(memberNameValue)) {
+                    nidNo = option.BeneficiaryNid;
+                    if (option.BeneficiaryGender === 1) {
+                        gender = "Male";
+                    }
+                    if (option.BeneficiaryGender === 2) {
+                        gender = "Female";
+                    }
+                    if (option.BeneficiaryGender === 3) {
+                        gender = "Others";
+                    }
+
+                    ethnicity = option.BeneficiaryEthnicityId;
+                    mobileNo = option.BeneficiaryPhone;
+                    if (option.BeneficiaryFatherName == null || option.BeneficiaryFatherName.length === 0) {
+                        fatherName = option.BeneficiarySpouseName;
+                    }
+                    else {
+                        fatherName = option.BeneficiaryFatherName;
+                    }
+                };
+            });
+        }
+        else {
+
+            nidNo = OtherMemberInfo.NID;
+            //gender = OtherMemberInfo.Gender;
+
+            if (OtherMemberInfo.Gender === 1) {
+                gender = "Male";
+            }
+            if (OtherMemberInfo.Gender === 2) {
+                gender = "Female";
+            }
+            if (OtherMemberInfo.Gender === 3) {
+                gender = "Others";
+            }
+
+            ethnicity = OtherMemberInfo.Ethnicity;
+            mobileNo = OtherMemberInfo.PhoneNumber;
+            fatherName = OtherMemberInfo.FatherOrSpouse;
+
+
+
+        }
+
+        //Other info
+        var designationText = $("#ExDesignatinId :selected").text();
+        var designationValue = $("#ExDesignatinId").val();
+        if (designationValue == "") { designationText = ""; }
+
+        var subDesignationText = $("#SubCommitteeDesignationId :selected").text();
+        var subDesignationValue = $("#SubCommitteeDesignationId").val();
+        if (subDesignationValue == "") { subDesignationText = ""; }
+
+        //event.preventDefault();
+        var tbody = $("#tbody");
+
+        tbody.append(`
+                                                         <tr role="row" class="trClass" data-id="${count}">
+                                                                    <td class="Id">${count}</td>
+                                                                    <td data-designation="${committeeDesignationValue}" class="DesignationId">${committeeDesignationText}</td>
+                                                                    <td data-memberNameId="${showMemberValue}" class="MemberNameId">${showMemberText}</td>
+                                                                    <td class="MemberTypeId">${memberType}</td>
+                                                                    <td class="FatherNameId">${fatherName}</td>
+                                                                    <td class="GenderId" gender-id="${gender}">${gender}</td>
+                                                                    <td class="EthnicityId">${ethnicity}</td>
+                                                                    <td class="NidNoId">${nidNo}</td>
+                                                                    <td class="MobileNoId">${mobileNo}</td>
+                                                                    <td>
+                                                                        <div>
+                                                                                <button style="background-color:red" class="btn btn-danger btn-sm" onclick="removeItem(${count})">Remove</button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                   `);
+
+        console.log(BeneficiaryInfo);
+
+
+
+        itemDetails.push({
+            //Id: id,
+            Count: count,
+            CommitteeDesignationId: committeeDesignationValue,
+            CommitteeDesignationsConfigurationId: committeeDesignationValue,
+            SurveyId: memberType == 'Office Bearers' ? memberNameValue : null,
+            OtherCommitteeMemberId: memberType == 'Other Member' ? otherMemberValue : null
+        });
+
+        count = count + 1;
+        var designationValue = 0;
+        var subDesignationValue = 0;
+
+        $('#OfficeBearersId').val(0);
+        $('#CommitteeDesignationId').val(0);
+
+
+        $("#OtherMemberId").prop("selectedIndex", 0);
+        $("#OfficeBearersId").prop("selectedIndex", 0);
+        $("#CommitteeDesignationId").prop("selectedIndex", 0);
+
+
+        $('#OtherMemberId').prop("required", false);
+        $('#OfficeBearersId').prop("required", false);
+        $('#CommitteeDesignationId').prop("required", false);
+
+
+        //male or femail per log
+
+        //var gridCheckGender =  $("#grid tbody tr").find(`td[gender-id=${"Male"}]`).text();
+
+        mailCount = 0;
+        femailCount = 0;
+        totalCount = 0;
+        mailPer = 0.0;
+        femailPer = 0.0;
+
+        $('#grid > tbody  > tr').each(function (index, tr) {
+            //mailCount = 0;
+            //femailCount = 0;
+            //console.log(index);
+            //console.log(tr);
+
+            console.log(this.cells[5].innerText);
+
+            if (this.cells[5].innerText == "Male") {
+                mailCount++;
+            }
+            if (this.cells[5].innerText == "Female") {
+                femailCount++;
+            }
+        });
+
+        $("#countMale").val(mailCount);
+        $("#countFemail").val(femailCount);
+        //Total
+        totalCount = mailCount + femailCount;
+        $("#totalCount").val(totalCount);
+        //alert(totalCount);
+        var mailPer = ((mailCount / totalCount) * 100);
+        $("#malePer").val(mailPer);
+
+        var femailPer = ((femailCount / totalCount) * 100);
+        $("#femailPer").val(femailPer);
+
+    }
+
+</script>
+
+<script>
+    function formatForInput(date) {
+        const newDate = date instanceof Date ? date : typeof date === 'string' ? new Date(date) : new Error('Invalid date parameter passed');
+
+        return newDate.toLocaleDateString('en-CA');
+    }
+    $("#ExDesignatinId").on("change", function () {
+        $("#SubCommitteeDesignationId").val("");
+        var subDesignationText = "";
+
+    });
+
+    $("#SubCommitteeDesignationId").on("change", function () {
+        $("#ExDesignatinId").val("");
+        var designationText = "";
+    });
+
+
+    function removeItem(id) {
+        for (var i = 0; i < itemDetails.length; i++) {
+            if (itemDetails[i].Count === id) {
+                itemDetails.splice(i, 1);
+                //break;
+            }
+        }
+        //alert(id);
+        $(`[data-id=${id}]`).remove();
+
+        mailCount = 0;
+        femailCount = 0;
+        totalCount = 0;
+        mailPer = 0.0;
+        femailPer = 0.0;
+
+        $('#grid > tbody  > tr').each(function (index, tr) {
+
+            console.log(this.cells[5].innerText);
+
+            if (this.cells[5].innerText == "Male") {
+                mailCount++;
+            }
+            if (this.cells[5].innerText == "Female") {
+                femailCount++;
+            }
+        });
+
+        $("#countMale").val(mailCount);
+        $("#countFemail").val(femailCount);
+        //Total
+        totalCount = mailCount + femailCount;
+        $("#totalCount").val(totalCount);
+        //alert(totalCount);
+        var mailPer = ((mailCount / totalCount) * 100);
+        $("#malePer").val(mailPer);
+
+        var femailPer = ((femailCount / totalCount) * 100);
+        $("#femailPer").val(femailPer);
+
+    }
+
+
+
+    function submitFormData(event) {
+
+        // Validate
+        $("#CommitteeManagementForm").validate({
+            rules: {
+                ForestCircleId: "required",
+                ForestDivisionId: "required",
+                ForestRangeId: "required",
+                ForestBeatId: "required",
+                ForestFcvVcfId: "required",
+                DivisionId: "required",
+                DistrictId: "required",
+                UpazillaId: "required",
+                UnionId: "required",
+                FcvVcfType: "required",
+                //CommitteeDesignationId: "required",
+                //OfficeBearersId: "required",
+                CommitteeEndDate: {
+                    dateMustBeGreaterThanStart: true
+                },
+
+
+            }
+        });
+
+        var isFormValid = $("#CommitteeManagementForm").valid();
+        if (isFormValid == false) {
+            return;
+        }
+
+
+
+
+
+
+
+        debugger;
+        //event.preventDefault();
+        // alert("Test save");
+
+        var formData = new FormData();
+        //formData.append('Id', $("#Id").val());
+
+        formData.append('ForestCircleId', $("#ForestCircleId").val());
+        formData.append('ForestDivisionId', $("#ForestDivisionId").val());
+        formData.append('ForestRangeId', $("#ForestRangeId").val());
+        formData.append('ForestBeatId', $("#ForestBeatId").val());
+        formData.append('ForestFcvVcfId', $("#ForestFcvVcfId").val());
+        formData.append('DivisionId', $("#DivisionId").val());
+        formData.append('DistrictId', $("#DistrictId").val());
+        formData.append('UpazillaId', $("#UpazillaId").val());
+        formData.append('UnionId', $("#UnionId").val());
+        formData.append('NgoId', $("#NgoId").val());
+
+        formData.append('CommitteeTypeId', $("#CommitteeTypeId").val());
+
+        formData.append('CommitteeFormDate', $("#CommitteeFormDate").val());
+        formData.append('CommitteeEndDate', $("#CommitteeEndDate").val());
+        formData.append('SubCommitteeTypeId', $("#DesignatinId").val());
+
+        formData.append('NameOfBankAC', $("#NameOfTheBankAC").val());
+        formData.append('AccountNumber', $("#ACNumber").val());
+
+        formData.append('AccountType', $("#AccountType").val());
+        formData.append('BankName', $("#BankName").val());
+        formData.append('BranchName', $("#BranchName").val());
+        formData.append('AccountOpeningDate', $("#AccountOpeningDate").val());
+        formData.append('Remark', $("#Remark").val());
+
+        //New Fild Logic
+        formData.append('CommitteeTypeConfigurationId', $("#CommitteeTypeConfigurationId").val());
+        formData.append('CommitteesConfigurationId', $("#CommitteesConfigurationId").val());
+        //formData.append('CommitteeDesignationsConfigurationId', $("#CommitteeDesignationsConfigurationId").val());
+
+
+        ////formData.append('TransactionDetailsId', $("input[name=TransactionDetailsId]").val());
+        ////formData.append('EditExpenseId', $("input[name=EditExpenseId]").val());
+        ////formData.append('ExpenseDocumentFileName', $("input[name=ExpenseDocumentFileName]").val());
+        ////formData.append('ExpenseDocumentFileURL', $("input[name=ExpenseDocumentFileURL]").val());
+
+        if (itemDetails.length <= 0) {
+            alert("Please Add Committee Information !");
+            return;
+        }
+
+        var CommitteeManagementMembers = itemDetails.filter(Boolean);
+        formData.append('CommitteeManagementMembersJson', JSON.stringify(CommitteeManagementMembers));
+
+        console.log(formData);
+        ////var Id = $("#VisaPolicyConfigurationId").val();
+
+
+        $.ajax({
+            type: "POST",
+            url: "/CommitteeManagement/Create",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                window.location.href = "/CommitteeManagement/Index";
+                //location.reload();
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+
+        $('#OfficeBearersId').prop("required", true);
+        $('#CommitteeDesignationId').prop("required", true);
+
+        document.getElementById("countMale").disabled = true;
+        document.getElementById("countFemail").disabled = true;
+        document.getElementById("malePer").disabled = true;
+        document.getElementById("femailPer").disabled = true;
+        document.getElementById("totalCount").disabled = true;
+    });
+
+</script>
+
+<!--New Logic add-->
+<script>
+    $("#FcvVcfType").on("change", function () {
+        //$("#OfficeBearersId").prop('required', true);
+        //$("#OtherMemberId").prop('required', true);
+        var FcvVcfTypeId = Number($("#FcvVcfType").val());
+        var committeeTypeConfigurationId = $("#CommitteeTypeConfigurationId");
+        //console.log(FcvVcfTypeId);
+
+        $(".loader").fadeIn("slow");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteeTypeConfigurationByFcvOrVcfId",
+            data: { "id": FcvVcfTypeId },
+            success: function (data) {
+                $(".loader").fadeOut("slow");
+                //console.log(data);
+                committeeTypeConfigurationId.html('<option value="">Select Committee Type</option>');
+                $.each(data.Data, function (id, option) {
+                    committeeTypeConfigurationId.append($('<option></option>').val(option.Id).html(option.CommitteeTypeName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#CommitteeTypeConfigurationId").on("change", function () {
+        //$("#OfficeBearersId").prop('required', true);
+        //$("#OtherMemberId").prop('required', true);
+        var committeeTypeConfigurationId = Number($("#CommitteeTypeConfigurationId").val());
+        var committeesConfigurationId = $("#CommitteesConfigurationId");
+        //console.log(FcvVcfTypeId);
+
+        $(".loader").fadeIn("slow");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteesConfigurationByCommitteeTypeConfigurationId",
+            data: { "id": committeeTypeConfigurationId },
+            success: function (data) {
+                $(".loader").fadeOut("slow");
+                console.log(data);
+                committeesConfigurationId.html('<option value="">Select Committee Name</option>');
+                $.each(data.Data, function (id, option) {
+                    committeesConfigurationId.append($('<option></option>').val(option.Id).html(option.CommitteeName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //alert('Failed to retrieve data.');
+            }
+        });
+
+
+
+        //Get Bank Account data
+        var formData = new FormData();
+        formData.append('ForestCircleId', $("#ForestCircleId").val());
+        formData.append('ForestDivisionId', $("#ForestDivisionId").val());
+        formData.append('ForestRangeId', $("#ForestRangeId").val());
+        formData.append('ForestBeatId', $("#ForestBeatId").val());
+        formData.append('ForestFcvVcfId', $("#ForestFcvVcfId").val());
+        formData.append('DivisionId', $("#DivisionId").val());
+        formData.append('DistrictId', $("#DistrictId").val());
+        formData.append('UpazillaId', $("#UpazillaId").val());
+        formData.append('UnionId', $("#UnionId").val());
+        formData.append('NgoId', $("#NgoId").val());
+        formData.append('CommitteeTypeId', $("#CommitteeTypeId").val());
+        formData.append('CommitteeFormDate', $("#CommitteeFormDate").val());
+        formData.append('CommitteeEndDate', $("#CommitteeEndDate").val());
+        formData.append('SubCommitteeTypeId', $("#DesignatinId").val());
+        formData.append('NameOfBankAC', $("#NameOfTheBankAC").val());
+        formData.append('AccountNumber', $("#ACNumber").val());
+        formData.append('AccountType', $("#AccountType").val());
+        formData.append('BankName', $("#BankName").val());
+        formData.append('BranchName', $("#BranchName").val());
+        formData.append('AccountOpeningDate', $("#AccountOpeningDate").val());
+        formData.append('Remark', $("#Remark").val());
+        //New Fild Logic
+        formData.append('CommitteeTypeConfigurationId', $("#CommitteeTypeConfigurationId").val());
+        formData.append('CommitteesConfigurationId', $("#CommitteesConfigurationId").val());
+
+        $.ajax({
+            type: "POST",
+            url: "/CommitteeManagement/GetBankAccountInfo",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                //window.location.href = "/CommitteeManagement/Index";
+                //location.reload();
+                var count = 0;
+                var tbodyforBankInfo = $("#tbodyForBankInfo");
+
+                $("#tbodyForBankInfo > tr").remove();
+                $.each(response.Data, function (id, option) {
+                    debugger;
+                    count++;
+                    tbodyforBankInfo.append(`
+                                                    <tr role="row" class="trClass">
+                                                            <td class="Id">${count}</td>
+                                                                <td class="DesignationId">${option.BankAccountName}</td>
+                                                                <td>${option.AccountNumber}</td>
+                                                                <td>${option.AccountTypeDisplay}</td>
+                                                                <td>${option.BankName}</td>
+                                                                <td>${option.BranchName}</td>
+                                                                <td>${formatForInput(option.AccountOpeningDate)}</td>
+                                                                <td>${option.Remarks == null ? '' : option.Remarks}</td>
+                                                        </tr>
+                                            `);
+
+                });
+            }
+        });
+    });
+
+
+
+
+
+    $("#CommitteesConfigurationId").on("change", function () {
+        //$("#OfficeBearersId").prop('required', true);
+        //$("#OtherMemberId").prop('required', true);
+        var committeesConfigurationId = Number($("#CommitteesConfigurationId").val());
+        var committeeDesignationsConfigurationId = $("#CommitteeDesignationsConfigurationId");
+        //console.log(FcvVcfTypeId);
+
+        $(".loader").fadeIn("slow");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteeDesignationsConfigurationByCommitteesConfigurationId",
+            data: { "id": committeesConfigurationId },
+            success: function (data) {
+                $(".loader").fadeOut("slow");
+                console.log(data);
+                committeeDesignationsConfigurationId.html('<option value="">Select Designation Name</option>');
+                $.each(data.Data, function (id, option) {
+                    committeeDesignationsConfigurationId.append($('<option></option>').val(option.Id).html(option.DesignationName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //alert('Failed to retrieve data.');
+            }
+        });
+
+        //Get Bank Account data
+        var formData = new FormData();
+        formData.append('ForestCircleId', $("#ForestCircleId").val());
+        formData.append('ForestDivisionId', $("#ForestDivisionId").val());
+        formData.append('ForestRangeId', $("#ForestRangeId").val());
+        formData.append('ForestBeatId', $("#ForestBeatId").val());
+        formData.append('ForestFcvVcfId', $("#ForestFcvVcfId").val());
+        formData.append('DivisionId', $("#DivisionId").val());
+        formData.append('DistrictId', $("#DistrictId").val());
+        formData.append('UpazillaId', $("#UpazillaId").val());
+        formData.append('UnionId', $("#UnionId").val());
+        formData.append('NgoId', $("#NgoId").val());
+        formData.append('CommitteeTypeId', $("#CommitteeTypeId").val());
+        formData.append('CommitteeFormDate', $("#CommitteeFormDate").val());
+        formData.append('CommitteeEndDate', $("#CommitteeEndDate").val());
+        formData.append('SubCommitteeTypeId', $("#DesignatinId").val());
+        formData.append('NameOfBankAC', $("#NameOfTheBankAC").val());
+        formData.append('AccountNumber', $("#ACNumber").val());
+        formData.append('AccountType', $("#AccountType").val());
+        formData.append('BankName', $("#BankName").val());
+        formData.append('BranchName', $("#BranchName").val());
+        formData.append('AccountOpeningDate', $("#AccountOpeningDate").val());
+        formData.append('Remark', $("#Remark").val());
+        //New Fild Logic
+        formData.append('CommitteeTypeConfigurationId', $("#CommitteeTypeConfigurationId").val());
+        formData.append('CommitteesConfigurationId', $("#CommitteesConfigurationId").val());
+
+        $.ajax({
+            type: "POST",
+            url: "/CommitteeManagement/GetBankAccountInfo",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                //window.location.href = "/CommitteeManagement/Index";
+                //location.reload();
+                var count = 0;
+                var tbodyforBankInfo = $("#tbodyForBankInfo");
+
+                $("#tbodyForBankInfo > tr").remove();
+                $.each(response.Data, function (id, option) {
+                    count++;
+                    tbodyforBankInfo.append(`
+                                                             <tr role="row" class="trClass">
+                                                                        <td class="Id">${count}</td>
+                                                                            <td class="DesignationId">${option.BankAccountName}</td>
+                                                                            <td>${option.AccountNumber}</td>
+                                                                            <td>${option.AccountTypeDisplay}</td>
+                                                                            <td>${option.BankName}</td>
+                                                                            <td>${option.BranchName}</td>
+                                                                            <td>${formatForInput(option.AccountOpeningDate)}</td>
+                                                                            <td>${option.Remarks == null ? '' : option.Remarks}</td>
+                                                                    </tr>
+                                                       `);
+
+                });
+            }
+        });
+
+    });
+</script>
+
+

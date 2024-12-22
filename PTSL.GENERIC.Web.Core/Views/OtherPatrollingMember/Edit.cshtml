@@ -1,0 +1,434 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Patrolling.OtherPatrollingMemberVM
+@{
+    ViewBag.Title = "Edit Other Patrolling Member";
+}
+
+<style>
+    label.error {
+        color: red;
+    }
+</style>
+
+@*<style>
+    input, select {
+        height: 30px !important;
+        line-height: 10px !important;
+        font-weight: 400 !important;
+        color: black !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>*@
+
+
+<div class="card">
+
+    <div class="card-header">
+        <h4>
+            <a href="/OtherPatrollingMember/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Edit Other Patrolling Member
+        </h4>
+        <button class="ml-auto reset btn btn-sm" onclick="resetFromData('#Form')">
+            <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z" fill="currentColor" />
+            </svg>
+            Reset
+        </button>
+    </div>
+
+
+    <div class="card-body">
+        @using (Html.BeginForm("Edit", "OtherPatrollingMember", FormMethod.Post, new { id = "Form" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@Model.Id" />
+            <input type="hidden" name="CreatedAt" id="CreatedAt" value="@Model.CreatedAt" />
+            <div class="form-row custom">
+                <div class="form-group col-md-4">
+                    <label>
+                        Select Forest Circle <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("ForestCircleId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Select Forest Division <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("ForestDivisionId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Select Forest Range <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("ForestRangeId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+                </div>
+            </div>
+            <div class="form-row custom">
+                <div class="form-group col-md-4">
+                    <label>
+                        Select Forest Beat <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("ForestBeatId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Select FCV/VCF Type
+                    </label>
+                    @Html.DropDownList("FcvVcfType", null, "Choose..", htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Select FCV/VCF <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("ForestFcvVcfId", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+                </div>
+            </div>
+
+            <h6 class="mt-4">Civil Administrative Unit</h6>
+            <div class="form-row custom">
+                <div class="form-group col-md-4">
+                    <label>
+                        Select Division <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("DivisionId", null, "Choose..", htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Select District <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("DistrictId", null, "Choose..", htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Select Upazilla <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("UpazillaId", null, "Choose..", htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+
+            <h6 class="mt-4">Personal Information</h6>
+            <div class="form-row custom">
+                <div class="form-group col-md-4">
+                    <label>
+                        Full Name <span style="color:red;">*</span>
+                    </label>
+                    <input name="@nameof(Model.FullName)" value="@Model.FullName" type="text" class="form-control" placeholder="Enter Full Name" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Father / Spouse
+                        <span style="color:red;">*</span>
+                    </label>
+                    <input name="@nameof(Model.FatherOrSpouse)" value="@Model.FatherOrSpouse" type="text" class="form-control" placeholder="Enter Father or Spouse" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Gender
+                        <span style="color:red;">*</span>
+                    </label>
+                    @Html.DropDownList("Gender", null, "Choose..", htmlAttributes: new { @class = "form-control", @required = "required" })
+                </div>
+            </div>
+
+            <div class="form-row custom">
+                <div class="form-group col-md-4">
+                    <label>
+                        NID <span style="color:red;">*</span>
+                    </label>
+                    <input name="@nameof(Model.NID)" value="@Model.NID" type="text" class="form-control" placeholder="Enter NID" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Phone Number <span style="color:red;">*</span>
+                    </label>
+                    <input name="@nameof(Model.PhoneNumber)" value="@Model.PhoneNumber" type="text" class="form-control" placeholder="Enter Phone number" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Address
+                    </label>
+                    <input name="@nameof(Model.Address)" value="@Model.Address" type="text" class="form-control" placeholder="Enter Address" />
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary submit-btn btn-sm">Submit</button>
+            </div>
+        }
+    </div>
+
+    <!--
+        <hr />
+        <div class="card-header pull-left">
+         <a href="/OtherCommitteeMember/Index" class="btn btn-warning">Return to Index</a>
+        </div>
+    -->
+</div>
+
+<script>
+    const isInteger = num => /^-?[0-9]+$/.test(num + '');
+    const dateMustBePreviousFromNowFunc = date => {
+        return (new Date(date)).toISOString() >= (new Date(new Date().toDateString())).toISOString();
+    }
+    const dateMustBeGreaterThanStartDateFunc = date => {
+        var startDate = $("#StartDate").val();
+
+        return (new Date(date)).toISOString() >= (new Date(startDate)).toISOString();
+    }
+    function isEmail(email) {
+        return /^\w+@@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email);
+    }
+    function isEnglish(str) {
+        return /^[\x20-\x7E]*$/.test(str);
+    }
+    const isBangla = (str) => {
+        const lang = str.replace(/\s/g, '');
+
+        for (var i = 0; i < lang.length; i++) {
+            if (lang.charCodeAt(i) < 2432 || lang.charCodeAt(i) > 2558) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    $.validator.addMethod(
+        'mustBeInteger',
+        function (value, element, requiredValue) {
+            return isInteger(value);
+        },
+        'Must be a valid number.'
+    );
+    $.validator.addMethod(
+        'dateMustBePreviousFromNow',
+        function (value, element, requiredValue) {
+            return dateMustBePreviousFromNowFunc(value);
+        },
+        'Date must be greater or equal to current date.'
+    );
+    $.validator.addMethod(
+        'dateMustBeGreaterThanStart',
+        function (value, element, requiredValue) {
+            return dateMustBeGreaterThanStartDateFunc(value);
+        },
+        'Date must be greater or equal to start date.'
+    );
+    $.validator.addMethod(
+        'isEmail',
+        function (value) {
+            return isEmail(value);
+        },
+        'Invalid Email'
+    );
+    $.validator.addMethod(
+        'isEnglish',
+        function (value) {
+            return isEnglish(value);
+        },
+        'Please enter English characters'
+    );
+    $.validator.addMethod(
+        'isOptionalBangla',
+        function (value) {
+            if (!value) return true;
+            return isBangla(value);
+        },
+        'Please enter Bangla characters'
+    );
+</script>
+
+<script>
+    $(".submit-btn").on("click", function () {
+        $("#Form").validate({
+            rules: {
+                ForestCircleId: "required",
+                ForestDivisionId: "required",
+                ForestRangeId: "required",
+                ForestBeatId: "required",
+                ForestFcvVcfId: "required",
+
+                FullName: {
+                    required: true,
+                    minlength: 3,
+                },
+                FatherOrSpouse: {
+                    required: true,
+                    minlength: 3,
+                },
+                Gender: "required",
+                PhoneNumber: {
+                    required: true,
+                    mustBeInteger: true,
+                    minlength: 11,
+                    maxlength: 11,
+                },
+                NID: {
+                    required: true,
+                    mustBeInteger: true,
+                    minlength: 10,
+                    maxlength: 17,
+                }
+            },
+        });
+
+        if ($("#Form").valid()) {
+            $(".loader").fadeIn("slow");
+        }
+    });
+
+    $("#ForestCircleId").change(function () {
+        var selectedItem = $(this).val();
+        var forestDivisonList = $("#ForestDivisionId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestDivisionByForestCircle",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestDivisonList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#ForestDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var forestRangeList = $("#ForestRangeId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestRangeByForestDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestRangeList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#ForestRangeId").change(function () {
+        var selectedItem = $(this).val();
+        var forestBeatList = $("#ForestBeatId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestBeatByForestRange",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestBeatList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#ForestBeatId").change(function () {
+        var selectedItem = $(this).val();
+        var ForestFcvVcfId = $("#ForestFcvVcfId");
+        var FcvVcfType = $("#FcvVcfType").val();
+        if (selectedItem == "" || selectedItem == null || FcvVcfType == "" | FcvVcfType == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListByForestBeatAndType",
+            data: { "beatId": selectedItem, "type": FcvVcfType },
+            success: function (data) {
+                ForestFcvVcfId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    ForestFcvVcfId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#FcvVcfType").change(function () {
+        $("#ForestBeatId").trigger("change");
+    });
+
+    $("#DivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentDistrictId = $("#DistrictId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListDistrictByDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentDistrictId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentDistrictId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentDistrictId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("#DistrictId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentUpazillaId = $("#UpazillaId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUpazillaByDistrict",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+</script>

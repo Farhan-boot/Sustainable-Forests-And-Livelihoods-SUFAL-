@@ -1,0 +1,300 @@
+﻿<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Labor information</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Labor Type
+                    <span style="color:red;">*</span>
+                </label>
+                <select name="Labor_CostType"
+                        x-model="NewLaborInformation.LaborCostTypeId" required>
+                    <!option value="">Select Labor Type</!option>
+                    <template x-for="data in LaborInformationDropdowns.CostTypes">
+                        <!option :selected="data.Id == NewLaborInformation.LaborCostTypeId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Date
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="NewLaborInformation.LaborCostDate"
+                       placeholder="Enter date"
+                       type="date"
+                       name="Labor_CostDate"
+                       required />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Male no
+                </label>
+                <input x-model="NewLaborInformation.TotalMale"
+                       placeholder="Enter male no"
+                       name="Labor_MaleNo"
+                       required />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Female no
+                </label>
+                <input x-model="NewLaborInformation.TotalFemale"
+                       type="number"
+                       placeholder="Enter female no"
+                       name="Labor_FemaleNo"
+                       required />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Total Number of Labor
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="NewLaborInformation.TotalLabor"
+                       type="number"
+                       placeholder="Enter cost of amount"
+                       disabled />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Male (%)
+                </label>
+                <input x-model="NewLaborInformation.TotalMalePercentage"
+                       type="number"
+                       placeholder="Male (%)"
+                       disabled />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Female (%)
+                </label>
+                <input x-model="NewLaborInformation.TotalFemalePercentage"
+                       type="number"
+                       placeholder="Female (%)"
+                       disabled />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Attachment
+                </label>
+                <input x-on:change="SetLaborInformationFileName"
+                       type="file"
+                       name="Labor_Attachment"
+                       id="Labor_Attachment"
+                       placeholder="Enter attachment" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Remarks
+                </label>
+                <input x-model="NewLaborInformation.Remarks"
+                       type="text"
+                       name="Labor_Remarks"
+                       placeholder="Enter remarks" />
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button @@click="AddLaborInformation" x-text="NewLaborInformation.IsUpdating ? 'Update' : 'Add Information'" type="button" class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Labor details</p>
+    <p x-show="LaborInformation.filter(x => x.IsDeleted != true).length == 0">No details added yet</p>
+
+    <template x-for="(group, category) in (LaborInformation.filter(x => x.IsDeleted != true).reduce((result, item) => {
+                    const key = item.LaborCostTypeId;
+                    if (!result[key]) {
+                        result[key] = [];
+                    }
+
+                    result[key].push(item);
+                    return result;
+                }, {}))" :key="index">
+        <div>
+            <p class="m-0" x-text="GetCostTypeLabelForLabor(category)"></p>
+            <table class="table table-sm mb-2" x-show="group.length > 0">
+                <tr>
+                    <th>SL</th>
+                    <th>Date</th>
+                    <th>Total Labor</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Male(%)</th>
+                    <th>Female(%)</th>
+                    <th>Remarks</th>
+                    <th>Attachment</th>
+                    <th>Action</th>
+                </tr>
+                <tbody>
+                    <template x-for="(data, index) in group" :key="index">
+                        <tr class="">
+                            <td x-text="++index"></td>
+                            <td x-text="data.LaborCostDate"></td>
+                            <td x-text="data.TotalLabor"></td>
+                            <td x-text="data.TotalMale"></td>
+                            <td x-text="data.TotalFemale"></td>
+                            <td x-text="data.TotalMalePercentage"></td>
+                            <td x-text="data.TotalFemalePercentage"></td>
+                            <td x-text="data.Remarks"></td>
+                            <td x-text="data.AttachmentDisplay"></td>
+                            <td>
+                                <button @@click="RemoveLaborInformation(data)" type="button" class="btn btn-sm btn-remove">Remove</button>
+                                <button @@click="EditLaborInformation(data)" type="button" class="btn btn-sm btn-primary">Edit</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+</fieldset>
+
+<script>
+    function addLaborInformationData() {
+        return {
+            // Labor Information
+            LaborInformation: [],
+            InitLaborInformation: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+                Index: null,
+                IsDeleted: false,
+
+                LaborCostTypeId: "",
+                LaborCostDate: "",
+                TotalMale: "",
+                TotalFemale: "",
+                Remarks: "",
+
+                // Display
+                AttachmentDisplay: "",
+                LaborCostTypeLabel: "",
+                LaborCostTypeDisplay: "",
+            },
+            NewLaborInformation: {},
+            InitializeLaborInformation(data = null) {
+                if (data) {
+                    this.NewLaborInformation = this.GetInitializeLaborInformation(data);
+                }
+                else {
+                    this.NewLaborInformation = this.GetInitializeLaborInformation();
+                }
+            },
+            GetInitializeLaborInformation(data = null) {
+                if (data) {
+                    return {
+                        ...data,
+                        LaborCostDate: convertToDate(data.LaborCostDate),
+                        get TotalLabor() {
+                            return getNumber(this.TotalMale) + getNumber(this.TotalFemale);
+                        },
+                        get TotalMalePercentage() {
+                            return Math.round((getNumber(this.TotalMale) / this.TotalLabor) * 100, 2);
+                        },
+                        get TotalFemalePercentage() {
+                            return Math.round((getNumber(this.TotalFemale) / this.TotalLabor) * 100, 2);
+                        },
+                    };
+                }
+                else {
+                    return {
+                        ...this.InitLaborInformation,
+                        LaborCostDate: convertToDate(this.InitLaborInformation.LaborCostDate),
+                        get TotalLabor() {
+                            return getNumber(this.TotalMale) + getNumber(this.TotalFemale);
+                        },
+                        get TotalMalePercentage() {
+                            return Math.round((getNumber(this.TotalMale) / this.TotalLabor) * 100, 2);
+                        },
+                        get TotalFemalePercentage() {
+                            return Math.round((getNumber(this.TotalFemale) / this.TotalLabor) * 100, 2);
+                        },
+                    };
+                }
+            },
+            SetLaborInformationFileName(event) {
+                const name = getFileName(event.target);
+                this.NewLaborInformation.AttachmentDisplay = name;
+            },
+            LaborInformationDropdowns: {
+                CostTypes: [],
+            },
+            SetCostTypeDisplayForLabor() {
+                const data = this.LaborInformationDropdowns.CostTypes.find(x => x.value == this.NewLaborInformation.LaborCostTypeId);
+                const display = data?.display ?? "";
+                const label = data?.label ?? "";
+
+                this.NewLaborInformation.LaborCostTypeLabel = label;
+                this.NewLaborInformation.LaborCostTypeDisplay = display;
+            },
+            GetCostTypeLabelForLabor(cost_type) {
+                const data = this.LaborInformationDropdowns.CostTypes.find(x => x.Id == cost_type);
+                const label = data?.Name ?? "";
+
+                return label;
+            },
+            AddLaborInformation() {
+                let hasError = 0;
+
+                for (const key of Object.keys(LaborInformationFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.SetCostTypeDisplayForLabor();
+
+                const index = this.LaborInformation.length;
+                const file = document.getElementById("Labor_Attachment").files[0];
+
+                if (this.NewLaborInformation.IsUpdating) {
+                    this.LaborInformation[this.NewLaborInformation.UpdateIndex] = { ...this.NewLaborInformation, Index: this.NewLaborInformation.UpdateIndex };
+                    this.NewLaborInformation.IsUpdating = false;
+
+                    if (file) {
+                        this.tempFormData.set(`LaborInformation[${this.NewLaborInformation.UpdateIndex}][FormFiles]`, file);
+                    }
+                } else {
+                    if (file) {
+                        this.tempFormData.append(`LaborInformation[${index}][FormFiles]`, file);
+                    }
+
+                    this.LaborInformation.Index = index;
+                    this.LaborInformation.push(this.NewLaborInformation);
+                }
+
+                this.InitializeLaborInformation();
+
+                clearFileInput("Labor_Attachment");
+            },
+            RemoveLaborInformation(data) {
+                const index = this.LaborInformation.indexOf(data);
+
+                this.LaborInformation[index].IsDeleted = true;
+                this.tempFormData.delete(`LaborInformation[${index}][FormFiles]`);
+            },
+            EditLaborInformation(data) {
+                const index = this.LaborInformation.indexOf(data);
+
+                data.IsUpdating = true;
+                data.UpdateIndex = index;
+
+                this.InitializeLaborInformation(data);
+            },
+        }
+    }
+</script>
+

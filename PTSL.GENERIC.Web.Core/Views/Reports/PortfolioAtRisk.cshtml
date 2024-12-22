@@ -1,0 +1,112 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.PortfolioAtRiskVM>
+@{
+    ViewBag.Title = "Portfolio At Risk";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Portfolio At Risk</h5>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="13">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Portfolio At Risk</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                            <p class="font-16">(Standard = Max 5%)</p>
+                            <p class="font-16">
+                                Portfolio At Risk (PAR) = Outstanding Loan Of Defaulter Borrower / Total Outstanding Loan
+                            </p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Forest Circle</th>
+                    <th>Forest Division </th>
+                    <th>Forest Range</th>
+                    <th>Forest Beat</th>
+                    <th>Forest FCV</th>
+                   @* <th>Forest Fcv Vcf Is Fcv</th>*@
+
+                    <th>Outstanding Loan Of Defaulter Borrower Tk</th>
+                    <th>Total Outstanding Loan Tk</th>
+                    <th>Portfolio At Risk</th>
+                    <th>Quality Status</th>
+
+                   @* <th>Outstanding Loan<br />Per Borrower</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@item.ForestCircle</td>
+                        <td>@item.ForestDivision</td>
+                        <td>@item.ForestRange</td>
+                        <td>@item.ForestBeat</td>
+                        <td>@item.ForestFcvVcf</td>
+                        @*<td>@item.ForestFcvVcfIsFcv</td>*@
+
+                        @{
+                            double OutstandingLoanOfDefaulterBorrower = item.OnlyDefotdatLoanAmountTk - item.AfterDefolderPayAmountTk;
+                            double TotalOutstandingLoan = item.TotalPayableAmountTk - item.AlreadyPayAmountTk;
+                        }
+
+                        <td>@OutstandingLoanOfDefaulterBorrower.ToBDTCurrency()</td>
+                        <td>@TotalOutstandingLoan.ToBDTCurrency()</td>
+                        <td>@item.PortfolioAtRisk <span>%</span></td>
+
+                        @if (item.PortfolioAtRisk <= 5)
+                        {
+                            <td>Standard</td>
+                        }
+                        else
+                        {
+                            <td>Below Standard</td>
+                        }
+
+
+                       @* <td>@item.Result</td>*@
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="4" class="text-center">Total:</td>
+                    <td colspan="4" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

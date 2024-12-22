@@ -1,0 +1,216 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum.Capacity;
+@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Capacity.CommunityTrainingVM
+@{
+    ViewBag.Title = "Community Training Details";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+    }
+    fieldset legend {
+        width: auto;
+    }
+</style>
+
+<style>
+    input, select {
+        height: 30px !important;
+        line-height: 10px !important;
+        font-weight: 400 !important;
+        color: black !important;
+    }
+
+    legend {
+        font-weight: 500 !important;
+        font-size: 20px !important;
+    }
+</style>
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/CommunityTraining/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+			Community Training Details
+		</h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Training Information</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Training Title: <b>@Model.TrainingTitle</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Training Organizer: <b>@Model.TrainingOrganizer?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Start Date: <b>@Model.StartDate.ToShortDateString()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">End Date: <b>@Model.EndDate.ToShortDateString()</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Duration: <b>@Model.TrainingDuration</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Location: <b>@Model.Location</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Trainer Name: <b>@Model.TrainerName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Training Organizer: <b>@Model.TrainingOrganizer?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Event Type: <b>@Model.EventType?.Name</b></label>
+                </div>
+                @if (Model.CommunityTrainingType != null)
+                {
+                    <div class="form-group">
+                        <label style="font-size:15px;">Community Training Type: <b>@Model.CommunityTrainingType?.Name</b></label>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Basic Information</legend>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label style="font-size:15px;">Forest Circle: <b>@(Model.ForestCircle?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Forest Division: <b>@(Model.ForestDivision?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Forest Range: <b>@(Model.ForestRange?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Forest Beat: <b>@(Model.ForestBeat?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+							<label style="font-size:15px;">FCV/VCF Type: <b>@(Model.ForestFcvVcf?.IsFcv == true ? "FCV" : "VCF")</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Forest FCV/VCF: <b>@(Model.ForestFcvVcf?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label style="font-size:15px;">District: <b>@(Model.District?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Division: <b>@(Model.Division?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Upazilla: <b>@(Model.Upazilla?.Name)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Union: <b>@(Model.Union?.Name)</b></label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        @{ var index = 1; }
+
+        <h5 class="mt-4">Participant Lists</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm ">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">#</th>
+                        <th scope="col">Member Name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Mobile Number</th>
+                        <th scope="col">NID</th>
+                        <th scope="col">Participant Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.CommunityTrainingParticipentsMaps != null)
+                    {
+                        foreach (var member in Model.CommunityTrainingParticipentsMaps)
+                        {
+                            if (member.ParticipentType == ParticipentType.Member)
+                            {
+                                <tr data-id=@member.Id>
+                                    <th scope="row" class="text-center index">@(index++)</th>
+                                    <td>@member.CommunityTrainingMember?.MemberName</td>
+                                    <td>@member.CommunityTrainingMember?.MemberGender.ToString()</td>
+                                    <td>@member.CommunityTrainingMember?.MemberAge</td>
+                                    <td>@member.CommunityTrainingMember?.MemberPhoneNumber</td>
+                                    <td></td>
+                                    <td>@member.ParticipentType.ToString()</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr data-id=@member.Id>
+                                    <th scope="row" class="text-center index">@(index++)</th>
+                                    <td>@member.Survey?.BeneficiaryName</td>
+                                    <td>@member.Survey?.BeneficiaryGenderString</td>
+                                    <td>@member.Survey?.BeneficiaryAge</td>
+                                    <td>@member.Survey?.BeneficiaryPhone</td>
+                                    <td>@member.Survey?.BeneficiaryNid</td>
+                                    <td>@member.ParticipentType.ToString()</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                @if (Model.CommunityTrainingFiles != null && Model.CommunityTrainingFiles.Count > 0)
+                {
+                    <h5 class="mt-4">Images</h5>
+                    <div class="d-flex flex-wrap" style="gap: 5px;">
+                        @foreach (var file in Model.CommunityTrainingFiles)
+                        {
+                            if (file.FileType == FileType.Image)
+                            {
+                                <img width="285" height="200" src="@file.FileNameUrl" />
+                            }
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-md-6">
+                @if (Model.CommunityTrainingFiles != null && Model.CommunityTrainingFiles.Count > 0)
+                {
+                    <h5 class="mt-4">Documents</h5>
+                    <div class="d-flex flex-wrap" style="gap: 5px;">
+                        <ul class="list-group">
+                            @foreach (var file in Model.CommunityTrainingFiles)
+                            {
+                                if (file.FileType == FileType.Document)
+                                {
+                                    <li class="list-group-item">
+                                        <a href="@file.FileNameUrl"><i class="fa fa-file-download mr-2"></i> @file.FileName</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+

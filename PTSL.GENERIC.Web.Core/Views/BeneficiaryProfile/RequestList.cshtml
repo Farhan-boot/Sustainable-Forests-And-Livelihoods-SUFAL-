@@ -1,0 +1,609 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyEssentialVM>
+@using PTSL.GENERIC.Web.Core.Helper.Enum.Beneficiary;
+
+@{
+    ViewBag.Title = "Request List";
+    var beneficiaryPendingStatus = BeneficiaryApproveStatus.Pending.ToString();
+    var beneficiaryApproveStatus = BeneficiaryApproveStatus.Approved.ToString();
+    var roleName = Context.Session.GetString("RoleName");
+}
+
+<style>
+    .@beneficiaryPendingStatus {
+        color: #B72136;
+        background: #FFE2E1;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 5px;
+    }
+    .@beneficiaryApproveStatus {
+        color: #229A16;
+        background: #DCF1D7;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 5px;
+    }
+    .row.custom > div {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    .edit-button {
+        font-size: 12px;
+        font-weight: 500;
+    }
+</style>
+
+
+
+<!-- Modal Start-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Permission Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" value="" id="cipTeamId" hidden />
+                <div class="row  custom">
+                    <div class="col-12 p-1">
+                        <fieldset class="p-2">
+                            <legend class="float-none w-auto">Map To User</legend>
+                            <div class="col-6" style="padding-left: 0px;float:left">
+                                <label class="m-0">User Role Name <span style="color: red;">*</span></label>
+                                @Html.DropDownList("UserRoleId", null, "Choose User Role Name", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                            </div>
+                            <div class="col-6" style="padding-left: 0px;float:left">
+                                <label class="m-0">Receiver Name <span style="color: red;">*</span></label>
+                                @Html.DropDownList("ReceiverId", null, "Choose Receiver Name", htmlAttributes: new { @class = "form-control col-md-12", @required = "required" })
+                            </div>
+                            <div class="col-6" style="padding-left: 0px;float:left">
+                                <label class="m-0">Sending Date <span style="color: red;">*</span></label>
+                                <input type="date" id="SendingDateId" name="SendingDateId" placeholder="Enter Sending Date" required="">
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row custom">
+                    <div class="col-12 p-1">
+                        <fieldset class="p-2">
+
+                            <div class="col-6" style="padding-left: 0px">
+                                <label class="m-0">Sending Time <span style="color: red;">*</span></label>
+                                <input class="form-control" type="time" id="SendingTimeId" name="SendingTimeId" placeholder="Enter Sending Time" required="">
+                            </div>
+                            <div class="col-12" style="padding-left: 0px">
+                                <label class="m-0">Remark <span style="color: red;">*</span></label>
+                                <input class="form-control" type="text" id="RemarkId" name="RemarkId" placeholder="Enter Remark" required="">
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                <button onclick="SaveMapToUser()" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal End-->
+
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10 p-0">
+                    <h4>Request List</h4>
+                </div>
+               @* <div class="col-md-2 text-right p-0">
+                    <a href="/BeneficiaryProfile/Create" class="badge badge-success badge-shadow">Create New</a>
+                </div>*@
+            </div>
+            <div class="card-body mt-2">
+
+                <div class="green-card p-2 mb-4" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+                    <div class="custom">
+                        <fieldset class="p-2">
+                            <legend class="float-none w-auto">Basic Information</legend>
+                            <div class="row">
+                                <div class="col pr-1">
+									<label class="m-0">Beneficiary Name</label>
+                                    <input type="text" id="BeneficiaryName" name="BeneficiaryName" placeholder="Enter Beneficiary Name" />
+                                </div>
+                                <div class="col px-1">
+									<label class="m-0">Mobile Number</label>
+                                    <input type="text" id="PhoneNumber" name="PhoneNumber" placeholder="Enter Beneficiary Mobile Number" />
+                                </div>
+                                <div class="col px-1">
+									<label class="m-0">NID</label>
+                                    <input type="text" id="NID" name="NID" placeholder="Enter Beneficiary NID (if any)" />
+                                </div>
+                                <div class="col pl-1">
+									<label class="m-0">NGO</label>
+                                    @Html.DropDownList("NgoId", null, "Select NGO", htmlAttributes: new { })
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col pr-1">
+									<label class="m-0">Gender</label>
+                                    @Html.DropDownList("Gender", null, "Select Gender", htmlAttributes: new { })
+                                </div>
+                                <div class="col px-1">
+									<label class="m-0">FCV/VCF Name</label>
+                                    <input type="text" id="FcvVcfName" name="FcvVcfName" placeholder="Enter FCV/VCF Name" />
+                                </div>
+                                <div class="col px-1">
+                                </div>
+                                <div class="col pr-1">
+                                </div>
+                            </div>
+                        </fieldset>
+
+						<div class="d-flex justify-content-end mt-2">
+							<button type="submit" id="SubmitButton" class="btn btn-lg btn-green save">
+								Search
+							</button>
+						</div>
+                    </div>
+                </div>
+
+                <div id="table-show" class="py-2">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_Filter" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">SL</th>
+                                <th>Name</th>
+                                <th>NID</th>
+                                <th>Gender</th>
+                                <th>FCV/VCF</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+						@{var index = 1;}
+                        <tbody>
+                            @foreach (var survey in Model)
+                            {
+                                <tr>
+                                    <td>@(index++)</td>
+                                    <td>@(string.IsNullOrEmpty(survey.BeneficiaryName) ? survey.BeneficiaryNameBn : survey.BeneficiaryName)</td>
+                                    <td>@survey.BeneficiaryNid</td>
+                                    <td>@survey.BeneficiaryGenderString</td>
+                                    <td>@survey.ForestFcvVcf?.Name</td>
+                                    <td>@survey.BeneficiaryApproveStatusString</td>
+                                    <td>
+                                        <div>
+											@*@if (survey.BeneficiaryApproveStatus == BeneficiaryApproveStatus.Pending)
+											{
+												<button type="button" onclick="showApproveConfirmMessage(@survey.Id)" class="btn btn-sm btn-warning">Approve</button>
+                                                <button type="button" onclick="showRejectConfirmMessage(@survey.Id)" class="btn btn-sm btn-warning">Reject</button>
+											}*@
+                                            <a href="/BeneficiaryProfile/Edit?id=@survey.Id" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="/BeneficiaryProfile/Details?id=@survey.Id" class="btn btn-sm btn-info">Details</a>
+                                            <a href="/SurveyIncident?surveyId=@survey.Id" class="btn btn-sm btn-info">Incidents</a>
+                                            <a href="#" onclick="showDeleteConfirmMessage(@survey.Id)" class="btn btn-sm btn-danger">Delete</a>
+                                        </div>
+
+                                        <div>
+                                            @{
+                                                @if(survey.BeneficiaryApproveStatus.ToString() == "Pending")
+                                                {
+                                                   <button data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm" onclick="SendRequestModal(@survey?.Id)" style="width: 100%;margin-top: 2px;margin-top: 2px;">Send for Approval</button>
+
+                                          
+                                                    bool checkIsVisavaleAcceptButton = ViewBag.CheckIsVisavaleAcceptButton;
+                                            
+                                                    if (checkIsVisavaleAcceptButton == true)
+                                                    {
+                                                        <a href="/BeneficiaryProfile/AcceptedById?id=@survey?.Id" class="btn btn-success btn-sm" style="width: 100%;margin-top: 2px;margin-top: 2px;">Accept</a>
+                                                    } 
+                                                }
+                                                
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+	var dataTableOptions = {
+		"bDestroy": true,
+		pageLength: 5,
+		dom: 'lBfrtip',
+		//order: [[ 0, "desc" ]],
+		columns: [
+			{ data: 'SL' },
+			{ data: 'Name' },
+			{ data: 'NID' },
+			{ data: 'Gender' },
+			{ data: 'FCV/VCF' },
+			{ data: 'Status' },
+			{ data: 'Action' },
+		],
+		buttons: [
+			{
+				extend: 'csv',
+				title: 'Beneficiary List',
+				exportOptions: {
+					columns: [0, 1, 2, 3, 4, 5]
+				}
+			},
+			{
+				extend: 'excel',
+				title: 'Beneficiary List',
+				exportOptions: {
+					columns: [0, 1, 2, 3, 4, 5]
+				}
+			},
+			{
+				extend: 'pdf',
+				title: 'Beneficiary List',
+				exportOptions: {
+					columns: [0, 1, 2, 3, 4, 5]
+				}
+			},
+			{
+				extend: 'print',
+				title: 'Beneficiary List',
+				exportOptions: {
+					columns: [0, 1, 2, 3, 4, 5]
+				}
+			}
+		]
+	};
+
+    $(document).ready(function () {
+        $('#tableExport_Filter').DataTable(dataTableOptions);
+    });
+
+    $("#SubmitButton").on("click", function () {
+        var filterData = {
+            ForestCivilLocation: {
+                ForestCircleId: $("#ForestCircleId").val(),
+                ForestDivisionId: $("#ForestDivisionId").val(),
+                ForestRangeId: $("ForestRangeId").val(),
+                ForestBeatId: $("#ForestBeatId").val(),
+                ForestFcvVcfId: $("#ForestFcvVcfId").val(),
+                PresentDivisionId: $("#DivisionId").val(),
+                PresentDistrictId: $("#DistrictId").val(),
+                PresentUpazillaId: $("#UpazillaId").val(),
+                PresentUnionId: $("#UnionId").val(),
+                NgoId: $("#NgoId").val(),
+            },
+            Gender: $("#Gender").val(),
+            PhoneNumber: $("#PhoneNumber").val(),
+            NID: $("#NID").val(),
+            NgoId: $("#NgoId").val(),
+            GetPendingAlso: true,
+            BeneficiaryName: $("#BeneficiaryName").val(),
+            FcvVcfName: $("#FcvVcfName").val(),
+        };
+
+        $("#SubmitButton").text("Searching");
+        $("#SubmitButton").attr("disabled", "");
+
+        _getBeneficiaryFilterData(
+            filterData,
+
+            // Success
+            function (response) {
+                // Handle the response here
+                $("#SubmitButton").text("Search");
+                $("#SubmitButton").removeAttr("disabled");
+
+                if (Array.isArray(response.Data)) {
+                    var surveyList = response.Data;
+                    var data = [];
+
+					var index = 0;
+                    for (const survey of surveyList) {
+						var approveButton = survey.BeneficiaryApproveStatus == @((int)BeneficiaryApproveStatus.Pending) ? `
+							<button type="button" onclick="showApproveConfirmMessage(${survey.Id})" class="btn btn-sm btn-warning">Approve</button>
+							` : '';
+
+						index++;
+                        data.push({
+                            'SL': index.toString(),
+                            Name: survey.BeneficiaryName || survey.BeneficiaryNameBn,
+                            NID: survey.BeneficiaryNid,
+                            Gender: survey.BeneficiaryGenderString,
+                            'FCV/VCF': survey.ForestFcvVcf.Name || survey.ForestFcvVcf.NameBn,
+                            Status: survey.BeneficiaryApproveStatusString,
+                            Action: 
+                            `
+                                <div>
+									${approveButton}
+                                    <a href="/BeneficiaryProfile/Edit?id=${survey.Id}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="/BeneficiaryProfile/Details?id=${survey.Id}" class="btn btn-sm btn-info">Details</a>
+                                    <a href="/SurveyIncident?surveyId=${survey.Id}" class="btn btn-sm btn-info">Incidents</a>
+									<a href="#" onclick="showDeleteConfirmMessage(${survey.Id})" class="btn btn-sm btn-danger">Delete</a>
+                                </div>
+                            `,
+                        });
+                    }
+
+                    $("#table-show").show();
+
+                    $('#tableExport_Filter').DataTable({
+						...dataTableOptions,
+                        data: data,
+                    });
+                } else {
+                    $('#tableExport_Filter').DataTable({
+						...dataTableOptions,
+                        data: [],
+                    });
+                }
+            },
+
+            // Error
+            function () {
+                $("#SubmitButton").text("Search");
+                $("#SubmitButton").removeAttr("disabled");
+
+                swal(
+                    'Failed',
+                    'Failed to load data',
+                    'error'
+                );
+
+                $('#tableExport_Filter').DataTable({
+					...dataTableOptions,
+                    data: [],
+                });
+            }
+        );
+    });
+
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/BeneficiaryProfile/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+
+    function showApproveConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "This beneficiary will be approved",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, Approve",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                type: "GET",
+				data: { surveyId: id },
+                url: `/BeneficiaryProfile/ApproveStatus/${id}`,
+                success: function (result) {
+					if (result.Success) {
+						swal("Approved!", "Beneficiary has been approved.", "success");
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    } else {
+						swal("Failed to approve", result.Message, "error");
+					}
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not approved!", "Failed to approve status", "error");
+                }
+            });
+        });
+    }
+
+
+     function showRejectConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "This beneficiary will be Rejected",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, Reject",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                type: "GET",
+				data: { surveyId: id },
+                url: `/BeneficiaryProfile/RejectStatus/${id}`,
+                success: function (result) {
+					if (result.Success) {
+						swal("Rejected!", "Beneficiary has been rejected.", "success");
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    } else {
+						swal("Failed to reject", result.Message, "error");
+					}
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not rejected!", "Failed to reject status", "error");
+                }
+            });
+        });
+    }
+
+</script>
+
+
+
+<script>
+
+    $("#UserRoleId").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("#ForestFcvVcfId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+        var receiverId = $("#ReceiverId");
+
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CipTeam/GetUserInfoByRoleId",
+            data: { "id": selectedItem },
+            success: function (data) {
+                $("#ReceiverId > option").remove();
+                receiverId.html('<option value="">Select User Name</option>');
+                $.each(data.Data, function (id, option) {
+                    receiverId.append($('<option></option>').val(option.Id).html(option.UserName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    function SendRequestModal(id) {
+        var myId = parseInt(id);
+        $("#cipTeamId").val(myId);
+        var receiverId = $("#ReceiverId");
+
+
+        //$.ajax({
+        //$.ajax({
+        //    cache: false,
+        //    type: "GET",
+        //    url: "/CipTeam/GetModalDataExtra",
+        //    data: { "id": myId },
+        //    success: function (data) {
+        //        $("#ReceiverId > option").remove();
+        //        receiverId.html('<option value="">Select User Name</option>');
+        //        $.each(data.Data, function (id, option) {
+        //            receiverId.append($('<option></option>').val(option.Id).html(option.UserName));
+        //        });
+        //        //forestDivisonList.prop("disabled", false);
+        //    },
+        //    error: function (xhr, ajaxOptions, thrownError) {
+        //        alert('Failed to retrieve data.');
+        //    }
+        //});
+        //alert(id);
+    }
+
+    function SaveMapToUser() {
+        var receiverId = parseInt($("#ReceiverId").val());
+        var sendingDateId = $("#SendingDateId").val();
+        var sendingTimeId = $("#SendingTimeId").val();
+        var remarkId = $("#RemarkId").val();
+        var teamId = $("#cipTeamId").val();
+        var receiverRoleId = parseInt($("#UserRoleId").val());
+    
+        var ApprovalLogForCfmVM = {
+            "SenderId": 0,
+            "SenderRoleId": 0,
+            "ReceiverId": receiverId,
+            "ReceiverRoleId": receiverRoleId,
+            "SendingDate": sendingDateId,
+            "SendingTime": sendingTimeId,
+            "BeneficiaryProfileId": teamId,
+            "Remark": remarkId
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/BeneficiaryProfile/SaveMapToUser",
+            data: ApprovalLogForCfmVM,
+            cache: false,
+            dataType: 'json',
+            success: function (response) {
+                alert("success");
+                window.location.href = "/BeneficiaryProfile/RequestList";
+                //committeeDesignationId.append($('<option></option>').val("").html("Select Designation"));
+                //$.each(response.Entity, function (id, option) {
+                //    committeeDesignationId.append($('<option></option>').val(option.Id).html(option.Name));
+                //});
+            },
+            error: function () {
+                $(".loader").fadeOut("slow");
+                swal(
+                    'Unexpected',
+                    'Unknown error occurred',
+                    'error'
+                );
+            }
+        });
+
+        //alert(id);
+    }
+
+</script>

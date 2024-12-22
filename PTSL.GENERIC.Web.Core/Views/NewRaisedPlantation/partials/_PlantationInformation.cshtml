@@ -1,0 +1,298 @@
+﻿<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Plantation Information</legend>
+    <div class="row">
+        <div class="col-md-3 col-sm-12 pr-1">
+            <label>
+                Plantation Type
+                <span style="color:red;">*</span>
+            </label>
+            <select id="PlantationTypeId"
+                    name="PlantationTypeId"
+                    x-model="PlantationTypeId"
+                    required>
+                <!option value="">Select Plantation Type</!option>
+                <template x-for="item in PlantationInformationDropdowns.PlantationType">
+                    <!option :value="item.Id" x-text="item.Name"></!option>
+                </template>
+            </select>
+        </div>
+        <div class="col-md-2 col-sm-12 px-1">
+            <label>
+                Rotation No
+                <span style="color:red;">*</span>
+            </label>
+            <input id="RotationNo"
+                   name="RotationNo"
+                   x-model="RotationNo"
+                   placeholder="Enter rotation no"
+                   type="number"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Plantation ID
+                <span style="color:red;">*</span>
+            </label>
+            <input id="PlantationId"
+                   name="PlantationId"
+                   x-model="PlantationId"
+                   placeholder="Enter plantation Id"
+                   required />
+        </div>
+        <div class="col-md-4 col-sm-12 pl-1" style="display: flex; gap: 5px;">
+            <div>
+                <label>
+                    Plantation Area
+                    <span style="color:red;">*</span>
+                </label>
+                <input id="PlantationArea"
+                       name="PlantationArea"
+                       x-model="PlantationArea"
+                       placeholder="Enter plantation area"
+                       type="number"
+                       autocomplete="off"
+                       required />
+            </div>
+            <div>
+                <label>
+                    Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="PlantationUnitId"
+                        name="PlantationUnitId"
+                        x-model="PlantationUnitId"
+                        required>
+                    <!option value="">Select</!option>
+                    <template x-for="item in PlantationInformationDropdowns.PlantationUnit">
+                        <!option :value="item.Id" x-text="item.Name"></!option>
+                    </template>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-3 col-sm-12 pr-1">
+            <label>
+                Location with Coordinate
+                <span style="color:red;">*</span>
+            </label>
+            <input id="LocationWithCoordinate"
+                   name="LocationWithCoordinate"
+                   x-model="LocationWithCoordinate"
+                   placeholder="Enter location with co-ordinate"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Mouja & JL No
+            </label>
+            <input id="MoujaAndJLNumber"
+                   name="MoujaAndJLNumber"
+                   x-model="MoujaAndJLNumber"
+                   placeholder="Enter location with co-ordinate"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Sheet no (RS)
+            </label>
+            <input id="SheetNo"
+                   name="SheetNo"
+                   x-model="SheetNo"
+                   placeholder="Enter sheet no"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 pl-1">
+            <label>
+                Plot No
+            </label>
+            <input id="PlotNo"
+                   name="PlotNo"
+                   x-model="PlotNo"
+                   placeholder="Enter plot no"
+                   required />
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-3 col-sm-12 pr-1">
+            <label>
+                Source of funding/Project name
+                <span style="color:red;">*</span>
+            </label>
+            <select id="ProjectTypeId"
+                    name="ProjectTypeId"
+                    x-model="ProjectTypeId"
+                    required>
+                <!option value="">Select project/funding</!option>
+                <template x-for="item in PlantationInformationDropdowns.ProjectType">
+                    <!option :value="item.Id" x-text="item.Name"></!option>
+                </template>
+            </select>
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Plantation year
+                <span style="color:red;">*</span>
+            </label>
+            <select id="CreatedFinancialYearId"
+                    name="CreatedFinancialYearId"
+                    x-model="PlantedFinancialYearId"
+                    x-on:change="CalculateCuttingYear"
+                    required>
+                <!option value="">Select Year</!option>
+                <template x-for="item in PlantationInformationDropdowns.FinancialYear">
+                    <!option :value="item.Id" :data-year="item.Name" x-text="item.Name"></!option>
+                </template>
+            </select>
+        </div>
+        <div class="col-md-4 col-sm-12 px-1">
+            <label>
+                Rotation (In years, due rotation age 10 years)
+                <span style="color:red;">*</span>
+            </label>
+            <input id="RotationInYear"
+                   name="RotationInYear"
+                   x-model="RotationInYear"
+                   x-on:input="CalculateCuttingYear"
+                   placeholder="Enter years"
+                   required />
+        </div>
+        <div class="col-md-2 col-sm-12 pl-1">
+            <label>
+                Felling/Cutting year
+            </label>
+            <input id="ExpectedCuttingYear"
+                   name="ExpectedCuttingYear"
+                   placeholder="Felling/Cutting year"
+                   x-model="ExpectedCuttingYear"
+                   disabled />
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-3 col-sm-12 pr-1">
+            <label>
+                Sanction No
+                <span style="color:red;">*</span>
+            </label>
+            <input id="SanctionNo"
+                   name="SanctionNo"
+                   x-model="SanctionNo"
+                   placeholder="Expected sanction no"
+                   type="number"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Soil type of plantation site
+            </label>
+            <input id="SoilType"
+                   name="SoilType"
+                   x-model="SoilType"
+                   placeholder="Enter soil type"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Natural tree species
+            </label>
+            <input id="NaturalTreeSpecies"
+                   name="NaturalTreeSpecies"
+                   x-model="NaturalTreeSpecies"
+                   placeholder="Enter natural tree species"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 pl-1">
+            <label>
+                Topography of plantation site
+            </label>
+            <select id="PlantationTopographyId"
+                    name="PlantationTopographyId"
+                    x-model="PlantationTopographyId"
+                    required>
+                <!option value="">Select Topography</!option>
+                <template x-for="item in PlantationInformationDropdowns.Topography">
+                    <!option :value="item.Id" x-text="item.Name"></!option>
+                </template>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-3 col-sm-12 pr-1">
+            <label>
+                Climate of plantation site
+            </label>
+            <input id="ClimateOfPlantationSite"
+                   name="ClimateOfPlantationSite"
+                   x-model="ClimateOfPlantationSite"
+                   placeholder="Enter climate"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Plantation Image
+            </label>
+            <input id="PlantationImage"
+                   name="PlantationImage"
+                   type="file"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 px-1">
+            <label>
+                Nursery Image
+            </label>
+            <input id="NurseryImage"
+                   name="NurseryImage"
+                   type="file"
+                   required />
+        </div>
+        <div class="col-md-3 col-sm-12 pl-1">
+        </div>
+    </div>
+</fieldset>
+
+<script>
+    function plantationInformation() {
+        return {
+            PlantationTypeId: "",
+            RotationNo: "",
+            PlantationId: "",
+            PlantationArea: "",
+            PlantationUnitId: "",
+            LocationWithCoordinate: "",
+            MoujaAndJLNumber: "",
+            SheetNo: "",
+            PlotNo: "",
+            ProjectTypeId: "",
+            PlantedFinancialYearId: "",
+            RotationInYear: "",
+            ExpectedCuttingYear: null,
+            SanctionNo: "",
+            SoilType: "",
+            NaturalTreeSpecies: "",
+            PlantationTopographyId: "",
+            ClimateOfPlantationSite: "",
+
+            CalculateCuttingYear() {
+                let year = $("#CreatedFinancialYearId option:selected").data("year");
+                year = year ?? "";
+                year = getNumber(year.split("-").at(1));
+
+                const rotationInYears = getNumber($("#RotationInYear").val()) + year;
+                $("#ExpectedCuttingYear").val(rotationInYears);
+                this.ExpectedCuttingYear = rotationInYears;
+            },
+
+            PlantationInformationDropdowns: {
+                PlantationType: [],
+                PlantationUnit: [],
+                ProjectType: [],
+                Topography: [],
+                FinancialYear: [],
+            },
+        };
+    }
+</script>

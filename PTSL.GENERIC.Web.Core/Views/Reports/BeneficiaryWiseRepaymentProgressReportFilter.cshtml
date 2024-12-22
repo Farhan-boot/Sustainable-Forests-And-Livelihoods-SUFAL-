@@ -1,0 +1,451 @@
+﻿@{
+    ViewBag.Title = "Meeting Report";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<style>
+    ._select2_option {
+        line-height: 20px;
+    }
+    ._select2_option span {
+        font-weight: 300;
+    }
+    ._select2_option span:first-child {
+        font-weight: 500;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Meeting Report</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="BeneficiaryWiseRepaymentProgressReport" asp-controller="Reports" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Forest Administrative Unit</legend>
+                                <div class="row">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Forest Circle</label>
+                                        @Html.DropDownList("ForestCircleId", ViewBag.ForestCircleId, "Select Circle", htmlAttributes: new {})
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Forest Division</label>
+                                        @Html.DropDownList("ForestDivisionId", ViewBag.ForestDivisionId, "Select Forest Division", htmlAttributes: new {})
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Forest Range/SFNTC</label>
+                                        @Html.DropDownList("ForestRangeId", ViewBag.ForestRangeId, "Select Range", htmlAttributes: new {})
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Forest Beat/Camp/SFPC</label>
+                                        @Html.DropDownList("ForestBeatId", ViewBag.ForestBeatId, "Select Beat", htmlAttributes: new {})
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 pr-1">
+                                        <label>
+                                            FCV/VCF Type
+                                        </label>
+                                        @Html.DropDownList("FcvVcfType", null, "Select FCV/VCF Type", htmlAttributes: new { @name = "" })
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Forest FCV/VCF</label>
+                                        @Html.DropDownList("ForestFcvVcfId", ViewBag.ForestFcvVcfId, "Select FCV/VCF", htmlAttributes: new { @name = "ForestCivilLocation.ForestFcvVcfId" })
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div class="col-6 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Civil Administrative Unit</legend>
+                                <div class="row">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Civil Division</label>
+                                        @Html.DropDownList("DivisionId", ViewBag.DivisionId, "Select Division", htmlAttributes: new { @name = "ForestCivilLocation.DivisionId" })
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Civil District</label>
+                                        @Html.DropDownList("DistrictId", ViewBag.DistrictId, "Select District", htmlAttributes: new { @name = "ForestCivilLocation.DistrictId" })
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 pr-1">
+                                        <label class="m-0">Civil Upazilla</label>
+                                        @Html.DropDownList("UpazillaId", ViewBag.UpazillaId, "Select Upazilla", htmlAttributes: new { @name = "ForestCivilLocation.UpazillaId" })
+                                    </div>
+                                    <div class="col-6 pl-1">
+                                        <label class="m-0">Civil Union</label>
+                                        @Html.DropDownList("UnionId", ViewBag.UnionId, "Select Union", htmlAttributes: new { @name = "ForestCivilLocation.UnionId" })
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="row custom">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Basic Information</legend>
+                                <div class="row">
+                                    <div class="col pr-1">
+                                        <label class="m-0">Gender</label>
+                                        @Html.DropDownList("Gender", null, "Select Gender", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">Mobile Number</label>
+                                        <input type="text" id="PhoneNumber" name="PhoneNumber" placeholder="Enter Beneficiary Mobile Number" />
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">NID</label>
+                                        <input type="text" id="NID" name="NID" placeholder="Enter Beneficiary NID (if any)" />
+                                    </div>
+                                    <div class="col pl-1">
+                                        <label class="m-0">NGO</label>
+                                        @Html.DropDownList("NgoId", null, "Select NGO", htmlAttributes: new { })
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-sm btn-green save" id="SearchBeneficiary">Search Beneficiary</button>
+                    </div>
+
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Beneficiary</legend>
+                                <div class="row">
+                                    <div class="col pr-1">
+                                        <label class="m-0">Select Beneficiary <span style="color: red;">*</span></label>
+                                        <select id="SurveyId" name="SurveyId">
+                                            <!option>Select Beneficiary</!option>
+                                        </select>
+                                    </div>
+                                    <div class="col px-1">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save" id="">Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#SearchBeneficiary").on("click", function (event) {
+        event.preventDefault();
+
+        var filterData = {
+            ForestCircleId: $("#ForestCircleId").val(),
+            ForestDivisionId: $("#ForestDivisionId").val(),
+            ForestRangeId: $("ForestRangeId").val(),
+            ForestBeatId: $("#ForestBeatId").val(),
+            ForestFcvVcfId: $("#ForestFcvVcfId").val(),
+            DivisionId: $("#DivisionId").val(),
+            DistrictId: $("#DistrictId").val(),
+            UpazillaId: $("#UpazillaId").val(),
+            UnionId: $("#UnionId").val(),
+            Gender: $("#Gender").val(),
+            PhoneNumber: $("#PhoneNumber").val(),
+            NID: $("#NID").val(),
+            NgoId: $("#NgoId").val(),
+        };
+
+        $("#SearchBeneficiary").text("Searching");
+        $("#SearchBeneficiary").attr("disabled", "");
+
+        $.ajax({
+            type: "POST",
+            url: "/AIGBasicInformation/IndexFilterJson",
+            data: filterData,
+            success: function (response) {
+                // Handle the response here
+                $("#SearchBeneficiary").text("Search Beneficiary");
+                $("#SearchBeneficiary").removeAttr("disabled");
+
+                if (Array.isArray(response)) {
+                    var data = response.map(x => {
+                        debugger;
+
+                        return {
+                            id: x.Survey.Id,
+                            text: x.Survey.BeneficiaryName || x.Survey.BeneficiaryNameBn,
+                            beneficiaryPhone: x.Survey.BeneficiaryPhone || x.Survey.BeneficiaryPhoneBn,
+                            nid: x.Survey.BeneficiaryNid,
+                        }
+                    });
+					data = [{
+						id: "",
+						text: "Choose",
+					}, ...data];
+                    $('#SurveyId').empty();
+
+                    var optionTemplate = function (option) {
+                        var beneficiaryPhone = option.beneficiaryPhone ? `<span>Mobile: ${option.beneficiaryPhone}</span>` : '<span>Mobile:</span>';
+                        var nid = option.nid ? `<span>NID: ${option.nid}</span>` : '<span>NID:</span>';
+
+                        return $(
+                            `
+                            <div class="d-flex flex-column _select2_option">
+                                <span>${option.text}</span>
+                                ${beneficiaryPhone}
+                                ${nid}
+                            </div>
+                            `
+                        );
+                    };
+
+                    var selectionTemplate = function (option) {
+                        return $(
+                            `<span>${option.text}</span>`
+                        );
+                    };
+
+                    $('#SurveyId').select2({
+                        data,
+                        placeholder: 'Select Beneficiary',
+                        templateResult: optionTemplate,
+                        templateSelection: selectionTemplate
+                    });
+                }
+            },
+            error: function () {
+                $("#SearchBeneficiary").text("Search");
+                $("#SearchBeneficiary").removeAttr("disabled");
+
+                swal(
+                    'Failed',
+                    'Failed to load data',
+                    'error'
+                );
+            },
+        });
+    });
+</script>
+
+<script>
+	$("#ForestCircleId").change(function () {
+		var selectedItem = $(this).val();
+		var forestDivisonList = $("#ForestDivisionId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListForestDivisionByForestCircle",
+			data: { "id": selectedItem },
+			success: function (data) {
+				forestDivisonList.html('<option value="">Choose Forest Division</option>');
+				$.each(data, function (id, option) {
+					forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				forestDivisonList.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+    $("#ForestDivisionId").change(function () {
+		var selectedItem = $(this).val();
+		var forestRangeList = $("#ForestRangeId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		loadNgoBasedOnForestDivision(selectedItem);
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListForestRangeByForestDivision",
+			data: { "id": selectedItem },
+			success: function (data) {
+				forestRangeList.html('<option value="">Choose Forest Range</option>');
+				$.each(data, function (id, option) {
+					forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				forestRangeList.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+	$("#ForestRangeId").change(function () {
+		var selectedItem = $(this).val();
+		var forestBeatList = $("#ForestBeatId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListForestBeatByForestRange",
+			data: { "id": selectedItem },
+			success: function (data) {
+				forestBeatList.html('<option value="">Choose Forest Beat</option>');
+				$.each(data, function (id, option) {
+					forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				forestBeatList.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+	$("#ForestBeatId").change(function () {
+		var selectedItem = $(this).val();
+		var forestFcvVcfList = $("#ForestFcvVcfId");
+		var FcvVcfType = $("#FcvVcfType").val();
+
+		if (selectedItem == "" || selectedItem == null || FcvVcfType == "" | FcvVcfType == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListByForestBeatAndType",
+			data: { "beatId": selectedItem, "type": FcvVcfType },
+			success: function (data) {
+				forestFcvVcfList.html('<option value="">Choose Forest FCV/VCF</option>');
+				$.each(data, function (id, option) {
+					forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				forestFcvVcfList.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+	$("#FcvVcfType").change(function () {
+		$("#ForestBeatId").trigger("change");
+	});
+
+	$("#DivisionId").change(function () {
+		var selectedItem = $(this).val();
+		var PresentDistrictId = $("#DistrictId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListDistrictByDivision",
+			data: { "id": selectedItem },
+			success: function (data) {
+				PresentDistrictId.html('<option value="">Choose Civil Division</option>');
+				$.each(data, function (id, option) {
+					PresentDistrictId.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				PresentDistrictId.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+	$("#DistrictId").change(function () {
+		var selectedItem = $(this).val();
+		var PresentUpazillaId = $("#UpazillaId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListUpazillaByDistrict",
+			data: { "id": selectedItem },
+			success: function (data) {
+				PresentUpazillaId.html('<option value="">Choose..</option>');
+				$.each(data, function (id, option) {
+					PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				PresentUpazillaId.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+	$("#UpazillaId").change(function () {
+		var selectedItem = $(this).val();
+		var PresentUpazillaId = $("#UnionId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListUnionByUpazilla",
+			data: { "id": selectedItem },
+			success: function (data) {
+				PresentUpazillaId.html('<option value="">Choose..</option>');
+				$.each(data, function (id, option) {
+					PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+				PresentUpazillaId.prop("disabled", false);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+
+	function loadNgoBasedOnForestDivision(divisionId) {
+		const NgoId = $("#NgoId");
+
+		if (NgoId.length > 0) {
+			$.ajax({
+				cache: false,
+				type: "POST",
+				url: "/Ngo/ListByForestDivisions",
+				data: { "divisions": [divisionId] },
+				success: function (data) {
+					NgoId.html('<option value="">Choose..</option>');
+					$.each(data, function (id, option) {
+						NgoId.append($('<option></option>').val(option.Id).html(option.Name));
+					});
+					NgoId.prop("disabled", false);
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					//
+				}
+			});
+		}
+	}
+</script>

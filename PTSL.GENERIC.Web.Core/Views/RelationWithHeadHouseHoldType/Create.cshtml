@@ -1,0 +1,49 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.RelationWithHeadHouseHoldTypeVM
+@{ 
+    ViewBag.Title = "Create";
+    var Message = ViewBag.Message;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>Create Energy Type</h4>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Create", "RelationWithHeadHouseHoldType", FormMethod.Post, new { id = "Form" }))
+        {
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label>
+                        Energy Type Name (English)
+                    </label>
+                    <input type="text" class="form-control col-md-6" id="Name" name="@nameof(Model.Name)" value="@Model.Name" placeholder="Enter RelationWithHeadHouseHoldType Name">
+                </div>
+                <div class="form-group">
+                    <label>
+                        Energy Type Name (Bangla)
+                    </label>
+                    <input type="text" class="form-control col-md-6" id="NameBn" name="@nameof(Model.NameBn)" value="@Model.NameBn" placeholder="Enter RelationWithHeadHouseHoldType Name">
+                </div>
+                <div class="form-group col-md-6">
+                    <button type="submit" class="btn btn-primary submit-btn pull-right">Submit</button>
+                </div>
+            </div>
+        }
+    </div>
+    <hr />
+    <div class="card-header pull-left">
+        <a href="/RelationWithHeadHouseHoldType/Index" class="btn btn-warning">Return to Index</a>
+    </div>
+</div>
+
+<script>
+    $(".submit-btn").on("click", function () {
+        if ($("#Form").valid()) {
+            $(".loader").fadeIn("slow");
+        }
+    });
+    $("#Form").validate({
+        rules: {
+        },
+    });
+</script>

@@ -1,0 +1,382 @@
+﻿<style>
+    .custom-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: calc(100% - 10vw);
+        z-index: 9999;
+        right: 0;
+        background: white;
+        transform: translate(-50%, -50%);
+        padding: 10px 20px;
+        border: 1px solid gray;
+        border-radius: 10px;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .custom-modal-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid gray;
+        padding: 10px 0;
+    }
+
+        .custom-modal-header button {
+            all: unset;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid gray !important;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .tab-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+        .tab-group button {
+            all: unset;
+            border: 0 !important;
+            padding: 5px 0;
+        }
+
+            .tab-group button.active {
+                border-bottom: 1px solid gray !important;
+                font-weight: 500;
+            }
+
+    .custom-modal-content {
+        flex-grow: 1;
+        padding: 10px 0;
+    }
+
+    .custom-modal-footer {
+        border-top: 1px solid gray;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .custom button.btn-warning {
+        box-shadow: 0 2px 6px #ffc473;
+        background-color: #ffa426 !important;
+        border-color: #ffa426 !important;
+        color: #fff !important;
+    }
+</style>
+
+
+<!-- Modal Start -->
+<div class="custom-modal"
+     role="dialog"
+     tabindex="-1"
+     x-show="isSocialForestryModalOpen"
+     x-on:click.away="closeSocialForestryModal"
+     x-cloak>
+    <div class="custom-modal-header">
+        <h6>Add Beneficiary</h6>
+        <button type="button" x-on:click="closeSocialForestryModal">X</button>
+    </div>
+    <div class="custom-modal-content">
+        <div class="tab-group">
+            <button :class="socialForestryTabCurrentTab == 0 && 'active'" type="button" x-on:click="setSocialForestryTabCurrentTab(0)">New Beneficiary</button>
+            <button :class="socialForestryTabCurrentTab == 1 && 'active'" type="button" x-on:click="LoadExistingBeneficiary(1)">Existing Beneficiary</button>
+        </div>
+
+        <div x-show="socialForestryTabCurrentTab === 0">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; row-gap: 5px; column-gap: 15px;">
+
+                <div class="form-group">
+                    <label>
+                        Beneficiary Name
+                        <span style="color: red;">*</span>
+                    </label>
+                    <input name="Beneficiary_Name" x-model="NewSocialForestryBeneficiary.BeneficiaryName" type="text" class="form-control" placeholder="Enter beneficiary name" />
+                </div>
+                <div class="form-group">
+                    <label>
+                        Gender
+                        <span style="color: red;">*</span>
+                    </label>
+                    <select name="Beneficiary_Gender"
+                            x-model="NewSocialForestryBeneficiary.Gender">
+                        <!option value="">Select Gender</!option>
+                        <template x-for="data in SocialForestryBeneficiaryDropdowns.Genders">
+                            <!option :value="data.Id" x-text="data.Name"></!option>
+                        </template>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        NID
+                        <span style="color: red;">*</span>
+                    </label>
+                    <input name="Beneficiary_NID" x-model="NewSocialForestryBeneficiary.NID" type="text" class="form-control" placeholder="Enter NID" />
+                </div>
+                <div class="form-group">
+                    <label>
+                        Mobile Number
+                        <spank style="color: red;">*</spank>
+                    </label>
+                    <input name="Beneficiary_MobileNumber" x-model="NewSocialForestryBeneficiary.MobileNumber" type="number" class="form-control" placeholder="Enter mobile number" />
+                </div>
+                <div class="form-group">
+                    <label>Ethnicity</label>
+                    <select name="Beneficiary_Ethnicity"
+                            x-model="NewSocialForestryBeneficiary.EthnicityId">
+                        <!option value="">Select Ethnicity</!option>
+                        <template x-for="data in SocialForestryBeneficiaryDropdowns.Ethnicities">
+                            <!option :value="data.Id" x-text="data.Name"></!option>
+                        </template>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input name="Beneficiary_Address" x-model="NewSocialForestryBeneficiary.Address" type="text" class="form-control" placeholder="Enter address" />
+                </div>
+
+            </div>
+        </div>
+        <div x-show="socialForestryTabCurrentTab === 1">
+            <table class="table table-sm mb-2" x-show="ExistingBeneficiaries.length > 0">
+                <tr>
+                    <th>SL</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>NID</th>
+                    <th>Phone Number</th>
+                    <th>Action</th>
+                </tr>
+                <tbody>
+                    <template x-for="(data, index) in ExistingBeneficiaries" :key="index">
+                        <tr class="">
+                            <td x-text="++index"></td>
+                            <td x-text="data.BeneficiaryName"></td>
+                            <td x-text="GetGenderDisplay(data.Gender)"></td>
+                            <td x-text="data.NID"></td>
+                            <td x-text="data.MobileNumber"></td>
+                            <td>
+                                <button x-show="IsBeneficiaryIdExistsInBeneficiaryMaps(data.Id)" type="button" x-on:click="RemoveExistingBeneficiaryFromAddedBeneficiary(data, null)" class="btn btn-sm btn-remove">Remove</button>
+                                <button x-show="IsBeneficiaryIdExistsInBeneficiaryMaps(data.Id) == false" x-on:click="AddExistingBeneficiaryToAddedBeneficiary(data)" type="button" class="btn btn-sm btn-primary">Add</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="custom-modal-footer">
+        <button type="button" class="btn btn-sm btn-warning" x-on:click="closeSocialForestryModal">Cancel</button>
+        <button x-show="socialForestryTabCurrentTab === 0" type="button" class="btn btn-sm btn-primary" x-on:click="AddPlantationSocialForestryBeneficiary()" x-text="NewSocialForestryBeneficiary.IsUpdating ? 'Update' : 'Add'"></button>
+    </div>
+</div>
+<!-- Modal End -->
+
+
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">PBSA, Beneficiary & Committee Information</legend>
+
+    <template x-for="(group, groupIndex) in PlantationSocialForestryBeneficiaryMaps" :key="group.PBSAGroupId">
+        <div class="pbsa_group mb-4">
+            <p style="font-size: medium;" x-text="'PBSA ' + (groupIndex + 1)" class="mb-2 border-btm">Beneficiary details</p>
+
+            <div>
+                <div class="row">
+                    <div class="col-md-5 pr-1" style="display: flex; align-items: center; gap: 30px;">
+                        <label>
+                            Is PBSA Signed
+                            <span style="color:red;">*</span>
+                        </label>
+                        <div style="display: flex;align-items: center; gap: 5px;">
+                            <div style="display: flex;align-items: center;gap: 5px;">
+                                <label>Yes</label>
+                                <input :name="group.PBSAGroupId" x-model="group.CheckIfPBSAIsSigned" value="true" type="radio" />
+                            </div>
+                            <div style="display: flex;align-items: center;gap: 5px;">
+                                <label>No</label>
+                                <input :name="group.PBSAGroupId" x-model="group.CheckIfPBSAIsSigned" value="false" type="radio" />
+                            </div>
+                        </div>
+                    </div>
+                    <div x-show="group.CheckIfPBSAIsSigned == 'true'" class="col-md-3 px-1">
+                        <label>
+                            Agreement Upload
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="file" :name="group.PBSAGroupId + '_AgreementFile'" class="pbsa_agreement_file" />
+                    </div>
+                </div>
+
+                <div class="mt-2 text-right">
+                    <button x-show="group.CheckIfPBSAIsSigned == 'true'" x-on:click="openModalForPBSA(group.PBSAGroupId)" x-text="'Add Beneficiary'" type="button" class="btn btn-sm"></button>
+                </div>
+            </div>
+
+            <p class="mt-3 border-btm">Beneficiary details</p>
+            <p x-show="group.SocialForestryBeneficiary.length == 0">No beneficiary added yet</p>
+
+            <style>
+                .beneficiaryOverviewGrid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    margin-bottom: 10px;
+                    padding: 0px 5px;
+                }
+            </style>
+
+            <div x-show="group.SocialForestryBeneficiary.length > 0" class="beneficiaryOverviewGrid">
+                <div x-text="'Total Beneficiaries: ' + group.TotalBeneficiary"></div>
+                <div x-text="'Total Male: ' + group.TotalMale"></div>
+                <div x-text="'Total Female: ' + group.TotalFemale"></div>
+                <div x-text="'Male (%): ' + group.TotalMalePercentage"></div>
+                <div x-text="'Female (%): ' + group.TotalFemalePercentage"></div>
+            </div>
+
+            <table class="table table-sm mb-2" x-show="group.SocialForestryBeneficiary.length > 0">
+                <tr>
+                    <th>SL</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>NID</th>
+                    <th>Phone Number</th>
+                    <th>Action</th>
+                </tr>
+                <tbody>
+                    <template x-for="(data, index) in group.SocialForestryBeneficiary" :key="index">
+                        <tr class="">
+                            <td x-text="++index"></td>
+                            <td x-text="data.BeneficiaryName"></td>
+                            <td x-text="GetGenderDisplay(data.Gender)"></td>
+                            <td x-text="data.NID"></td>
+                            <td x-text="data.MobileNumber"></td>
+                            <td>
+                                <button x-on:click="RemoveExistingBeneficiaryFromAddedBeneficiary(data, group.PBSAGroupId)" type="button" class="btn btn-sm btn-remove">Remove</button>
+                                <button x-on:click="EditSocialForestryBeneficiaryData(data, group.PBSAGroupId)" type="button" class="btn btn-sm btn-primary">Edit</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <button x-on:click="AddPlantationSocialForestryBeneficiaryMaps" type="button" class="btn btn-sm text-center">Add More</button>
+
+    <div class="mt-4">
+        <div class="row">
+            <div class="col-md-5 pr-1">
+                <label>
+                    Social forestry management committee formed?
+                    <span style="color:red;">*</span>
+                </label>
+            </div>
+            <div class="col-md-3 px-1">
+                <div style="display: flex;gap: 5px;">
+                    <div style="display: flex;align-items: center;gap: 5px;">
+                        <label>Yes</label>
+                        <input name="SocialForestryManagementCommitteeFormed" x-model="SocialForestryManagementCommitteeFormed" value="true" type="radio" />
+                    </div>
+                    <div style="display: flex;align-items: center;gap: 5px;">
+                        <label>No</label>
+                        <input name="SocialForestryManagementCommitteeFormed" x-model="SocialForestryManagementCommitteeFormed" value="false" type="radio" />
+                    </div>
+                </div>
+            </div>
+            <div x-show="SocialForestryManagementCommitteeFormed == 'true'" class="col-md-4 pl-1">
+                <label>
+                    Upload Committee file
+                </label>
+                <input type="file" name="SocialForestryManagementCommitteeFormedFile" id="SocialForestryManagementCommitteeFormedFile" />
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-md-5 pr-1">
+                <label>
+                    Fund management sub committee formed?
+                    <span style="color:red;">*</span>
+                </label>
+            </div>
+            <div class="col-md-3 px-1">
+                <div style="display: flex;gap: 5px;">
+                    <div style="display: flex;align-items: center;gap: 5px;">
+                        <label>Yes</label>
+                        <input name="FundManagementSubCommitteeFormed" x-model="FundManagementSubCommitteeFormed" value="true" type="radio" />
+                    </div>
+                    <div style="display: flex;align-items: center;gap: 5px;">
+                        <label>No</label>
+                        <input name="FundManagementSubCommitteeFormed" x-model="FundManagementSubCommitteeFormed" value="false" type="radio" />
+                    </div>
+                </div>
+            </div>
+            <div x-show="FundManagementSubCommitteeFormed == 'true'" class="col-md-4 pl-1">
+                <label>
+                    Upload Committee file
+                </label>
+                <input type="file" name="FundManagementSubCommitteeFormedFile" id="FundManagementSubCommitteeFormedFile" />
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-md-5 pr-1">
+                <label>
+                    Advisory committee formed?
+                    <span style="color:red;">*</span>
+                </label>
+            </div>
+            <div class="col-md-3 px-1">
+                <div style="display: flex;gap: 5px;">
+                    <div style="display: flex;align-items: center;gap: 5px;">
+                        <label>Yes</label>
+                        <input name="AdvisoryCommitteeFormed" x-model="AdvisoryCommitteeFormed" value="true" type="radio" />
+                    </div>
+                    <div style="display: flex;align-items: center;gap: 5px;">
+                        <label>No</label>
+                        <input name="AdvisoryCommitteeFormed" x-model="AdvisoryCommitteeFormed" value="false" type="radio" />
+                    </div>
+                </div>
+            </div>
+            <div x-show="AdvisoryCommitteeFormed == 'true'" class="col-md-4 pl-1">
+                <label>
+                    Upload Committee file
+                </label>
+                <input type="file" name="AdvisoryCommitteeFormedFile" id="AdvisoryCommitteeFormedFile" />
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-md-4 pr-1">
+                <label>Plantation Journal Upload</label>
+            </div>
+            <div class="col-md-4 px-1">
+                <input type="file" name="PlantationJournalUploadUrlFile" id="PlantationJournalUploadUrlFile" />
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-md-4 pr-1">
+                <label>Monitoring Report</label>
+            </div>
+            <div class="col-md-4 px-1">
+                <input type="file" name="MonitoringReportUrlFile" id="MonitoringReportUrlFile" />
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-md-4 pr-1">
+                <label>Remarks</label>
+                <textarea class="form-control" x-model="Remarks"></textarea>
+            </div>
+        </div>
+    </div>
+</fieldset>
+

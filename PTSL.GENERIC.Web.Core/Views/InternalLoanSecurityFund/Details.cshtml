@@ -1,0 +1,67 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.InternalLoan.InternalLoanInformationVM
+@{
+	ViewBag.Title = "Details of Internal Loan Security Fund";
+}
+
+<style>
+	.red {
+		color: red;
+	}
+
+	.green {
+		color: green;
+	}
+</style>
+
+<div class="card">
+	<div class="card-header">
+		<h4>
+			<a href="/LoanSecurityFund/Index" class="mr-1 back">
+				<svg width="20" height="20" viewBox="0 0 32 32">
+					<path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+				</svg>
+			</a>
+            Details of Internal Loan Security Fund Information
+		</h4>
+	</div>
+
+	<div class="card-body">
+		<h5 class="mt-2 border-bottom">Beneficiary Information</h5>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label style="font-size:15px;">Beneficiary name: <b>@(string.IsNullOrEmpty(Model.Survey?.BeneficiaryName) ? Model.Survey?.BeneficiaryNameBn : Model.Survey?.BeneficiaryName)</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Mobile number: <b>@(string.IsNullOrEmpty(Model.Survey?.BeneficiaryPhone) ? Model.Survey?.BeneficiaryPhoneBn : Model.Survey?.BeneficiaryPhone)</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Beneficiary NID: <b>@(Model.Survey?.BeneficiaryNid)</b></label>
+			</div>
+		</div>
+
+		<h5 class="mt-4 border-bottom">Internal Loan Information</h5>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label style="font-size:15px;">Total allocated loan(TK): <b>@Model.TotalAllocatedLoanAmount</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Start date: <b>@Model.StartDate.ToShortDateString()</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">End date: <b>@Model.EndDate.ToShortDateString()</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Months for total repayment: <b>@Model.MaximumRepaymentMonth</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Service charge (in %): <b>@Model.ServiceChargePercentage</b></label>
+			</div>
+			<div class="form-group">
+				<label style="font-size:15px;">Security charge (in %): <b>@Model.SecurityChargePercentage</b></label>
+			</div>
+		</div>
+	</div>
+</div>
+
+

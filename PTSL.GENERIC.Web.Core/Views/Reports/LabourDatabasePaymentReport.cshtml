@@ -1,0 +1,147 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.Labour;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Labour.LabourDatabaseVM>
+@{
+    ViewBag.Title = "Labour Database Work Reports";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Labour Database Work Report</h5>
+        </div>
+        <div class="">
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="11">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Labour Database Work Report</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Labour<br>Name</th>
+                    <th>Gender</th>
+                    <th>NID</th>
+                    <th>Type</th>
+                    <th>Work<br />Type</th>
+                    <th>Man Days</th>
+                    <th>Payment Amount<br />Per Day</th>
+                    <th>Total<br />Amount</th>
+                    <th>Payment<br />Type</th>
+                    <th>Code<br />Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var data in Model)
+                {
+                    @if (data.LabourWorks?.Count == 0)
+                    {
+                        <tr>
+                            <td>@(++index)</td>
+
+                            @if (data.SurveyId is null || data.SurveyId == default)
+                            {
+                                <td>@data.OtherLabourMember?.FullName</td>
+                                <td>@data.OtherLabourMember?.Gender.ToString()</td>
+                                <td>@data.OtherLabourMember?.NID</td>
+                                <td>Other</td>
+                            }
+                            else
+                            {
+                                <td>@data.Survey?.BeneficiaryName</td>
+                                <td>@data.Survey?.BeneficiaryGenderString</td>
+                                <td>@data.Survey?.BeneficiaryNid</td>
+                                <td>Beneficiary</td>
+                            }
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+
+                    var labourWorks = data.LabourWorks ?? Enumerable.Empty<LabourWorkVM>();
+                    @foreach (var work in labourWorks)
+                    {
+                        <tr>
+                            <td>@(++index)</td>
+
+                            @if (data.SurveyId is null || data.SurveyId == default)
+                            {
+                                <td>@data.OtherLabourMember?.FullName</td>
+                                <td>@data.OtherLabourMember?.Gender.ToString()</td>
+                                <td>@data.OtherLabourMember?.NID</td>
+                                <td>Other</td>
+                            }
+                            else
+                            {
+                                <td>@data.Survey?.BeneficiaryName</td>
+                                <td>@data.Survey?.BeneficiaryGenderString</td>
+                                <td>@data.Survey?.BeneficiaryNid</td>
+                                <td>Beneficiary</td>
+                            }
+
+                            <td>@work.WorkType</td>
+                            <td>@work.ManDays</td>
+                            <td>@work.PaymentAmountPerDay</td>
+                            <td>@work.TotalAmount</td>
+                            <td>@work.PaymentType</td>
+                            <td>@data.CodeNo</td>
+                        </tr>
+                    }
+
+                    <tr style="font-weight: bold;">
+                        @if (data.SurveyId is null || data.SurveyId == default)
+                        {
+                            <td colspan="5">Labour Name: @data.OtherLabourMember?.FullName</td>
+                        }
+                        else
+                        {
+                            <td colspan="5">@data.Survey?.BeneficiaryName</td>
+                        }
+                        <td colspan="3">Total Payment Amount: @labourWorks.Sum(x => x.TotalAmount)</td>
+                        <td colspan="3">Total Man Days: @labourWorks.Sum(x => x.ManDays)</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="7" class="text-center">Total:</td>
+                    <td colspan="4" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

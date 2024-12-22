@@ -1,0 +1,40 @@
+﻿<div class="col-6 p-1">
+    @await Html.PartialAsync(
+    "~/Views/Shared/_ForestAdministrationWithZoneArea.cshtml",
+    (
+    ViewBag.ForestCircleId as SelectList,
+    ViewBag.ForestDivisionId as SelectList,
+    ViewBag.ForestRangeId as SelectList,
+    ViewBag.ForestBeatId as SelectList,
+    ViewBag.ZoneOrAreaId as SelectList
+    )
+    )
+</div>
+
+<div class="col-6 p-1">
+    @await Html.PartialAsync(
+    "~/Views/Shared/_CivilAdministration.cshtml",
+    (
+    ViewBag.DivisionId as SelectList,
+    ViewBag.DistrictId as SelectList,
+    ViewBag.UpazillaId as SelectList,
+    ViewBag.UnionId as SelectList
+    )
+    )
+</div>
+
+<script>
+    function setupForestAndCivilLocation() {
+        return {
+            ForestCircleId: "",
+            ForestDivisionId: "",
+            ForestRangeId: "",
+            ForestBeatId: "",
+
+            DivisionId: "",
+            DistrictId: "",
+            UpazillaId: "",
+            UnionId: "",
+        }
+    }
+</script>

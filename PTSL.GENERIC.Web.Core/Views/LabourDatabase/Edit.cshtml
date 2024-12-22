@@ -1,0 +1,459 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Labour.LabourDatabaseVM
+@{
+    ViewBag.Title = "Edit Labour Database";
+    var Message = ViewBag.Message;
+
+    string? labourName;
+    string? phoneNumber;
+    string? nid;
+
+    string? motherName;
+    string? fatherName;
+    string? spouseName;
+
+    if (Model.SurveyId is null || Model.SurveyId == default)
+    {
+        labourName = Model.OtherLabourMember?.FullName;
+        phoneNumber = Model.OtherLabourMember?.PhoneNumber;
+        nid = Model.OtherLabourMember?.NID;
+
+        motherName = Model.OtherLabourMember?.MotherName;
+        fatherName = Model.OtherLabourMember?.FatherName;
+        spouseName = Model.OtherLabourMember?.SpouseName;
+    }
+    else
+    {
+        labourName = Model.Survey?.BeneficiaryName;
+        phoneNumber = Model.Survey?.BeneficiaryPhone;
+        nid = Model.Survey?.BeneficiaryNid;
+
+        motherName = Model.Survey?.BeneficiaryMotherName;
+        fatherName = Model.Survey?.BeneficiaryFatherName;
+        spouseName = Model.Survey?.BeneficiarySpouseName;
+    }
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<style>
+    #imagDesign {
+    }
+
+    .select2-container {
+        position: relative;
+    }
+
+    .clear-button {
+        padding: 0px 6px !important;
+        position: absolute;
+        top: 5px;
+        right: 4px;
+        border: 1px solid gray !important;
+        border-radius: 50% !important;
+    }
+
+    label {
+        margin-bottom: 0.2rem;
+    }
+
+    .add-participant-container {
+        display: flex;
+        align-items: end;
+        gap: 8px;
+    }
+
+    ._select2_option {
+        line-height: 20px;
+    }
+
+        ._select2_option span {
+            font-weight: 300;
+        }
+
+            ._select2_option span:first-child {
+                font-weight: 500;
+            }
+
+    .flex-basis-content {
+        flex-basis: content;
+    }
+
+    .gap-5 {
+        gap: 5px;
+    }
+
+    .custom-input input {
+        height: auto;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #SurveyId-error {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 15px;
+    }
+</style>
+
+<script>
+    function resetTheForm() {
+        resetFromData('#Form');
+        $('#SurveyId').empty();
+    }
+</script>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/LabourDatabase/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Edit Labour Database
+        </h4>
+        <button class="ml-auto reset btn btn-sm" onclick="resetTheForm()">
+            <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z" fill="currentColor" />
+            </svg>
+            Reset
+        </button>
+    </div>
+
+    <form id="Form" asp-controller="LabourDatabase" asp-action="Edit" enctype="multipart/form-data" class="card-body mt-2">
+        <input type="hidden" name="Id" id="Id" value="@Model.Id" />
+        <input type="hidden" name="@nameof(Model.CreatedAt)" id="@nameof(Model.CreatedAt)" value="@Model.CreatedAt" />
+        <input type="hidden" name="@nameof(Model.CreatedBy)" id="@nameof(Model.CreatedBy)" value="@Model.CreatedBy" />
+
+        <div class="p-2 green-card" style="border-radius: 5px;">
+            <div class="row custom forest-location">
+                <div class="col-6 p-1">
+                    @await Html.PartialAsync(
+                    "~/Views/Shared/_ForestAdministration.cshtml",
+                    (
+                    ViewBag.ForestCircleId as SelectList,
+                    ViewBag.ForestDivisionId as SelectList,
+                    ViewBag.ForestRangeId as SelectList,
+                    ViewBag.ForestBeatId as SelectList,
+                    ViewBag.ForestFcvVcfId as SelectList
+                    )
+                    )
+                </div>
+
+                <div class="col-6 p-1">
+                    @await Html.PartialAsync(
+                    "~/Views/Shared/_CivilAdministration.cshtml",
+                    (
+                    ViewBag.DivisionId as SelectList,
+                    ViewBag.DistrictId as SelectList,
+                    ViewBag.UpazillaId as SelectList,
+                    ViewBag.UnionId as SelectList
+                    )
+                    )
+                </div>
+            </div>
+        </div>
+
+        <div id="table-show px-5" class="p-2 custom green-card mt-2" style="border-radius: 5px;">
+            <fieldset class="p-1 col-12">
+                <legend class="float-none w-auto">Labour Database Information</legend>
+
+                <div class="row">
+                    <div class="col-3 pr-1">
+                        <label>Beneficiary</label>
+                        @Html.DropDownList("SurveyId", null, "Select Beneficiary", htmlAttributes: new { @class = "form-control col-md-12" })
+                    </div>
+                    <div class="col-3 px-1">
+                        <label>Labour Name <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control col-md-12" id="FullName" name="OtherLabourMember.FullName" value="@labourName" placeholder="Enter full name" required>
+                    </div>
+                    <div class="col-3 px-1">
+                        <label>Gender <span style="color: red;">*</span></label>
+                        @Html.DropDownList("OtherLabourMember.Gender", ViewBag.Gender, "Select Gender", htmlAttributes: new { @class = "form-control col-md-12", @name = "OtherLabourMember.Gender", @required = "true", id = "Gender" })
+                    </div>
+                    <div class="col-3 pl-1">
+                        <label>Mobile Number <span style="color: red;">*</span></label>
+                        <input type="number" class="form-control col-md-12" id="MobileNumber" name="OtherLabourMember.PhoneNumber" value="@phoneNumber" placeholder="Enter mobile number" required>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-3 pr-1">
+                        <label>Ethnicity<span></span></label>
+                        @Html.DropDownList("OtherLabourMember.EthnicityId", ViewBag.EthnicityId, "Select Ethnicity", htmlAttributes: new { @class = "form-control col-md-12", @name = "", id = "EthnicityId" })
+                    </div>
+                    <div class="col-3 px-1">
+                        <label>NID<span></span></label>
+                        <input type="number" class="form-control col-md-12" id="NidNo" name="OtherLabourMember.NID" value="@nid" placeholder="Enter NID">
+                    </div>
+                    <div class="col-3 px-1">
+                        <label>Labour Code <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control col-md-12" id="CodeNo" name="@nameof(Model.CodeNo)" value="@Model.CodeNo" placeholder="Enter labour code" required>
+                    </div>
+                    <div class="col-3 pl-1">
+                        <label>Address <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control col-md-12" id="Address" name="@nameof(Model.Address)" value="@Model.Address" placeholder="Enter address" required>
+                    </div>
+                </div>
+
+
+
+
+                <div class="row mt-3">
+                   <div class="col-3 pr-1">
+                        <label>Mother Name <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control col-md-12" id="MotherName" name="OtherLabourMember.MotherName" value="@motherName" placeholder="Enter mother name" required>
+                    </div>
+                    <div class="col-3 px-1">
+                        <label>Father Name <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control col-md-12" id="FatherName" name="OtherLabourMember.FatherName" value="@fatherName" placeholder="Enter father name" required>
+                    </div>
+                    <div class="col-3 px-1">
+                        <label>Spouse Name <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control col-md-12" id="SpouseName" name="OtherLabourMember.SpouseName" value="@spouseName" placeholder="Enter spouse name" required>
+                    </div>
+                </div>
+
+
+
+                <div class="row mt-3">
+                    <div class="col-3 pr-1">
+                        <label>Image Upload</label>
+                        <input type="file" accept="image/png, image/gif, image/jpeg, image/jpg" class="btn btn-default mt-0" name="LabourDatabaseImageFiles" multiple>
+                    </div>
+                    <div class="col-3 pr-1">
+                        <label>File Attachment</label>
+                        <input type="file" accept=".xlsx,.xls,.doc,.docx,.ppt, .pptx,.txt,.pdf" class="btn btn-default mt-0" name="LabourDatabaseDocumentFiles" multiple>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="d-flex justify-content-end mt-2">
+            <button type="submit" id="" class="btn btn-sm btn-green mr-2 submit-btn">
+                Save
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $("#Form").validate({
+        rules: {
+            ForestCircleId: {
+                required: true
+            },
+            ForestDivisionId: {
+                required: true
+            },
+            ForestRangeId: {
+                required: true
+            },
+            ForestBeatId: {
+                required: true
+            },
+            ForestFcvVcfId: {
+                required: true
+            },
+            DistrictId: {
+                required: true
+            },
+            DivisionId: {
+                required: true
+            },
+            UpazillaId: {
+                required: true
+            },
+            UnionId: {
+                required: true
+            },
+            'OtherLabourMember.FullName': {
+                minlength: 2,
+                maxlength: 50,
+            },
+            'OtherLabourMember.MotherName': {
+                minlength: 2,
+                maxlength: 50,
+            },
+            'OtherLabourMember.FatherName': {
+                minlength: 2,
+                maxlength: 50,
+            },
+            'OtherLabourMember.SpouseName': {
+                minlength: 2,
+                maxlength: 50,
+            },
+            'OtherLabourMember.PhoneNumber': {
+                '_mustBeInteger': true,
+                minlength: 11,
+                maxlength: 11,
+            },
+            'OtherLabourMember.NID': {
+				'_mustBeInteger': true,
+				minlength: 10,
+				maxlength: 17,
+            }
+        },
+    });
+
+    $("#submit-btn").on("click", function (event) {
+        event.preventDefault();
+        if ($("#Form").valid() == false) return;
+
+        $(".loader").fadeIn("fast");
+        $("#Form").submit();
+    });
+</script>
+
+<script>
+    let surveyData = [];
+
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('#ForestFcvVcfId').trigger("change");
+        }, 1000)
+    });
+
+    $('#SurveyId').on("change", function () {
+        var surveyId = $("#SurveyId").val();
+
+        var found = surveyData.filter(x => x.Id == surveyId);
+        if (found.length > 0) {
+            const survey = found[0];
+
+            $("#FullName").val(survey.BeneficiaryName || survey.BeneficiaryNameBn);
+
+            $("#MotherName").val(survey.BeneficiaryMotherName || survey.BeneficiaryMotherNameBn);
+            $("#FatherName").val(survey.BeneficiaryFatherName || survey.BeneficiaryFatherNameBn);
+            $("#SpouseName").val(survey.BeneficiarySpouseName || survey.BeneficiarySpouseNameBn);
+
+            $("#Gender").val(survey.BeneficiaryGender);
+            $("#MobileNumber").val(survey.BeneficiaryPhone || survey.BeneficiaryPhoneBn);
+            $("#EthnicityId").val(survey.BeneficiaryEthnicityId);
+            $("#NidNo").val(survey.BeneficiaryNid);
+
+            $("#FullName").attr("disabled", "true");
+
+            $("#MotherName").attr("disabled", "true");
+            $("#FatherName").attr("disabled", "true");
+            $("#SpouseName").attr("disabled", "true");
+
+            $("#Gender").attr("disabled", "true");
+            $("#MobileNumber").attr("disabled", "true");
+            $("#EthnicityId").attr("disabled", "true");
+            $("#NidNo").attr("disabled", "true");
+        }
+        else {
+            $("#FullName").val("");
+
+            $("#MotherName").val("");
+            $("#FatherName").val("");
+            $("#SpouseName").val("");
+
+            $("#Gender").val("");
+            $("#MobileNumber").val("");
+            $("#EthnicityId").val("");
+            $("#NidNo").val("");
+
+            $("#FullName").removeAttr("disabled", "true");
+
+            $("#MotherName").removeAttr("disabled", "true");
+            $("#FatherName").removeAttr("disabled", "true");
+            $("#SpouseName").removeAttr("disabled", "true");
+
+            $("#Gender").removeAttr("disabled", "true");
+            $("#MobileNumber").removeAttr("disabled", "true");
+            $("#EthnicityId").removeAttr("disabled", "true");
+            $("#NidNo").removeAttr("disabled", "true");
+        }
+    });
+
+    $("#ForestFcvVcfId").on("change", function () {
+        var filterData = {
+            ForestCivilLocation: {
+                ForestCircleId: $(".forest-location select[name=ForestCircleId]").val(),
+                ForestDivisionId: $(".forest-location select[name=ForestDivisionId]").val(),
+                ForestRangeId: $(".forest-location select[name=ForestRangeId]").val(),
+                ForestBeatId: $(".forest-location select[name=ForestBeatId]").val(),
+                ForestFcvVcfId: $(".forest-location select[name=ForestFcvVcfId]").val(),
+            },
+        };
+
+        _getBeneficiaryFilterData(
+            filterData,
+
+            // Success
+            function (response) {
+                if (Array.isArray(response.Data)) {
+                    surveyData = response.Data;
+
+                    var data = response.Data.map(x => {
+                        return {
+                            id: x.Id,
+                            text: x.BeneficiaryName || x.BeneficiaryNameBn,
+                            beneficiaryPhone: x.BeneficiaryPhone || x.BeneficiaryPhoneBn,
+                            nid: x.BeneficiaryNid,
+                        }
+                    });
+                    data = [{
+                        id: "",
+                        text: "Choose",
+                    }, ...data];
+                    $('#SurveyId').empty();
+                    debugger;
+
+                    var optionTemplate = function (option) {
+                        var beneficiaryPhone = option.beneficiaryPhone ? `<span>Mobile: ${option.beneficiaryPhone}</span>` : '<span>Mobile:</span>';
+                        var nid = option.nid ? `<span>NID: ${option.nid}</span>` : '<span>NID:</span>';
+
+                        return $(
+                            `
+                                                <div class="d-flex flex-column _select2_option">
+                                                    <span>${option.text}</span>
+                                                    ${beneficiaryPhone}
+                                                    ${nid}
+                                                </div>
+                                                `
+                        );
+                    };
+
+                    var selectionTemplate = function (option) {
+                        return $(
+                            `<span>${option.text}</span>`
+                        );
+                    };
+
+                    var $clearButton = $('<button/>', {
+                        class: 'clear-button',
+                        text: 'X',
+                        type: 'button',
+                        click: function () {
+                            $('#SurveyId').val(null).trigger('change');
+                        }
+                    });
+
+                    $('#SurveyId').select2({
+                        data,
+                        placeholder: 'Select Beneficiary',
+                        templateResult: optionTemplate,
+                        templateSelection: selectionTemplate,
+                        tags: true,
+                    });
+                    $('.select2-container').append($clearButton);
+
+                    if ('@(Model.SurveyId > 0)' == 'True') {
+                        $('#SurveyId').val(@Model.SurveyId).trigger("change");
+                    }
+                }
+            },
+
+            // Error
+            function () {
+                $("#tableSelectedLocationBeneficiary tbody").empty();
+            }
+        );
+    });
+</script>
+

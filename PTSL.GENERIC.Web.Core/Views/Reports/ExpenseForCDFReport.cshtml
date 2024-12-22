@@ -1,0 +1,102 @@
+﻿@* @model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.TransactionMangement.TransactionExpenseVM>
+@{
+    ViewBag.Title = "CDF";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>CDF Report</h5>
+        </div>
+        <div class="">
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="12">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>CDF Report</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Forest Department</th>
+                    <th>Forest Range</th>
+                    <th>Forest Beat</th>
+                    <th>Name Of FCV</th>
+                    <th>Financial Year</th>
+                    <th>Total Scheme</th>
+                    <th>Name Of Approveld Project / Sub Project</th>
+                    <th>Amount(Taka)</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@data.ForestFcvVcf?.Name</td>
+                        <td>@data.ForestRange?.Name</td>
+                        <td>@data.ForestBeat?.Name</td>
+                        <td>@data.ForestFcvVcf?.Name</td>
+                        <td>@data.ExpenseYear</td>
+                        <td>@data.ExpenseDetailsForCDFs.Count()</td>
+                        <td>
+                            @foreach (var item in data.ExpenseDetailsForCDFs)
+                            {
+                                <div> @item.ExpenseScheme</div>
+                            }
+                        </td>
+
+                         <td>
+                            @foreach (var item in data.ExpenseDetailsForCDFs)
+                            {
+                                <div> @item.ExpenseAmount</div>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var item in data.ExpenseDetailsForCDFs)
+                            {
+                                <div> @item.Remakrs</div>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="4" class="text-center">Total:</td>
+                    <td colspan="2" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'lfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+        });
+    });
+</script>
+
+ *@

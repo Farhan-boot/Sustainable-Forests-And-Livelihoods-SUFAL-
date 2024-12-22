@@ -1,0 +1,198 @@
+﻿<fieldset class="mt-2 p-2 col-12">
+    <legend class="float-none w-auto">Seedling and Nursery Information</legend>
+
+    <div class="">
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Nursery
+                    <span style="color: red;">*</span>
+                </label>
+                <select id="ReplantationNurseryInfos_NurseryInformationId"
+                        name="ReplantationNurseryInfos_NurseryInformationId"
+                        x-on:change="GetNurserySpeciesNames"
+                        x-model="NewReplantationNurseryInfo.NurseryInformationId" required>
+                    <!option value="">Select Nursery</!option>
+                    <template x-for="data in ReplantationNurseryInfoDropdowns.Nursery">
+                        <!option :selected="data.Id == NewReplantationNurseryInfo.NurseryInformationId"
+                        :value="data.Id" x-text="data.NurseryName"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Species Name
+                    <span style="color: red;">*</span>
+                </label>
+                <select id="ReplantationNurseryInfos_NurseryRaisedSeedlingInformationId"
+                        name="ReplantationNurseryInfos_NurseryRaisedSeedlingInformationId"
+                        x-on:change="SetAvailableSeedling"
+                        x-model="NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId" required>
+                    <!option value="">Select Species</!option>
+                    <template x-for="data in ReplantationNurseryInfoDropdowns.SeedlingInformation">
+                        <!option :selected="data.Id == NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId"
+                        :value="data.Id" x-text="data.SpeciesName"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Available Seedling
+                </label>
+                <input x-model="NewReplantationNurseryInfo.AvailableSeedling" type="number" disabled placeholder="Available seedling" />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Number of Seedling Planted
+                    <span style="color: red;">*</span>
+                </label>
+                <input id="ReplantationNurseryInfos_NumberOfSeedlingPlanted"
+                       name="ReplantationNurseryInfos_NumberOfSeedlingPlanted" type="number"
+                       x-model="NewReplantationNurseryInfo.NumberOfSeedlingPlanted"
+                       placeholder="Enter number of seedling planted" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Remarks
+                </label>
+                <input id="ReplantationNurseryInfos_Remarks" name="ReplantationNurseryInfos_Remarks"
+                       x-model="NewReplantationNurseryInfo.Remarks" type="text" placeholder="Enter remarks" />
+            </div>
+            <div class="col-md-3 px-1">
+            </div>
+            <div class="col-md-3 px-1">
+            </div>
+            <div class="col-md-3 pl-1">
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button x-on:click="AddReplantationNurseryInfo"
+                    x-text="NewReplantationNurseryInfo.IsUpdating ? 'Update' : 'Add Information'" type="button"
+                    class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Nursery details</p>
+    <p x-show="PlantationPlants.length == 0">No details added yet</p>
+
+    <table class="table table-sm mb-2" id="PlantationPlantTable" x-show="PlantationPlants.length > 0">
+        <tr>
+            <th>SL</th>
+            <th>Nursery</th>
+            <th>Species Name</th>
+            <th>Seedling Planted</th>
+            <th>Action</th>
+        </tr>
+        <tbody>
+            <template x-for="(data, index) in PlantationPlants" :key="index">
+                <tr class="">
+                    <td x-text="++index"></td>
+                    <td x-text="data.NurseryInformationDisplay || data.NurseryInformation.NurseryName || 'None'"></td>
+                    <td x-text="data.SpeciesNameDisplay || data.NurseryRaisedSeedlingInformation.SpeciesName || 'None'"></td>
+                    <td x-text="data.NumberOfSeedlingPlanted"></td>
+                    <td>
+                        <button x-on:click="RemoveReplantationNurseryInfo(data)" type="button"
+                            class="btn btn-sm btn-remove">Remove</button>
+                        <button x-on:click="EditReplantationNurseryInfo(data, index - 1)" type="button"
+                            class="btn btn-sm btn-primary">Edit</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</fieldset>
+
+<script>
+    function nurseryInformation() {
+        return {
+            // Nursery
+            PlantationPlants: [],
+            InitialReplantationNurseryInfo: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+
+                NurseryInformationId: "",
+                NurseryRaisedSeedlingInformationId: "",
+                NumberOfSeedlingPlanted: "",
+                Remarks: "",
+
+                // Display
+                NurseryInformationDisplay: "",
+                SpeciesNameDisplay: "",
+                AvailableSeedling: "",
+            },
+            NewReplantationNurseryInfo: {},
+            InitializeNewNursery() {
+                this.NewReplantationNurseryInfo = { ...this.InitialReplantationNurseryInfo };
+            },
+            ReplantationNurseryInfoDropdowns: {
+                Nursery: [],
+                SeedlingInformation: [],
+            },
+            GetNurserySpeciesNames() {
+                fetch(`/NurseryRaisedSeedlingInformation/GetSeedlingByNurseryId/${this.NewReplantationNurseryInfo.NurseryInformationId}`)
+                    .then(x => x.json())
+                    .then(data => {
+                        this.ReplantationNurseryInfoDropdowns.SeedlingInformation = data.Data;
+                    });
+            },
+            SetAvailableSeedling() {
+                const seedlingId = this.NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId;
+                const seedlingRaised = this.ReplantationNurseryInfoDropdowns
+                    .SeedlingInformation
+                    .find(x => x.Id == seedlingId)
+                    ?.SeedlingRaised ?? "0";
+
+                this.NewReplantationNurseryInfo.AvailableSeedling = seedlingRaised;
+            },
+
+            AddReplantationNurseryInfo() {
+                let hasError = 0;
+
+                for (const key of Object.keys(NurseryFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.SetNurseryInformationDisplay();
+
+                if (this.NewReplantationNurseryInfo.IsUpdating) {
+                    this.PlantationPlants[this.NewReplantationNurseryInfo.UpdateIndex] = { ...this.NewReplantationNurseryInfo, IsUpdating: false };
+                } else {
+                    this.PlantationPlants.push(this.NewReplantationNurseryInfo);
+                }
+
+                this.InitializeNewNursery();
+            },
+            RemoveReplantationNurseryInfo(data) {
+                this.PlantationPlants.splice(this.PlantationPlants.indexOf(data), 1);
+            },
+            EditReplantationNurseryInfo(data, index) {
+                this.NewReplantationNurseryInfo = { ...data, UpdateIndex: index, IsUpdating: true };
+            },
+            SetNurseryInformationDisplay() {
+                const nurseryInfo = this.ReplantationNurseryInfoDropdowns
+                    .Nursery
+                    .find(x => x.Id == this.NewReplantationNurseryInfo.NurseryInformationId)
+                    ?.NurseryName ?? "";
+
+                const speciesInfo = this.ReplantationNurseryInfoDropdowns
+                    .SeedlingInformation
+                    .find(x => x.Id == this.NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId)
+                    ?.SpeciesName ?? "";
+
+                this.NewReplantationNurseryInfo.NurseryInformationDisplay = nurseryInfo;
+                this.NewReplantationNurseryInfo.SpeciesNameDisplay = speciesInfo;
+            },
+        }
+    }
+</script>

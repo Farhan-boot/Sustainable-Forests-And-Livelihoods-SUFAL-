@@ -1,0 +1,585 @@
+@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.NewRaisedPlantationVM
+@{
+    ViewBag.Title = "Details of New Raised Plantation";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+        overflow: hidden;
+    }
+
+        fieldset legend {
+            width: auto;
+        }
+
+    .hr {
+        position: relative;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+        .hr:after {
+            content: "";
+            height: 1px;
+            position: absolute;
+            width: 100%;
+            background: grey;
+            top: 50%;
+            margin-left: 10px;
+        }
+</style>
+
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/NewRaisedPlantation/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Details of New Raised Plantation
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Forest Administrative Unit</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Circle: <b>@Model.ForestCircle?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Division: <b>@Model.ForestDivision?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Range: <b>@Model.ForestRange?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Beat: <b>@Model.ForestBeat?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Zone/Area: <b>@Model.ZoneOrArea?.Name</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Civil Administrative Unit</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Division: <b>@Model.Division?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">District: <b>@Model.District?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Upazilla: <b>@Model.Upazilla?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Union: <b>@Model.Union?.Name</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Land Owing Agenecy</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Agency Name: <b>@Model.LandOwningAgency?.Name</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>NGO Information</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">NGO Name: <b>@Model.SocialForestryNgo?.Name</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Plantation Information</legend>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Plantation Type: <b>@Model.PlantationType?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Plantation Id: <b>@Model.PlantationId</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Plantation Area: <b>@Model.PlantationArea</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Plantation Unit: <b>@Model.PlantationUnit?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Rotation Number: <b>@Model.RotationNo</b></label>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Location With Coordinate: <b>@Model.LocationWithCoordinate</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Mouja & JL no: <b>@Model.MoujaAndJLNumber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Sheet no (RS): <b>@Model.SheetNo</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Plot No: <b>@Model.PlotNo</b></label>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Source of funding/Project name: <b>@Model.ProjectType?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Plantation year: <b>@Model.PlantedFinancialYear?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Rotation (In years, due rotation age 10 years): <b>@Model.RotationInYear</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Expected Cutting year: <b>@Model.ExpectedCuttingYear</b></label>  @* TODO: Change to ExpectedCuttingYear *@
+                </div>
+
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Sanction no: <b>@Model.SanctionNo</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Soil type of plantation site: <b>@Model.SoilType</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Natural tree species: <b>@Model.NaturalTreeSpecies</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Topography of plantation site: <b>@Model.PlantationTopography?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Climate of plantation site: <b>@Model.ClimateOfPlantationSite</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Images & Attachments</legend>
+                <div class="row" style="padding: 0px 10px;">
+
+                    @if (Model?.PlantationFiles?.Count > 0)
+                    {
+
+                        <div class="form-group col-md-2" style="padding: 0 !important;">
+                            <label>
+                                Attachments
+                            </label>
+                            @foreach (var item in Model.PlantationFiles)
+                            {
+
+                                <img src="@item.FileUrl" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                                <a class="btn btn-sm btn-primary mt-2" style= href="@item.FileUrl" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(item.FileUrl))">Download</a>
+                            }
+                        </div>
+                    }
+                </div>
+            </fieldset>
+
+
+            <fieldset>
+                <legend>
+                    Seedling and Nursery Information
+                </legend>
+
+
+                @{
+
+                    var plantationPlantsIndex = 0;
+                    var plantationPlants = Model?.PlantationPlants ?? new List<PlantationPlantVM>();
+                }
+
+
+                @foreach (var item in plantationPlants)
+                {
+                    plantationPlantsIndex++;
+
+                    if (plantationPlantsIndex != 1)
+                    {
+                        <hr />
+                    }
+                    <h5>@plantationPlantsIndex</h5>
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Nursary Name: <b>@item.NurseryInformation?.NurseryName</b></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Species Name: <b>@item.NurseryRaisedSeedlingInformation?.SpeciesName</b></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Available Number of Seedling: <b>@item.NurseryRaisedSeedlingInformation?.SeedlingRaised</b></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Number of Seedling Planted: <b>@item.NumberOfSeedlingPlanted</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Remarks: <b>@item.Remarks</b></label>
+                    </div>
+                }
+
+
+            </fieldset>
+
+
+            <fieldset>
+                <legend>Concerned Officials</legend>
+                @{
+                    var officialIndex = 0;
+                    var concernedOfficials = Model?.ConcernedOfficialMap ?? new List<ConcernedOfficialMapVM>();
+                }
+                @foreach (var official in concernedOfficials)
+                {
+                    officialIndex++;
+
+                    if (officialIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@officialIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Official Name: <b>@(official.ConcernedOfficial?.OfficialName)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Designation: <b>@(official.ConcernedOfficial?.Designation?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Mobile No: <b>@(official.ConcernedOfficial?.MobileNo)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Email: <b>@(official.ConcernedOfficial?.EmailAddress)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Inspection Details</legend>
+                @{
+                    var inspectionDetailIndex = 0;
+                    var inspectionDetails = Model.InspectionDetailsMap ?? new List<InspectionDetailsMapVM>();
+                }
+                @foreach (var inspectionDetail in inspectionDetails)
+                {
+                    inspectionDetailIndex++;
+
+                    if (inspectionDetailIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@inspectionDetailIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Official Name: <b>@(inspectionDetail.InspectionDetails?.OfficialName)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Designation: <b>@(inspectionDetail.InspectionDetails?.SocialForestryDesignation?.Name)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Comments: <b>@(inspectionDetail.InspectionDetails?.Comments)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+            <fieldset>
+                <legend>Inspection Documents</legend>
+                @{
+                    var inspectionDocIndex = 0;
+                    var inspectionDocuments = Model.InspectionDetailsMap ?? new List<InspectionDetailsMapVM>();
+                }
+                @foreach (var item in inspectionDocuments)
+                {
+                    inspectionDocIndex++;
+
+                    if (inspectionDocIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@inspectionDocIndex</h5>
+                    <div class="row">
+                        <div class="form-group col m-1">
+                            <a class="btn btn-sm btn-primary mt-2" style= href="@item.InspectionDetails?.InspectionFile" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(item.InspectionDetails?.InspectionFile))">Download</a>
+                        </div>
+
+
+                    </div>
+
+                }
+            </fieldset>
+
+
+            <fieldset>
+                <legend>Cost Informations</legend>
+                @{
+                    var constInformationsIndex = 0;
+                    var constInformations = Model.CostInformation ?? new List<CostInformationVM>();
+                }
+                @foreach (var constInformation in constInformations)
+                {
+                    constInformationsIndex++;
+
+                    if (constInformationsIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@constInformationsIndex</h5>
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Cost Type: <b>@(constInformation?.CostType?.Name)</b></label>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Cost Date: <b>@(constInformation.CostDate.ToShortDateString())</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Cost Amount: <b>@(constInformation.CostAmount)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Remarks: <b>@(constInformation.Remarks)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Cost Documents</legend>
+                @{
+                    var costDocIndex = 0;
+                    var costDocuments = Model.CostInformation ?? new List<CostInformationVM>();
+                }
+                @foreach (var item in costDocuments)
+                {
+                    costDocIndex++;
+
+                    if (costDocIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@costDocIndex</h5>
+                    @if (item.CostInformationFiles?.Count > 0 && item.CostInformationFiles != null)
+                    {
+
+                        @foreach (var doc in item.CostInformationFiles)
+                        {
+                            <div class="row">
+                                <div class="form-group col m-1">
+
+                                    @if (doc.FileType == FileType.Image)
+                                    {
+
+                                        <img src="@doc.FileUrl" style="height: 150px;" class="img-thumbnail form-control" alt="...">
+                                    }
+                                    <a class="btn btn-sm btn-primary mt-2" style= href="@doc.FileUrl" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(doc.FileUrl))">Download</a>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Labour Information</legend>
+                @{
+                    var labourIndex = 0;
+                    var labourOfficials = Model?.LaborInformation ?? new List<LaborInformationVM>();
+                }
+                @foreach (var labour in labourOfficials)
+                {
+                    labourIndex++;
+
+                    if (labourIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@labourIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Labour Cost Type: <b>@(labour.LaborCostType?.Name)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Date: <b>@(labour.LaborCostDate.ToShortDateString())</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Male No: <b>@(labour.TotalMale)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Female No: <b>@(labour.TotalFemale)</b></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Total Number Labour: <b>@(labour.LaborCostType?.Name)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Remarks: <b>@(labour.Remarks)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Labour Cost Documents</legend>
+                @{
+                    var labourCostDocIndex = 0;
+                    var labourCostDocuments = Model.LaborInformation ?? new List<LaborInformationVM>();
+                }
+                @foreach (var item in labourCostDocuments)
+                {
+                    labourCostDocIndex++;
+
+                    if (labourCostDocIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@costDocIndex</h5>
+                    @if (item.LaborInformationFiles?.Count > 0 && item.LaborInformationFiles != null)
+                    {
+
+                        @foreach (var doc in item.LaborInformationFiles)
+                        {
+                            <div class="row">
+                                <div class="form-group col m-1">
+                                    @if (doc.FileType == FileType.Image)
+                                    {
+                                        <img src="@doc.FileUrl" style="height: 150px;" class="img-thumbnail form-control" alt="...">
+                                    }
+                                    <a class="btn btn-sm btn-primary mt-2" style= href="@doc.FileUrl" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(doc.FileUrl))">Download</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </fieldset>
+
+            <fieldset>
+
+                <legend>PBSA, Beneficiary & Committee Information</legend>
+                @{
+                    var pbsaIndex = 0;
+                    var pbsaList = Model.PlantationSocialForestryBeneficiaryMaps ?? new List<PlantationSocialForestryBeneficiaryMapVM>();
+                    var groupedData = pbsaList.GroupBy(p => p.PBSAGroupId)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                }
+
+                @foreach (var group in groupedData)
+                {
+                    @(group.Key)
+                    ;
+
+
+                    @foreach (var item in group.Value)
+                    {
+                        <div class="form-group">
+                            <label style="font-size:15px;">Beneficiary  Name: <b>@item.SocialForestryBeneficiary?.BeneficiaryName</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">PBSA Signed: <b>@(item.CheckIfPBSAIsSigned ? "Yes" : "No")</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Gender: <b>@item.SocialForestryBeneficiary?.Gender</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Ethenticity: <b>@item.SocialForestryBeneficiary?.Ethnicity?.Name</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Mobile No: <b>@item.SocialForestryBeneficiary?.MobileNumber</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Address: <b>@item.SocialForestryBeneficiary?.Address</b></label>
+                        </div>
+
+                    }
+
+                    <hr />
+
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Damage Informations</legend>
+                @{
+                    var damageInformationsIndex = 0;
+                    var damageInformations = Model.PlantationDamageInformation ?? new List<PlantationDamageInformationVM>();
+                }
+                @foreach (var damageInfo in damageInformations)
+                {
+                    damageInformationsIndex++;
+
+                    if (damageInformationsIndex != 1)
+                    {
+                        <hr />
+                    }
+                    <h5>@damageInformationsIndex</h5>
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Date of Occurrence: <b>@(damageInfo?.DateOfOccurrence)</b></label>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Cause of Damage: <b>@(damageInfo?.PlantationCauseOfDamage?.Name)</b></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Damage Description: <b>@(damageInfo.DamageDescription)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Inspect By Authority: <b>@(damageInfo.InspectedByAuthority ? "Yes" : "No")</b></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Inspection Report </label>
+                            <a class="btn btn-sm btn-primary mt-2" style="color:white" href="@damageInfo.InspectionReportUrl" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(damageInfo.InspectionReportUrl))">Download</a>
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Action: <b>@(damageInfo.ActionTaken)</b></label>
+                        </div>
+                    </div>
+
+                }
+            </fieldset>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,245 @@
+﻿@using PTSL.GENERIC.Web.Core.Controllers.AIG;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.AIGBasicInformationVM
+@{
+	ViewBag.Title = "Progress entry";
+	var Message = ViewBag.Message;
+
+    var permissions = userRoleService.CurrentUserHasPermissions(
+        AIGProgressCreatePermission.PermissionNameConst,
+        AIGProgressUpdatePermission.PermissionNameConst
+    );
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<style>
+	label {
+		margin-bottom: 0.2rem;
+	}
+
+	._select2_option {
+		line-height: 20px;
+	}
+
+		._select2_option span {
+			font-weight: 300;
+		}
+
+			._select2_option span:first-child {
+				font-weight: 500;
+			}
+
+	.flex-basis-content {
+		flex-basis: content;
+	}
+
+	.gap-5 {
+		gap: 5px;
+	}
+</style>
+
+<div class="card">
+	<div class="card-header">
+		<h4>
+			<a href="/AIGBasicInformation/Index" class="mr-1 back">
+				<svg width="20" height="20" viewBox="0 0 32 32">
+					<path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+				</svg>
+			</a>
+			Progress Entry
+		</h4>
+	</div>
+
+    <div asp-controller="AIGBasicInformation" asp-action="Progress" class="card-body mt-2">
+        <input type="hidden" value="@Model.Id" name="AIGBasicInformationId" />
+
+        <div class="p-2 custom green-card" style="border-radius: 5px;">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Beneficiary Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Beneficiary name
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@(string.IsNullOrEmpty(Model.Survey?.BeneficiaryName) ? Model.Survey?.BeneficiaryNameBn : Model.Survey?.BeneficiaryName)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Mobile number
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@(string.IsNullOrEmpty(Model.Survey?.BeneficiaryPhone) ? Model.Survey?.BeneficiaryPhoneBn : Model.Survey?.BeneficiaryPhone)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            NID
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="text"
+                               value="@(Model.Survey?.BeneficiaryNid)"
+                               disabled />
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="p-2 custom green-card mt-2 mb-5" style="border-radius: 5px;" id="LoanInfo">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Loan Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Total allocated loan(TK)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               name="@nameof(Model.TotalAllocatedLoanAmount)"
+                               id="@nameof(Model.TotalAllocatedLoanAmount)"
+                               value="@Model.TotalAllocatedLoanAmount"
+                               placeholder="Enter loan amount (TK)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Start date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               name="@nameof(Model.StartDate)"
+                               id="@nameof(Model.StartDate)"
+                               value="@(Model.StartDate.ToString("yyyy-MM-dd"))"
+                               placeholder="Enter Start Date"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            End date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               name="@nameof(Model.EndDate)"
+                               id="@nameof(Model.EndDate)"
+                               value="@(Model.EndDate.ToString("yyyy-MM-dd"))"
+                               placeholder="Enter End Date"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                        <label>
+							Months for total repayment
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               name="@nameof(Model.MaximumRepaymentMonth)"
+                               id="@nameof(Model.MaximumRepaymentMonth)"
+                               value="@Model.MaximumRepaymentMonth"
+                               placeholder="Enter Total Repayment Month"
+                               disabled />
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Service charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               name="@nameof(Model.ServiceChargePercentage)"
+                               id="@nameof(Model.ServiceChargePercentage)"
+                               value="@Model.ServiceChargePercentage"
+                               placeholder="Enter service charge (%)"
+                               disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Security charge (in percentage)
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               min="0"
+                               name="@nameof(Model.SecurityChargePercentage)"
+                               id="@nameof(Model.SecurityChargePercentage)"
+                               value="@Model.SecurityChargePercentage"
+                               placeholder="Enter service charge (%)"
+                               disabled />
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+		@{
+			var index = 1;
+		}
+
+		<h5>Progress List</h5>
+		<table class="table table-bordered table-sm ">
+			<thead>
+				<tr>
+					<th scope="col" class="text-center">#</th>
+					<th scope="col">Start Date</th>
+					<th scope="col">End Date</th>
+					<th scope="col">Progress Amount</th>
+					<th scope="col">Growth Percentage</th>
+					<th scope="col">Growth Status</th>
+					<th scope="col">Resource</th>
+					<th scope="col">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.RepaymentLDFs ?? Enumerable.Empty<RepaymentLDFVM>())
+				{
+					<tr>
+						<form asp-action="Progress" asp-controller="AIGBasicInformation">
+							<input type="hidden" name="Id" value="@(item.LDFProgress?.Id ?? 0)" />
+							<input type="hidden" name="AIGBasicInformationId" value="@Model.Id" />
+							<input type="hidden" name="RepaymentLDFId" value="@item.Id" />
+							<input type="hidden" name="RepaymentStartDate" value="@item.RepaymentStartDate" />
+							<input type="hidden" name="RepaymentEndDate" value="@item.RepaymentEndDate" />
+							<input type="hidden" name="RepaymentSerial" value="@item.RepaymentSerial" />
+
+                            <th scope="row" class="text-center index">@(index++)</th>
+                            <td>@item.RepaymentStartDate.ToUIDateString()</td>
+                            <td>@item.RepaymentEndDate.ToUIDateString()</td>
+                            <td><input type="number" name="ProgressAmount" min="0" value="@item.LDFProgress?.ProgressAmount" /></td>
+
+                            <td>@(item.LDFProgress?.GrowthPercentage)@(item.LDFProgress?.GrowthPercentage is null ? "": "%")</td>
+                            <td>@item.LDFProgress?.GrowthStatus.GetEnumDisplayName()</td>
+
+                            <td><input type="text" name="ProgressResource" value="@item.LDFProgress?.ProgressResource" /></td>
+                            <td>
+                                @if (
+                                    permissions.TryGetValue(AIGProgressCreatePermission.PermissionNameConst, out var hasCreatePermission)
+                                    && hasCreatePermission && item.LDFProgress?.Id is null or 0)
+                                {
+                                    <button class="btn btn-sm btn-primary" type="submit">Create</button>
+                                }
+
+                                @if (
+                                    permissions.TryGetValue(AIGProgressUpdatePermission.PermissionNameConst, out var hasUpdatePermission)
+                                    && hasUpdatePermission && item.LDFProgress?.Id > 0)
+                                {
+                                    <button class="btn btn-sm btn-primary" type="submit">Update</button>
+                                }
+
+                                @if (!hasCreatePermission && !hasUpdatePermission)
+                                {
+                                    <p style="line-height: 1.2;">No permission<br />to create<br />or update</p>
+                                }
+                            </td>
+                        </form>
+                    </tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+

@@ -1,0 +1,798 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<form id="EconomicStatus" class="collapse">
+    <h5 class="mt-3">3.1. Land occupancy and use</h5>
+    <div id="LandoccupancyList"></div>
+	<p>Grand Total Land (Decimal): <span class="GrandTotalLandOccupancy">@Model.GrandTotalLandOccupancy</span></p>
+    <div class="text-center">
+        <button id="AddMoreLandOccupancy" type="button" class="btn btn-outline-dark btn-sm">Add More Land Occupancy <i class="fa fa-plus"></i></button>
+    </div>
+
+	<h5 class="mt-3">3.2. Housing Condition</h5>
+    <div id="HousingCondition">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>
+                    3.2.a. House
+                    <span style="color:red;">*</span>
+                </label>
+                @Html.DropDownList("TypeOfHouseId", null, "Choose", htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mt-3">3.3 Movable Assets</h5>
+    <h6 class="">3.3.a Type: Livestock</h6>
+    <div id="LivestockList"></div>
+	<p>Total Livestock Estimated Cost/ Market value (BDT): <span class="GrandTotalLivestockCost">@Model.GrandTotalLivestockCost</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreLivestock" type="button" class="btn btn-outline-dark btn-sm">Add More Livestock <i class="fa fa-plus"></i></button>
+    </div>
+
+    <h6 class="mt-3">3.3.b Type: Assets</h6>
+    <div id="AssetList"></div>
+	<p>Total Asset Estimated Cost/ Market value (BDT): <span class="GrandTotalAssetsCost">@Model.GrandTotalAssetsCost</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreAsset" type="button" class="btn btn-outline-dark btn-sm">Add More Asset <i class="fa fa-plus"></i></button>
+    </div>
+
+    <h5 class="mt-3">3.4. Household Immovable Assets</h5>
+    <div id="ImmovableAssetList"></div>
+	<p>Total Annual Return: <span class="GrandTotalImmovableAnnualReturn">@Model.GrandTotalImmovableAnnualReturn</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreImmovableAsset" type="button" class="btn btn-outline-dark btn-sm">Add More Immovable Asset <i class="fa fa-plus"></i></button>
+    </div>
+
+    <h5 class="mt-3">3.5. Energy Use in the Household</h5>
+    <div id="EnergyUseList"></div>
+    <div class="text-center">
+        <button id="AddMoreEnergyUse" type="button" class="btn btn-outline-dark btn-sm">Add More Energy Use <i class="fa fa-plus"></i></button>
+    </div>
+</form>
+
+<!-- Validation -->
+<script>
+    function addLandOccupancyChildValidation() {
+        $("#EconomicStatus .LandClassificationEnum").each(function (i, e) {
+            var fieldName = "LandClassificationEnum_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#EconomicStatus .Homesteads").each(function (i, e) {
+            var fieldName = "Homesteads_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .ProductiveLand").each(function (i, e) {
+            var fieldName = "ProductiveLand_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .FallowLand").each(function (i, e) {
+            var fieldName = "FallowLand_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .ProductiveWetland").each(function (i, e) {
+            var fieldName = "ProductiveWetland_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .FallowWetland").each(function (i, e) {
+            var fieldName = "FallowWetland_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .OthersLand").each(function (i, e) {
+            var fieldName = "OthersLand_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+    }
+
+    function addLivestockChildValidation() {
+        $("#EconomicStatus .LiveStockTypeId").each(function (i, e) {
+            var fieldName = "LiveStockTypeId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#EconomicStatus .LiveStockQuantity").each(function (i, e) {
+            var fieldName = "LiveStockQuantity_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .LivestockCost").each(function (i, e) {
+            var fieldName = "LivestockCost_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+    }
+
+    function addAssetChildValidation() {
+        $("#EconomicStatus .AssetTypeId").each(function (i, e) {
+            var fieldName = "AssetTypeId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#EconomicStatus .AssetQuantity").each(function (i, e) {
+            var fieldName = "AssetQuantity_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+        $("#EconomicStatus .AssetsCost").each(function (i, e) {
+            var fieldName = "AssetsCost_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+    }
+
+    function addImmovableAssetChildValidation() {
+        $("#EconomicStatus .ImmovableAssetTypeId").each(function (i, e) {
+            var fieldName = "ImmovableAssetTypeId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#EconomicStatus .ImmovableAnnualReturn").each(function (i, e) {
+            var fieldName = "ImmovableAnnualReturn_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+    }
+
+    function addEnergyUseChildValidation() {
+        $("#EconomicStatus .EnergyTypeId").each(function (i, e) {
+            var fieldName = "EnergyTypeId_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+            });
+        });
+        $("#EconomicStatus .EnergyUsesMonthly").each(function (i, e) {
+            var fieldName = "EnergyUsesMonthly_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                required: true,
+                min: 0,
+            });
+        });
+    }
+</script>
+
+<script>
+    // Add new Land occupancy item
+    var LandoccupancyList = $("#LandoccupancyList");
+    var LivestockList = $("#LivestockList");
+    var AssetList = $("#AssetList");
+    var ImmovableAssetList = $("#ImmovableAssetList");
+    var EnergyUseList = $("#EnergyUseList");
+    var partialLandoccupancyBase = null;
+    var partialLivestockBase = null;
+    var partialAssetBase = null;
+    var partialImmovableAssetBase = null;
+    var partialEnergyUseBase = null;
+    $("#EconomicStatus").validate();
+
+    //$("[href='#EconomicStatus']").one("click", function () {
+
+        // Land Occupancy
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadLandOccupancyBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialLandoccupancyBase = data;
+
+                if (!@Model.Id) {
+                    AddNewLandOccupancyInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadLandOccupancyBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    LandoccupancyList.append(data);
+                    addLandOccupancyChildValidation();
+                    runLandOccupancyIndex();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Live stock
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadLivestockBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialLivestockBase = data;
+
+                if (!@Model.Id) {
+                    AddNewLiveStockItemInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadLivestockBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    LivestockList.append(data);
+                    addLivestockChildValidation();
+                    runLiveStockIndex();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Asset
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadAssetBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialAssetBase = data;
+
+                if (!@Model.Id) {
+                    AddNewAssetInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadAssetBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    AssetList.append(data);
+                    addAssetChildValidation();
+                    runAssetIndex();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Immovable Asset
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadImmovableAssetBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialImmovableAssetBase = data;
+
+                if (!@Model.Id) {
+                    AddNewImmovableAssetInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadImmovableAssetBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    ImmovableAssetList.append(data);
+                    addImmovableAssetChildValidation();
+                    runImmovableAssetIndex();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+
+        // Energy Use
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadEnergyUseBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialEnergyUseBase = data;
+
+                if (!@Model.Id) {
+                    AddNewEnergyUseInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+            cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadEnergyUseBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    EnergyUseList.append(data);
+                    addEnergyUseChildValidation();
+                    runEnergyUseIndex();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+    //});
+
+    // Land occupancy
+    function AddNewLandOccupancyInUI(land = null) {
+        if (!LandoccupancyList.has('div')?.length) {
+            LandoccupancyList.append(partialLandoccupancyBase);
+            addLandOccupancyChildValidation();
+            runLandOccupancyIndex();
+        }
+    }
+    $("#AddMoreLandOccupancy").on("click", function () {
+        LandoccupancyList.append(partialLandoccupancyBase);
+        addLandOccupancyChildValidation();
+        runLandOccupancyIndex();
+    })
+    function runLandOccupancyIndex() {
+        $("#LandoccupancyList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveLandOccupancyItem(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveLandOccupancyItem(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedLandOccupancy.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#LandoccupancyList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runLandOccupancyIndex();
+
+				$(".LandoccupancyChild .TotalLand").trigger("change");
+				if ($(".LandoccupancyChild .TotalLand").length == 0) {
+					$(".GrandTotalLandOccupancy").text(0);
+				}
+            });
+        }
+    }
+
+    // Live Stock
+    function AddNewLiveStockItemInUI() {
+        if (!LivestockList.has('div')?.length) {
+            LivestockList.append(partialLivestockBase);
+            addLivestockChildValidation();
+            runLiveStockIndex();
+        }
+    }
+    $("#AddMoreLivestock").on("click", function () {
+        LivestockList.append(partialLivestockBase);
+        addLivestockChildValidation();
+        runLiveStockIndex();
+    })
+    function runLiveStockIndex() {
+        $("#LivestockList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveLivestockItem(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveLivestockItem(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedLiveStocks.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#LivestockList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runLiveStockIndex();
+
+				$(".LivestockChild .LivestockCost").trigger("change");
+				if ($(".LivestockChild .LivestockCost").length == 0) {
+					$(".GrandTotalLivestockCost").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<script>
+    // Add new Asset item in UI
+    function AddNewAssetInUI() {
+        if (!AssetList.has('div')?.length) {
+            AssetList.append(partialAssetBase);
+            addAssetChildValidation();
+            runAssetIndex();
+        }
+    }
+
+    $("#AddMoreAsset").on("click", function () {
+        AssetList.append(partialAssetBase);
+        addAssetChildValidation();
+        runAssetIndex();
+    })
+
+    function runAssetIndex() {
+        $("#AssetList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveAssetItem(${id}, ${dbId ?? 0})`);
+        });
+    }
+
+    // Remove Asset item
+    function RemoveAssetItem(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedAssets.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#AssetList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runAssetIndex();
+
+				$(".AssetsChild .AssetsCost").trigger("change");
+				if ($(".AssetsChild .AssetsCost").length == 0) {
+					$(".GrandTotalAssetsCost").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<script>
+    // Add new Immovable Asset item in UI
+    function AddNewImmovableAssetInUI() {
+        if (!ImmovableAssetList.has('div')?.length) {
+            ImmovableAssetList.append(partialImmovableAssetBase);
+            addImmovableAssetChildValidation();
+            runImmovableAssetIndex();
+        }
+    }
+    $("#AddMoreImmovableAsset").on("click", function () {
+        ImmovableAssetList.append(partialImmovableAssetBase);
+        addImmovableAssetChildValidation();
+        runImmovableAssetIndex();
+    })
+    function runImmovableAssetIndex() {
+        $("#ImmovableAssetList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveImmovableAssetItem(${id}, ${dbId ?? 0})`);
+        });
+    }
+    // Remove Immovable Asset item
+    function RemoveImmovableAssetItem(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedImmovableAssets.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#ImmovableAssetList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runImmovableAssetIndex();
+
+				$(".ImmovableAssetChild .ImmovableAnnualReturn").trigger("change");
+				if ($(".ImmovableAssetChild .ImmovableAnnualReturn").length == 0) {
+					$(".GrandTotalImmovableAnnualReturn").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<script>
+    // Add new energy use in UI
+    function AddNewEnergyUseInUI() {
+        if (!EnergyUseList.has('div')?.length) {
+            EnergyUseList.append(partialEnergyUseBase);
+            addEnergyUseChildValidation();
+            runEnergyUseIndex();
+        }
+    }
+    $("#AddMoreEnergyUse").on("click", function () {
+        EnergyUseList.append(partialEnergyUseBase);
+        addEnergyUseChildValidation();
+        runEnergyUseIndex();
+    })
+    function runEnergyUseIndex() {
+        $("#EnergyUseList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveEnergyUseItem(${id}, ${dbId ?? 0})`);
+        });
+    }
+    function RemoveEnergyUseItem(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedEnergyUses.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#EnergyUseList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runEnergyUseIndex();
+            });
+        }
+    }
+</script>
+<script>
+    // Calculate land occupancy 
+    $(document).on("change", ".Homesteads, .ProductiveLand, .FallowLand, .ProductiveWetland, .FallowWetland, .OthersLand", function () {
+        const parentElement = $(this).parent().parent().parent();
+        const currentTotalElement = parentElement.find(".TotalLand");
+
+        const Homesteads = Number.parseFloat(parentElement.find(".Homesteads").val());
+        const ProductiveLand = Number.parseFloat(parentElement.find(".ProductiveLand").val());
+        const FallowLand = Number.parseFloat(parentElement.find(".FallowLand").val());
+        const ProductiveWetland = Number.parseFloat(parentElement.find(".ProductiveWetland").val());
+        const FallowWetland = Number.parseFloat(parentElement.find(".FallowWetland").val());
+        const OthersLand = Number.parseFloat(parentElement.find(".OthersLand").val());
+
+		const arr = [Homesteads, ProductiveLand, FallowLand, ProductiveWetland, FallowWetland, OthersLand].filter(Number);
+
+		const total = Number.parseFloat(arr.reduce((c, a) => c + a, 0)).toFixed(2);
+		const finalTotal = Number.isNaN(total) ? 0 : total;
+
+        currentTotalElement.val(finalTotal);
+		$(".TotalLand").trigger("change");
+    });
+
+	// Land occupancey total
+	$(document).on("change", ".TotalLand", function() {
+		let sum = 0;
+		$(".TotalLand").each(function() {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalLandOccupancy").text(sum);
+	});
+
+	// Livestock total
+	$(document).on("change", ".LivestockCost", function () {
+		let sum = 0;
+		$(".LivestockCost").each(function() {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalLivestockCost").text(sum);
+	});
+
+	// Asset total
+	$(document).on("change", ".AssetsCost", function () {
+		let sum = 0;
+		$(".AssetsCost").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalAssetsCost").text(sum);
+	});
+
+	// Annual Return
+	$(document).on("change", ".ImmovableAnnualReturn", function () {
+		let sum = 0;
+		$(".ImmovableAnnualReturn").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalImmovableAnnualReturn").text(sum);
+	});
+</script>
+

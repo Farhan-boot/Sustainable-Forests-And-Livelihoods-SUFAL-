@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <title>Migration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .asterik {
+            color: red;
+        }
+
+        .loader {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            background: hsl(0deg 0% 0% / 60%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-3">
+        <h2>Data Migration</h2>
+
+        <div class="loader hide" id="loader">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" /></path></svg>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <form id="form" method="post" asp-controller="Migration" asp-action="MigratePost" enctype="multipart/form-data" asp-action="MigratePort">
+                    <div class="mb-3">
+                        <label class="form-label">Migrate <span class="asterik">*</span> </label>
+                        @Html.DropDownList("MigrateType", null, "Select Type", htmlAttributes: new { @class = "form-select", @required = "required" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Excel File <span class="asterik">*</span></label>
+                        <input name="excelFile" id="excelFile" class="form-control" type="file" required />
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-check-input" name="shouldMigrate" type="checkbox" value="true" id="shouldMigrate">
+                        <label class="form-check-label" for="shouldMigrate">
+                            Migrate to DB
+                        </label>
+                    </div>
+                    <button id="submit_btn" type="submit" class="btn btn-primary float-end">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    const form = document.getElementById("form");
+    const submitBtn = document.getElementById("submit_btn");
+    const loader = document.getElementById("loader");
+    const migrateType = document.getElementById("MigrateType");
+    const execlFile = document.getElementById("excelFile");
+
+    form.addEventListener("submit", function (e) {
+        if (form.checkValidity()) {
+            loader.classList.toggle("hide");
+        }
+    });
+</script>
+

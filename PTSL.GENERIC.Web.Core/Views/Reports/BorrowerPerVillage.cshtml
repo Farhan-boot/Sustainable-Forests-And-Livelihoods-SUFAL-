@@ -1,0 +1,91 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.Reports.BorrowerPerVillageVM>
+@{
+    ViewBag.Title = "Borrower Per Village";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<style>
+    td > p {
+        margin: 0 !important;
+        line-height: 1.5;
+    }
+</style>
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>Borrower Per Village</h5>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="6">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>Borrower Per Village</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                            <p>Borrower Per Village = Total Borrower / Total Village</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Forest Location</th>
+                    <th>FCV</th>
+                    <th>Total Borrower</th>
+                    <th>Total Village</th>
+                    <th>Borrower Per Village</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>
+                            <p><span style="font-weight: bold">Circle: </span>@item.ForestCircle</p>
+                            <p><span style="font-weight: bold">Division: </span>@item.ForestDivision</p>
+                            <p><span style="font-weight: bold">Range: </span>@item.ForestRange</p>
+                            <p><span style="font-weight: bold">Beat: </span>@item.ForestBeat</p>
+                        </td>
+                        <td>@item.ForestFcvVcf</td>
+                        <td>@item.TotalBorrower</td>
+                        <td>@item.TotalVillage</td>
+                        <td>@item.BorrowerPerVillage</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="4" class="text-center">Total:</td>
+                    <td colspan="2" class="text-center">@(Model.Count)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

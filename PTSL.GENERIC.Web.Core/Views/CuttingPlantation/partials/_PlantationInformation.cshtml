@@ -1,0 +1,322 @@
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.NewRaisedPlantationVM;
+@{
+    var newRaisedDetails = Model;
+}
+
+<h6>New Raised Plantation Information</h6>
+
+<div class="p-2 green-card" style="border-radius: 5px;">
+    <div class="row custom forest-location">
+        <div class="col-6 p-1">
+
+            <fieldset class="p-2">
+                <legend class="float-none w-auto">Forest Administrative Unit</legend>
+                <div class="row">
+                    <div class="col-6 pr-1">
+                        <label class="m-0">Forest Circle <span style="color:red;">*</span></label>
+                        <select class="" id="ForestCircleId" name="ForestCircleId" disabled>
+                            <!option selected>@newRaisedDetails.ForestCircle?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-6 pl-1">
+                        <label class="m-0">Forest Division <span style="color:red;">*</span></label>
+                        <select class="" id="ForestDivisionId" name="ForestDivisionId" disabled>
+                            <!option selected>@newRaisedDetails.ForestDivision?.Name</!option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6 pr-1">
+                        <label class="m-0">Forest Range/SFNTC <span style="color:red;">*</span></label>
+                        <select class="" id="ForestRangeId" name="ForestRangeId" disabled>
+                            <!option selected>@newRaisedDetails.ForestRange?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-6 pl-1">
+                        <label class="m-0">Forest Beat/Camp/SFPC <span style="color:red;">*</span></label>
+                        <select class="" id="ForestBeatId" name="ForestBeatId" disabled>
+                            <!option selected>@newRaisedDetails.ForestBeat?.Name</!option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6 pr-1">
+                        <label class="m-0">Zone/Area</label>
+                        <select class="" id="ZoneOrAreaId" name="ZoneOrAreaId" disabled>
+                            <!option selected>@newRaisedDetails.ZoneOrArea?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-6 pl-1">
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+
+        <div class="col-6 p-1">
+
+            <fieldset class="p-2">
+                <legend class="float-none w-auto">Civil Administrative Unit</legend>
+                <div class="row">
+                    <div class="col-6 pr-1">
+                        <label class="m-0">Civil Division <span style="color:red;">*</span></label>
+                        <select class="" id="DivisionId" name="DivisionId" disabled>
+                            <!option selected>@newRaisedDetails.Division?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-6 pl-1">
+                        <label class="m-0">Civil District <span style="color:red;">*</span></label>
+                        <select class="" id="DistrictId" name="DistrictId" disabled>
+                            <!option selected>@newRaisedDetails.District?.Name</!option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6 pr-1">
+                        <label class="m-0">Civil Upazilla <span style="color:red;">*</span></label>
+                        <select class="" id="UpazillaId" name="UpazillaId" disabled>
+                            <!option selected>@newRaisedDetails.Upazilla?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-6 pl-1">
+                        <label class="m-0">Civil Union <span style="color:red;">*</span></label>
+                        <select class="" id="UnionId" name="UnionId" disabled>
+                            <!option selected>@newRaisedDetails.Union?.Name</!option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+
+@* Land owning and NGO *@
+<div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+    <div class="row custom forest-location">
+        <div class="col-6 p-1">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Land owning agency</legend>
+                <div class="row col-md-6">
+                    <label>
+                        Plantation Type
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select id="Plantation_LandOwningAgencyId" name="LandOwningAgencyId" required="" disabled>
+                        <!option selected>@newRaisedDetails.LandOwningAgency?.Name</!option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-6 p-1">
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">NGO Information</legend>
+                <div class="row col-md-6">
+                    <label>
+                        NGO
+                        <span style="color:red;">*</span>
+                    </label>
+                    <select id="Plantation_SocialForestryNgoId" name="SocialForestryNgoId" disabled>
+                        <!option selected>@newRaisedDetails.SocialForestryNgo?.Name</!option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+
+
+@* Plantation Information *@
+<div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+    <div class="row custom">
+        <div class="col-12 p-1">
+
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Plantation Information</legend>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Plantation Type
+                        </label>
+                        <select disabled>
+                            <!option selected>@Model.PlantationType?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-12 px-1">
+                        <label>
+                            Rotation No
+                        </label>
+                        <input value="@Model.RotationNo" disabled />
+                    </div>
+                    <div class="col-md-2 col-sm-12 px-1">
+                        <label>
+                            Plantation ID
+                        </label>
+                        <input value="@Model.PlantationId" disabled />
+                    </div>
+                    <div class="col-md-5 col-sm-12 pl-1" style="display: flex; gap: 5px;">
+                        <div>
+                            <label>
+                                Plantation Area
+                            </label>
+                            <input value="@Model.PlantationArea" disabled />
+                        </div>
+                        <div>
+                            <label>
+                                Unit
+                            </label>
+                            <select disabled>
+                                <!option selected>@Model.PlantationUnit?.Name</!option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Location with Coordinate
+                        </label>
+                        <input value="@Model.LocationWithCoordinate" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Mouja & JL No
+                        </label>
+                        <input value="@Model.MoujaAndJLNumber" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Sheet no (RS)
+                        </label>
+                        <input value="@Model.SheetNo" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                        <label>
+                            Plot No
+                        </label>
+                        <input value="@Model.PlotNo" disabled />
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Source of funding/Project name
+                        </label>
+                        <select disabled>
+                            <!option selected>@Model.ProjectType?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Plantation year
+                        </label>
+                        <select disabled>
+                            <!option selected>@Model.PlantedFinancialYear?.Name</!option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-sm-12 px-1">
+                        <label>
+                            Rotation (In years, due rotation age 10 years)
+                        </label>
+                        <input value="@Model.RotationNo" disabled />
+                    </div>
+                    <div class="col-md-2 col-sm-12 pl-1">
+                        <label>
+                            Felling/Cutting year
+                        </label>
+                        <input value="@Model.ExpectedCuttingYear" disabled />
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Sanction No
+                        </label>
+                        <input value="@Model.SanctionNo" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Soil type of plantation site
+                        </label>
+                        <input value="@Model.SoilType" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Natural tree species
+                        </label>
+                        <input value="@Model.NaturalTreeSpecies" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                        <label>
+                            Topography of plantation site
+                        </label>
+                        <select disabled>
+                            <!option value="">@Model.PlantationTopography?.Name</!option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Climate of plantation site
+                        </label>
+                        <input value="@Model.ClimateOfPlantationSite" disabled />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+
+@* Nursery Information *@
+<div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+    <div class="row custom">
+        <div class="col-12 p-1">
+
+            <fieldset class="p-2 col-12">
+                <legend class="float-none w-auto">Seedling and Nursery Information</legend>
+                <table class="table table-sm mb-2">
+                    <tr>
+                        <th>SL</th>
+                        <th>Nursery</th>
+                        <th>Species Name</th>
+                        <th>Seedling Planted</th>
+                        <th>Remarks</th>
+                    </tr>
+                    <tbody>
+                        @{
+                            var index = 0;
+                        }
+
+                        @foreach (var item in Model.PlantationPlants ?? Enumerable.Empty<PlantationPlantVM>())
+                        {
+                            <tr class="">
+                                <td>@(++index)</td>
+                                <td>@item.NurseryInformation?.NurseryName</td>
+                                <td>@item.NurseryRaisedSeedlingInformation?.SpeciesName</td>
+                                <td>@item.NumberOfSeedlingPlanted</td>
+                                <td>@item.Remarks</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </fieldset>
+
+        </div>
+    </div>
+</div>

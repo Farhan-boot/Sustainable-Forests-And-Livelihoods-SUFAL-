@@ -1,0 +1,101 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AIG.AIGBasicInformationVM>
+@{
+    ViewBag.Title = "AIG Basic Information Report";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<div class="card" id="reportView">
+    <div class="card-header report_header no-print">
+        <div>
+            <h5>AIG Basic Information Report</h5>
+        </div>
+        <div class="">
+            <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="reportTable" id="tableExport_filter">
+            <thead>
+                <tr>
+                    <th colspan="9">
+                        <div class="reportTableHeader">
+                            <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                            <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                            <h5>AIG Basic Information Report</h5>
+                            <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th>SL</th>
+                    <th>Beneficiary Name</th>
+                    <th>Mobile Number</th>
+                    <th>Allocated<br /> Loan(TK)</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Months for<br /> Repayment</th>
+                    <th>LDF Round</th>
+                    <th>Loan Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var index = 0;
+                }
+
+                @foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@(++index)</td>
+                        <td>@data.Survey?.BeneficiaryName</td>
+                        <td>@data.Survey?.BeneficiaryPhone</td>
+                        <td>@data.TotalAllocatedLoanAmount.ToBDTCurrency()</td>
+                        <td>@data.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@data.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td>@data.MaximumRepaymentMonth</td>
+                        <td>@data.LDFCountInWord</td>
+                        <td>@data.BadLoanType.GetEnumDisplayName()</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="reportTfoot">
+                <tr>
+                    <td colspan="5" class="text-center">Total:</td>
+                    <td colspan="4" class="text-center">@(Model.Count)</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-center">Average Allocated Loan(TK):</td>
+                    <td colspan="4" class="text-center">@(Math.Round(Model.Sum(x => x.TotalAllocatedLoanAmount) / Model.Count, 2).ToBDTCurrency())</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-center">Average Months for Repayment:</td>
+                    <td colspan="4" class="text-center">@(Math.Round((double)Model.Sum(x => x.MaximumRepaymentMonth) / Model.Count, 1))</td>
+                </tr>
+                @{
+                    var groupByLoan = Model.GroupBy(x => x.BadLoanType).Select(x => new { BadLoanType = x.Key, Total = x.Count() }).ToList();
+                }
+                @foreach (var item in groupByLoan)
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">Total @item.BadLoanType.GetEnumDisplayName():</td>
+                        <td colspan="4" class="text-center">@(item.Total)</td>
+                    </tr>
+                }
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+    });
+</script>
+

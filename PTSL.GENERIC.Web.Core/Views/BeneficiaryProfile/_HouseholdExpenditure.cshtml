@@ -1,0 +1,156 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<div id="HouseholdExpenditure" class="collapse">
+    <!--<h5 class="mt-3">Annual household expenditure</h5>-->
+    <div id="HouseholdExpenditureList"></div>
+	<p>Total Annual Household Expenditure: <span class="GrandTotalHouseholdExpenditure">@Model.GrandTotalHouseholdExpenditure</span> TK</p>
+    <div class="text-center">
+        <button id="AddMoreHouseholdExpenditure" type="button" class="btn btn-outline-dark btn-sm">Add More Household Expenditure <i class="fa fa-plus"></i></button>
+    </div>
+</div>
+
+<script>
+    function addExpenditureChildValidation() {
+        $("#HouseholdExpenditure .ExpenditureCost").each(function (i, e) {
+            var fieldName = "ExpenditureCost_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+        $("#HouseholdExpenditure .ExpenditureRemarks").each(function (i, e) {
+            var fieldName = "ExpenditureRemarks_" + i;
+            $(e).attr("name", fieldName);
+            $(e).rules("add", {
+                min: 0,
+            });
+        });
+    }
+</script>
+
+<script>
+    // Load dropdown data only once
+    var partialAnnualHouseholdExpenditureBase = null;
+    var HouseholdExpenditureList = $("#HouseholdExpenditureList");
+    $("#HouseholdExpenditure").validate();
+
+    //$("[href='#HouseholdExpenditure']").one("click", function () {
+        $(".loader").fadeIn("fast");
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/BeneficiaryProfile/LoadAnnualHouseholdExpenditureBase",
+            success: function (data) {
+                $(".loader").fadeOut("fast");
+
+                partialAnnualHouseholdExpenditureBase = data;
+
+                if (!@Model.Id) {
+                    AddHouseholdExpenditureInUI();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $(".loader").fadeOut("fast");
+            }
+        })
+
+        if (@Model.Id) {
+            $(".loader").fadeIn("fast");
+            $.ajax({
+                cache: false,
+                type: "GET",
+                data: { surveyId: @Model.Id },
+                url: "/BeneficiaryProfile/LoadAnnualHouseholdExpenditureBase",
+                success: function (data) {
+                    $(".loader").fadeOut("fast");
+
+                    HouseholdExpenditureList.append(data);
+                    addExpenditureChildValidation();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".loader").fadeOut("fast");
+                }
+            })
+        }
+    //});
+</script>
+
+<!-- Add new other income source -->
+<script>
+    function AddHouseholdExpenditureInUI() {
+        if (!HouseholdExpenditureList.has('div')?.length) {
+            HouseholdExpenditureList.append(partialAnnualHouseholdExpenditureBase);
+            addExpenditureChildValidation();
+            runHouseholdExpenditureIndex();
+        }
+
+        $("#AddMoreHouseholdExpenditure").on("click", function () {
+            HouseholdExpenditureList.append(partialAnnualHouseholdExpenditureBase);
+            addExpenditureChildValidation();
+            runHouseholdExpenditureIndex();
+        });
+    }
+
+    function runHouseholdExpenditureIndex() {
+        $("#HouseholdExpenditureList div.card").each(function (index) {
+            var id = index + 1;
+            var dbId = $(this).find(".Id").val();
+            $(this).attr("data-id", id)
+            $(this).children(".card-body").children("h5").text(id);
+
+            var removeItem = $(this).children(".card-body").children(".remove-item");
+            removeItem.attr("onclick", `RemoveHouseholdExpenditure(${id}, ${dbId ?? 0})`);
+        });
+    }
+
+    function RemoveHouseholdExpenditure(id, dbId = null) {
+        if (dbId) {
+            swal({
+                title: "Are you sure?",
+                text: "This item will be deleted on save!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: true
+            }, function (isDeleted) {
+                if (isDeleted) {
+                    DeletedAnnualHouseholdExpenditures.push(dbId);
+                    remove();
+                }
+            });
+
+            return;
+        } else {
+            remove();
+        }
+
+        function remove() {
+            var element = $("#HouseholdExpenditureList").find(`[data-id='${id}']`);
+            element.hide('slow', function () {
+                element.remove();
+                runHouseholdExpenditureIndex();
+
+				$(".HouseholdExpenditureChild .ExpenditureCost").trigger("change");
+				if ($(".HouseholdExpenditureChild .ExpenditureCost").length == 0) {
+					$(".GrandTotalHouseholdExpenditure").text(0);
+				}
+            });
+        }
+    }
+</script>
+
+<script>
+	$(document).on("change", ".HouseholdExpenditureChild .ExpenditureCost", function () {
+		let sum = 0;
+		$(".HouseholdExpenditureChild .ExpenditureCost").each(function () {
+			var total = $(this).val();
+			total = Number.parseFloat(total);
+			total = Number.isNaN(total) ? 0 : total;
+
+			sum += total;
+		});
+
+		$(".GrandTotalHouseholdExpenditure").text(sum);
+    });
+</script>

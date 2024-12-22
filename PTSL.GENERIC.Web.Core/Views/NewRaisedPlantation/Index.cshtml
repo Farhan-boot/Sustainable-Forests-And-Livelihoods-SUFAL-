@@ -1,0 +1,215 @@
+﻿@model IEnumerable<PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.NewRaisedPlantationVM>
+@{
+    ViewBag.Title = "New Raised List";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10 px-0">
+                    <h4>New Raised Plantation List</h4>
+                </div>
+                <div class="col-md-2 text-right px-0">
+                    <a href="/NewRaisedPlantation/Create" class="badge badge-success badge-shadow">Create New</a>
+                </div>
+            </div>
+            <div class="card-body">
+				<form asp-action="IndexFilter" asp-controller="NewRaisedPlantation" class="mb-4 green-card p-2" style="border-radius: 5px;">
+					<div class="row custom">
+						<div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                                     "~/Views/Shared/_ForestAdministrationWithZoneArea.cshtml",
+                                     (
+                                     ViewBag.ForestCircleId as SelectList,
+                                     ViewBag.ForestDivisionId as SelectList,
+                                     ViewBag.ForestRangeId as SelectList,
+                                     ViewBag.ForestBeatId as SelectList,
+                                     ViewBag.ZoneOrAreaId as SelectList
+                                     )
+                                     )
+                        </div>
+
+						<div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                                     "~/Views/Shared/_CivilAdministration.cshtml",
+                                     (
+                                     ViewBag.DivisionId as SelectList,
+                                     ViewBag.DistrictId as SelectList,
+                                     ViewBag.UpazillaId as SelectList,
+                                     ViewBag.UnionId as SelectList
+                                     )
+                                     )
+                        </div>
+					</div>
+
+                    @*
+					<div class="row custom">
+						<div class="col-12 p-1">
+							<fieldset class="p-2">
+								<legend class="float-none w-auto">Basic Information</legend>
+								<div class="row">
+								</div>
+							</fieldset>
+						</div>
+					</div>
+                    *@
+
+					<div class="d-flex justify-content-end mt-2">
+						<button type="submit" class="btn btn-sm btn-green save">Search</button>
+					</div>
+				</form>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="tableExport_filter"
+                        style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Forest Administration</th>
+                                <th>Civil Location</th>
+                                <th>Project</th>
+                                <th>Plantation Type</th>
+                                <th>Plantation Year</th>
+                                <th>Plantation Id</th>
+                                <th>Rotation No</th>
+                                <th>Area</th>
+                                <th class="not-export-col">Action</th>
+                            </tr>
+                        </thead> @{
+                            int i = 1;
+                        }
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var data in Model)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>
+                                            <p class="m-0" style="line-height: normal;">@data.ForestCircle?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.ForestDivision?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.ForestRange?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.ForestBeat?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.ZoneOrArea?.Name</p>
+                                        </td>
+                                        <td>
+                                            <p class="m-0" style="line-height: normal;">@data.Division?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.District?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.Upazilla?.Name</p>
+                                            <p class="m-0" style="line-height: normal;">@data.Union?.Name</p>
+                                        </td>
+                                        <td>@data.ProjectType?.Name</td>
+                                        <td>@data.PlantationType?.Name</td>
+                                        <td>@data.PlantedFinancialYear?.Name</td>
+                                        <td>@data.PlantationId</td>
+                                        <td>@data.RotationNoDisplay</td>
+                                        <td>@data.PlantationArea</td>
+                                        <td class="not-export-col">
+                                            @if (data.CurrentRotationNo == data.RotationNo)
+                                            {
+                                                <a href="/CuttingPlantation/Create?newRaisedId=@data.Id"
+                                                   class="btn btn-primary btn-sm">Cutting</a>
+                                            }
+                                            <a href="/NewRaisedPlantation/Edit?id=@data.Id"
+                                               class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="/NewRaisedPlantation/Details?id=@data.Id"
+                                               class="btn btn-info btn-sm">Details</a>
+                                            <button onclick="showDeleteConfirmMessage(@data.Id)"
+                                                    class="btn btn-danger btn-sm">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $(document).ready(function () {
+        $('#tableExport_filter').DataTable({
+            pageLength: 5,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    title: 'New Raised Plantation List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }
+                },
+                {
+                    extend: 'excel',
+                    title: 'New Raised Plantation List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'New Raised Plantation List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }
+                },
+                {
+                    extend: 'print',
+                    title: 'New Raised Plantation List',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                    }
+                }
+            ]
+        });
+    });
+
+    function showDeleteConfirmMessage(id) {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this item!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            var data = {
+                'id': id
+            };
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/NewRaisedPlantation/Delete",
+                data: data,
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    var message = result.Message;
+                    var executionState = result.executionState;
+                    if (executionState != null) {
+                        if (executionState != 10) {
+                            swal("Deleted!", "Item has been deleted.", "success");
+                        } else {
+                            swal("Deleted Failed!", message, "success");
+                        }
+                        $(".confirm").on('click', function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (xmlhttprequest, textstatus, errorthrown) {
+                    swal("Not Deleted!", "Item has not been deleted.", "error");
+                }
+            });
+        });
+    }
+</script>

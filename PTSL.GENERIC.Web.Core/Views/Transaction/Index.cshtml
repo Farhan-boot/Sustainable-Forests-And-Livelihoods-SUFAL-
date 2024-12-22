@@ -1,0 +1,202 @@
+﻿@model IEnumerable<PTSL.GENERIC.Web.Core.Model.EntityViewModels.TransactionMangement.TransactionVM>
+@{
+	ViewBag.Title = "Index";
+}
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<div class="col-md-10">
+					<h4>Transaction</h4>
+				</div>
+				<div class="col-md-2 text-right">
+					<a href="/Transaction/Create" class="badge badge-success badge-shadow">Create New</a>
+				</div>
+			</div>
+			<div class="card-body">
+				<form asp-action="IndexFilter" asp-controller="Transaction" class="mb-4 green-card p-2" style="border-radius: 5px;">
+					<div class="row custom">
+						<div class="col-12 p-1">
+							<fieldset class="p-2">
+								<legend class="float-none w-auto">Basic Information</legend>
+								<div class="row">
+									<div class="col pr-1">
+										<label class="m-0">Forest Circle</label>
+										@Html.DropDownList("ForestCircleId", null, "Select Forest Circle", htmlAttributes: new { })
+									</div>
+									<div class="col px-1">
+										<label class="m-0">Forest Division</label>
+										@Html.DropDownList("ForestDivisionId", null, "Select Forest Division", htmlAttributes: new { })
+									</div>
+									<div class="col px-1">
+										<label class="m-0">From Date</label>
+										<input type="date" id="FromDate" value="@(ViewBag.FromDate is DateTime ? ((DateTime)ViewBag.FromDate).ToUIDateString() : null)" name="FromDate" placeholder="Enter from date" />
+									</div>
+									<div class="col pl-1">
+										<label class="m-0">To Date</label>
+										<input type="date" id="ToDate" value="@(ViewBag.ToDate is DateTime ? ((DateTime)ViewBag.ToDate).ToUIDateString() : null)" name="ToDate" placeholder="Enter to date" />
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+
+					<div class="d-flex justify-content-end mt-2">
+						<button type="submit" class="btn btn-sm btn-green save">Search</button>
+					</div>
+				</form>
+
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover" id="tableExport_filter"
+						   style="width:100%;">
+						<thead>
+							<tr>
+								<th>SL</th>
+								<th>Forest Division</th>
+								<th>Financial Year</th>
+                                <th>Fund Type</th>
+                                <th>Month</th>
+                                <th>Amount</th>
+								<th class="not-export-col">Action</th>
+							</tr>
+						</thead> @{
+							int i = 1;
+						}
+						<tbody>
+							@if (Model != null)
+							{
+								foreach (var data in Model)
+								{
+									<tr>
+										<td>@i</td>
+										<td>@data.ForestDivision?.Name</td>
+										<td>@data.FinancialYear?.Name</td>
+										<td>@data.FundType?.Name</td>
+										<td>@data.ExpenseMonth.GetEnumDisplayName()</td>
+										<td>@data.TotalExpense.ToBDTCurrency()</td>
+										<td class="not-export-col action-td">
+											<a href="/Transaction/Edit?id=@data.Id" class="btn btn-primary btn-sm">Edit</a>
+											<a href="/Transaction/Details?id=@data.Id"
+											   class="btn btn-info btn-sm">Details</a>
+											<button onclick="showDeleteConfirmMessage(@data.Id)"
+													class="btn btn-danger btn-sm">
+												Delete
+											</button>
+										</td>
+									</tr>
+									i++;
+								}
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+	$(document).ready(function () {
+		$('#tableExport_filter').DataTable({
+			pageLength: 5,
+			dom: 'lBfrtip',
+			buttons: [
+				{
+					extend: 'csv',
+					title: 'Transaction List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5]
+					}
+				},
+				{
+					extend: 'excel',
+					title: 'Transaction List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5]
+					}
+				},
+				{
+					extend: 'pdf',
+					title: 'Transaction List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5]
+					}
+				},
+				{
+					extend: 'print',
+					title: 'Transaction List',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5]
+					}
+				}
+			]
+		});
+	});
+	function showDeleteConfirmMessage(id) {
+		swal({
+			title: "Are you sure?",
+			text: "You will not be able to recover this item!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes, delete it!",
+			closeOnConfirm: false
+		}, function () {
+			var data = {
+				'id': id
+			};
+			$.ajax({
+				type: "GET",
+				contentType: "application/json; charset=utf-8",
+				url: "/Transaction/Delete",
+				data: data,
+				datatype: "json",
+				success: function (result) {
+					console.log(result);
+					var message = result.Message;
+					var executionState = result.executionState;
+					if (executionState != null) {
+						if (executionState != 10) {
+							swal("Deleted!", "Item has been deleted.", "success");
+						} else {
+							swal("Deleted Failed!", message, "success");
+						}
+						$(".confirm").on('click', function () {
+							window.location.reload();
+						});
+					}
+				},
+				error: function (xmlhttprequest, textstatus, errorthrown) {
+					swal("Not Deleted!", "Item has not been deleted.", "error");
+				}
+			});
+		});
+	}
+
+	$("#ForestCircleId").change(function () {
+		var selectedItem = $(this).val();
+		var forestDivisonList = $("#ForestDivisionId");
+		if (selectedItem == "" || selectedItem == null) {
+			return true;
+		}
+
+		$.ajax({
+			cache: false,
+			type: "GET",
+			url: "/Dropdown/ListForestDivisionByForestCircle",
+			data: { "id": selectedItem },
+			success: function (data) {
+				forestDivisonList.html('<option value="">Select Forest Division</option>');
+				$.each(data, function (id, option) {
+					forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+				});
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				//
+			}
+		});
+	});
+</script>

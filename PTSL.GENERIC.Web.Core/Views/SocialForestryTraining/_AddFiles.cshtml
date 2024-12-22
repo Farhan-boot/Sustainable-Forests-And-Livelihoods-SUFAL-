@@ -1,0 +1,145 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestryTraining.SocialForestryTrainingVM
+
+<style>
+    #tabs li[aria-selected=true] a {
+        color: black;
+    }
+	.file_container {
+		position: relative;
+	}
+	.delete_file_button {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		z-index: 5;
+		background: white;
+		padding: 2px;
+		border-radius: 50%;
+		width: 25px;
+		height: 25px;
+		border: 1px solid gray;
+		color: red;
+	}
+</style>
+
+<div class="modal fade bd-example-modal-file" tabindex="-2" role="dialog" aria-labelledby="myFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: calc(100vw - 100px);">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myFileModalLabel">Upload Image & Files</h4>
+                <button id="CloseModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="tabs">
+                    @*<ul>
+                        <li><a href="#Files">Attach Files</a></li>
+                    </ul>*@
+                    <div id="Files">
+                        <div class="row">
+                            <div class="col-6">
+                                <h5>Add Images</h5>
+                                <div id="imagesList">
+                                    <input type="file" class="form-control" accept="image/*" />
+                                </div>
+                                <button onclick="addNewImageButton()" class="btn btn-primary mt-2 btn-sm" type="button">Add More</button>
+
+                                @if (Model.SocialForestryTrainingFiles != null && Model.SocialForestryTrainingFiles.Count > 0)
+                                {
+                                    <h5 class="mt-4">Previous Images</h5>
+                                    <div class="d-flex flex-wrap" style="gap: 5px;">
+                                        @foreach (var file in Model.SocialForestryTrainingFiles)
+                                        {
+                                            if (file.FileType == FileType.Image)
+                                            {
+												<div class="file_container" data-fileid="@file.Id">
+													<img width="300" height="200" src="@file.FileNameUrl" />
+													<button type="button" onclick="deleteFile(@file.Id)" class="delete_file_button">X</button>
+												</div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-6">
+                                <h5>Add Documents</h5>
+                                <div id="documentsList">
+                                    <input type="file" class="form-control" accept=".doc,.docx,.xls,.xlsx" />
+                                </div>
+                                <button onclick="addNewDocumentButton()" class="btn btn-primary mt-2 btn-sm" type="button">Add More</button>
+
+                                @if (Model.SocialForestryTrainingFiles != null && Model.SocialForestryTrainingFiles.Count > 0)
+                                {
+                                    <h5 class="mt-4">Previous Document</h5>
+                                    <div class="d-flex flex-wrap" style="gap: 5px;">
+                                        <ul class="list-group">
+                                            @foreach (var file in Model.SocialForestryTrainingFiles)
+                                            {
+                                                if (file.FileType == FileType.Document)
+                                                {
+                                                    <li class="list-group-item" data-fileid="@file.Id">
+                                                        <a href="@file.FileNameUrl"><i class="fa fa-file-download mr-2"></i> @file.FileName</a>
+														<button type="button" onclick="deleteFile(@file.Id)" class="btn btn-sm btn-danger">X</button>
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#tabs").tabs();
+</script>
+
+<script>
+    function addNewImageButton() {
+        const imageFileElement = `
+            <input type="file" class="form-control mt-2" accept="image/*" />
+        `;
+
+        $("#imagesList").append(imageFileElement);
+    }
+
+    function addNewDocumentButton() {
+        const imageFileElement = `
+            <input type="file" class="form-control mt-2" accept=".doc,.docx,.xls,.xlsx" />
+        `;
+
+        $("#documentsList").append(imageFileElement);
+    }
+
+	function deleteFile(id) {
+		swal({
+			title: "Are you sure?",
+			text: "You will not be able to recover this item!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes, delete it!",
+			closeOnConfirm: false
+		}, function () {
+			$.ajax({
+				method: "GET",
+				url: `/SocialForestryTraining/DeleteImageOrDocument/${id}`,
+			})
+				.done(function (data) {
+					if (data.Success) {
+						swal("Deleted!", "Item has been deleted.", "success");
+						$(`[data-fileid=${id}]`).remove();
+					} else {
+						swal("Deleted Failed!", data.Message, "error");
+					}
+				});
+		});
+	}
+</script>

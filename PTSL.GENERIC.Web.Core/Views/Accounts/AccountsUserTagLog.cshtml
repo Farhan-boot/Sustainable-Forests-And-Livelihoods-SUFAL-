@@ -1,0 +1,54 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountsUserTagLogVM>
+
+
+@{
+    ViewBag.Title = "Accounts User Tag Log Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+			<a href="/Accounts/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Accounts User Tag Log Details
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover" id="tableExport_filter" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>User Name</th>
+                        <th>Bank Account Name</th>
+                        <th>Create Date</th>
+                        <th>Create Time</th>
+                    </tr>
+                </thead> @{
+                    int i = 1;
+                }
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var data in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@data?.Users?.UserName</td>
+                                <td>@data?.Accounts?.BankAccountName</td>
+                                <td>@data?.CreatedDate.ToUIDateString()</td>
+                                <td>@data?.CreatedDate.ToUITimeString()</td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

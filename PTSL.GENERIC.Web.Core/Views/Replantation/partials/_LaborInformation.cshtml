@@ -1,0 +1,143 @@
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Labor information</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Cost Type
+                    <span style="color:red;">*</span>
+                </label>
+                <select name="Labor_CostType" x-model="NewLaborInformation.LaborCostTypeId" required>
+                    <!option value="">Select Cost Type</!option>
+                    <template x-for="data in LaborInformationDropdowns.CostTypes">
+                        <!option :selected="data.Id == NewLaborInformation.LaborCostTypeId" :value="data.Id"
+                            x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Date
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="NewLaborInformation.LaborCostDate" placeholder="Enter date" type="date"
+                    name="Labor_CostDate" required />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Male no
+                </label>
+                <input x-model="NewLaborInformation.TotalMale" placeholder="Enter male no" name="Labor_MaleNo"
+                    required />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Female no
+                </label>
+                <input x-model="NewLaborInformation.TotalFemale" type="number" placeholder="Enter female no"
+                    name="Labor_FemaleNo" required />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Total Number of Labor
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="NewLaborInformation.TotalLabor" type="number" placeholder="Enter cost of amount"
+                    disabled />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Male (%)
+                </label>
+                <input x-model="NewLaborInformation.TotalMalePercentage" type="number" placeholder="Male (%)"
+                    disabled />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Female (%)
+                </label>
+                <input x-model="NewLaborInformation.TotalFemalePercentage" type="number" placeholder="Female (%)"
+                    disabled />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Attachment
+                </label>
+                <input x-on:change="SetLaborInformationFileName" type="file" name="Labor_Attachment"
+                    placeholder="Enter attachment" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Remarks
+                </label>
+                <input x-model="NewLaborInformation.Remarks" type="text" name="Labor_Remarks"
+                    placeholder="Enter remarks" />
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button @@click="AddLaborInformation" x-text="NewLaborInformation.IsUpdating ? 'Update' : 'Add Information'"
+                type="button" class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Labor details</p>
+    <p x-show="ReplantationLaborInfos.length == 0">No details added yet</p>
+
+    <template x-for="(group, category) in (ReplantationLaborInfos.reduce((result, item) => {
+                    const key = item.LaborCostTypeId;
+                    if (!result[key]) {
+                        result[key] = [];
+                    }
+
+                    result[key].push(item);
+                    return result;
+                }, {}))" :key="index">
+        <div>
+            <p class="m-0" x-text="GetCostTypeLabelForLabor(category)"></p>
+            <table class="table table-sm mb-2" x-show="group.length > 0">
+                <tr>
+                    <th>SL</th>
+                    <th>Date</th>
+                    <th>Total Labor</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Male(%)</th>
+                    <th>Female(%)</th>
+                    <th>Remarks</th>
+                    <th>Attachment</th>
+                    <th>Action</th>
+                </tr>
+                <tbody>
+                    <template x-for="(data, index) in group" :key="index">
+                        <tr class="">
+                            <td x-text="++index"></td>
+                            <td x-text="data.LaborCostDate"></td>
+                            <td x-text="data.TotalLabor"></td>
+                            <td x-text="data.TotalMale"></td>
+                            <td x-text="data.TotalFemale"></td>
+                            <td x-text="data.TotalMalePercentage"></td>
+                            <td x-text="data.TotalFemalePercentage"></td>
+                            <td x-text="data.Remarks"></td>
+                            <td x-text="data.AttachmentDisplay"></td>
+                            <td>
+                                <button @@click="RemoveLaborInformation(data)" type="button"
+                                    class="btn btn-sm btn-remove">Remove</button>
+                                <button @@click="EditLaborInformation(data, index - 1)" type="button"
+                                    class="btn btn-sm btn-primary">Edit</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+</fieldset>

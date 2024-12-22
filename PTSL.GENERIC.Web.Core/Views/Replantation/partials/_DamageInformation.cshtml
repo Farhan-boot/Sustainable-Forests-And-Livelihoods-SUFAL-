@@ -1,0 +1,106 @@
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Damage information</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Date of Occurrence
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="NewReplantationDamageInfo.DateOfOccurrence" placeholder="Enter date"
+                    name="Damage_DateOfOccurrence" type="date" required />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Cause of Damage
+                    <span style="color:red;">*</span>
+                </label>
+                <select name="Damage_CauseOfDamage" x-model="NewReplantationDamageInfo.PlantationCauseOfDamageId"
+                    required>
+                    <!option value="">Select Cost Type</!option>
+                    <template x-for="data in ReplantationDamageInfoDropdowns.CauseOfDamage">
+                        <!option :selected="data.Id == NewReplantationDamageInfo.PlantationCauseOfDamageId"
+                            :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Damage Description
+                </label>
+                <input name="Damage_Description" x-model="NewReplantationDamageInfo.DamageDescription"
+                    placeholder="Enter damage description" required />
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Damage Image
+                </label>
+                <input type="file" id="damage_image" />
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Action taken
+                </label>
+                <input x-model="NewReplantationDamageInfo.ActionTaken" type="text"
+                    placeholder="Enter action taken" />
+            </div>
+            <div class="col-md-3 px-1" style="display: flex; align-items: center; gap: 5px;">
+                <label>
+                    Inspected by Authority
+                </label>
+                <input x-model="NewReplantationDamageInfo.InspectedByAuthority" type="checkbox" required
+                    style="width: auto;" />
+            </div>
+            <div class="col-md-3 px-1" x-show="NewReplantationDamageInfo.InspectedByAuthority">
+                <label>
+                    Inspection Report
+                </label>
+                <input type="file" id="inspection_report_file" />
+            </div>
+            <div class="col-md-3 pl-1">
+            </div>
+        </div>
+
+        <div class="mt-2 text-right">
+            <button x-on:click="AddReplantationDamageInfo"
+                    x-text="NewReplantationDamageInfo.IsUpdating ? 'Update' : 'Add Information'" type="button"
+                class="btn btn-sm"></button>
+        </div>
+    </div>
+
+    <p class="mt-3 border-btm">Damage details</p>
+    <p x-show="ReplantationDamageInfos.length == 0">No details added yet</p>
+
+    <table class="table table-sm mb-2" x-show="ReplantationDamageInfos.length > 0">
+        <tr>
+            <th>SL</th>
+            <th>Date</th>
+            <th>Cause of Damage</th>
+            <th>Inspected</th>
+            <th>Action Taken</th>
+            <th>Action</th>
+        </tr>
+        <tbody>
+            <template x-for="(data, index) in ReplantationDamageInfos" :key="index">
+                <tr class="">
+                    <td x-text="++index"></td>
+                    <td x-text="data.DateOfOccurrence"></td>
+                    <td x-text="data.CauseOfDamageDisplay"></td>
+                    <td x-text="data.InspectedByAuthority"></td>
+                    <td x-text="data.ActionTaken"></td>
+                    <td>
+                        <button x-on:click="RemoveReplantationDamageInfo(data)" type="button"
+                            class="btn btn-sm btn-remove">Remove</button>
+                        <button x-on:click="EditReplantationDamageInfo(data, index - 1)" type="button"
+                            class="btn btn-sm btn-primary">Edit</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+
+</fieldset>

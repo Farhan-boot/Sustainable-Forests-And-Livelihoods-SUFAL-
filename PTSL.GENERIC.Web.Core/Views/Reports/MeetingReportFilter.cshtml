@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "Meeting Report";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Meeting Report</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="MeetingReport" asp-controller="Reports" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+                    <div class="row custom">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Basic Information</legend>
+                                <div class="row">
+                                    <div class="col-md-4 pr-1">
+                                        <label class="m-0">NGO</label>
+                                        @Html.DropDownList("NgoId", null, "Select NGO", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col-md-4 px-1">
+                                        <label class="m-0">Meeting Type</label>
+										@Html.DropDownList("MeetingTypeId", null, "Select Meeting", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col-md-4 pl-1">
+                                        <label class="m-0">Meeting Date</label>
+										<input type="date" id="NID" value="@(ViewBag.MeetingDate is DateTime ? ((DateTime)ViewBag.MeetingDate).ToUIDateString() : null)" name="MeetingDate" placeholder="Enter meeting date" />
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save">Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

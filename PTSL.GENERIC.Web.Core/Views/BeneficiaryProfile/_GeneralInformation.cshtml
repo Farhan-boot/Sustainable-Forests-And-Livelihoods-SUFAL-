@@ -1,0 +1,519 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<style>
+	.location label.error {
+		display: block;
+	}
+</style>
+
+<form id="GeneralInformation" class="collapse">
+    <!-- Information start -->
+    <h4>Information</h4>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>
+				1.1. Name of Beneficiary
+                <span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiaryName)" name="@nameof(Model.BeneficiaryName)" value="@Model.BeneficiaryName" placeholder="Enter Name of Beneficiary">
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.2. National ID
+                <span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiaryNid)" name="@nameof(Model.BeneficiaryNid)" value="@Model.BeneficiaryNid" placeholder="Enter Beneficiary NID">
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.3. Mobile Number
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiaryPhone)" name="@nameof(Model.BeneficiaryPhone)" value="@Model.BeneficiaryPhone" placeholder="Enter Mobile Number">
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.4. Gender of Beneficiary
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("BeneficiaryGender", null, "Select Gender", htmlAttributes: new { @class = "form-control " })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>
+                1.5. Ethnicity
+            </label>
+            @Html.DropDownList("BeneficiaryEthnicityId", null, "Select Ethnicity", htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.6. Age (Years)
+				<span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiaryAge)" name="@nameof(Model.BeneficiaryAge)" value="@Model.BeneficiaryAge" placeholder="Enter Beneficiary Age" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                1.7. Father's Name
+				<span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiaryFatherName)" name="@nameof(Model.BeneficiaryFatherName)" value="@Model.BeneficiaryFatherName" placeholder="Enter Father's Name">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                1.8. Mother's Name
+				<span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiaryMotherName)" name="@nameof(Model.BeneficiaryMotherName)" value="@Model.BeneficiaryMotherName" placeholder="Enter Mother's Name">
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                1.9. Spouse's Name (if required)
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.BeneficiarySpouseName)" name="@nameof(Model.BeneficiarySpouseName)" value="@Model.BeneficiarySpouseName" placeholder="Enter Spouse's Name">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                1.10. Name of Head of the Household - If Different
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.HeadOfHouseholdName)" name="@nameof(Model.HeadOfHouseholdName)" value="@Model.HeadOfHouseholdName" placeholder="Beneficiary Head of Household">
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+				1.10.a. Gender of Head of the Household
+            </label>
+            @Html.DropDownList("HeadOfHouseholdGender", null, "Select Gender", htmlAttributes: new { @class = "form-control " })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+				1.10.b FCV/VCF Added Date
+            </label>
+            <input type="date" class="form-control" id="@nameof(Model.FcvVcfAddedDate)" name="@nameof(Model.FcvVcfAddedDate)" value="@(Model.FcvVcfAddedDate is DateTime ? Model.FcvVcfAddedDate.ToUITimeStringNullable() : "")" placeholder="Beneficiary FCV/VCF Added Date">
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                1.10.c Recipient status <span style="color: red;">*</span>
+            </label>
+            @Html.DropDownList("RecipientStatus", null, "Select Status", htmlAttributes: new { @class = "form-control " })
+        </div>
+    </div>
+    <!-- Information end -->
+    <!-- >Address (Present) (বর্তমান ঠিকানা) start -->
+    <h4 class="mt-3">1.11. Present Address</h4>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>
+                1.11.a. Name of the Village
+				<span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.PresentVillageName)" name="@nameof(Model.PresentVillageName)" value="@Model.PresentVillageName" placeholder="Enter Name of the Village">
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.11.b. Name of the Post Office
+				<span style="color:red;">*</span>
+            </label>
+            <input type="text" class="form-control" id="@nameof(Model.PresentPostOfficeName)" name="@nameof(Model.PresentPostOfficeName)" value="@Model.PresentPostOfficeName" placeholder="Enter Name of the Post Office">
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.11.c. Division
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("PresentDivisionId", null, "Select Division", htmlAttributes: new { @class = "form-control " })
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.11.d. District
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("PresentDistrictId", null, "Select District", htmlAttributes: new { @class = "form-control " })
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>
+                1.11.e. Upazila
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("PresentUpazillaId", null, "Select Upazilla", htmlAttributes: new { @class = "form-control " })
+        </div>
+        <div class="form-group col-md-3">
+            <label>
+                1.11.f. Union
+                <span style="color:red;">*</span>
+            </label>
+            @Html.DropDownList("PresentUnionNewId", null, "Select Union", htmlAttributes: new { @class = "form-control " })
+        </div>
+		@if (Model.Id > 0 && string.IsNullOrEmpty(Model.PresentUnion) == false)
+		{
+			<div class="form-group col-md-3">
+				<label>
+					1.11.f. Union
+					<span style="color:red;">*</span>
+				</label>
+				<input type="text" class="form-control " id="@nameof(Model.PresentUnion)" name="@nameof(Model.PresentUnion)" value="@Model.PresentUnion" placeholder="Present union" minlength="3" />
+			</div>
+		}
+		<div class="form-group col-md-3">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <input type="checkbox" id="@nameof(Model.IsPermanentSameAsPresent)" name="@nameof(Model.IsPermanentSameAsPresent)" value="@Model.IsPermanentSameAsPresent" @(Model.IsPermanentSameAsPresent ? "checked" : "") />
+			<label style="font-size: 16px;">
+				Select this if Permanent Address is same as Present Address
+            </label>
+        </div>
+    </div>
+    <!-- >Address (Present) (বর্তমান ঠিকানা) end -->
+    <!-- >Address (Permanent) (স্থায়ী ঠিকানা) start -->
+    <div id="PermanentAddress" style="display: none;">
+        <h4 class="mt-3">1.12. Permanent Address</h4>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>
+                    1.12.a. Name of the Village
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="text" class="form-control" id="@nameof(Model.PermanentVillageName)" name="@nameof(Model.PermanentVillageName)" value="@Model.PermanentVillageName" placeholder="Enter Name of the Village">
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    1.12.b. Name of the Post Office
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="text" class="form-control" id="@nameof(Model.PermanentPostOfficeName)" name="@nameof(Model.PermanentPostOfficeName)" value="@Model.PermanentPostOfficeName" placeholder="Enter Name of the Post Office">
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    1.12.c. Division
+                    <span style="color:red;">*</span>
+                </label>
+                @Html.DropDownList("PermanentDivisionId", null, "Select Division", htmlAttributes: new { @class = "form-control " })
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    1.12.d. District
+                    <span style="color:red;">*</span>
+                </label>
+                @Html.DropDownList("PermanentDistrictId", null, "Select District", htmlAttributes: new { @class = "form-control " })
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>
+                    1.12.e. Upazila
+                    <span style="color:red;">*</span>
+                </label>
+                @Html.DropDownList("PermanentUpazillaId", null, "Select Upazilla", htmlAttributes: new { @class = "form-control " })
+            </div>
+			<div class="form-group col-md-3">
+				<label>
+					1.11.f. Union
+					<span style="color:red;">*</span>
+				</label>
+				@Html.DropDownList("PermanentUnionNewId", null, "Select Union", htmlAttributes: new { @class = "form-control " })
+			</div>
+			@if (Model.Id > 0 && string.IsNullOrEmpty(Model.PermanentUnion) == false)
+			{
+				<div class="form-group col-md-3">
+					<label>
+						1.12.f. Union
+						<span style="color:red;">*</span>
+					</label>
+					<input type="text" class="form-control " id="@nameof(Model.PermanentUnion)" name="@nameof(Model.PermanentUnion)" value="@Model.PermanentUnion" placeholder="Enter Union" minlength="3" />
+				</div>
+			}
+        </div>
+    </div>
+    <!-- >Address (Permanent) (স্থায়ী ঠিকানা) end -->
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+				1.14. Photograph of the SUFAL beneficiary in front of the house
+                @if (Model.Id < 1)
+                {
+                    <span style="color:red;">*</span>
+                }
+            </label>
+            <input type="file" class="form-control" name="@nameof(Model.BeneficiaryHouseFrontImage)" id="@nameof(Model.BeneficiaryHouseFrontImage)" @(Model.Id > 0 ? "" : "required") />
+        </div>
+        @if (string.IsNullOrEmpty(Model.BeneficiaryHouseFrontImageURL) == false)
+        {
+            <div class="form-group col-md-6" style="overflow: hidden;">
+                <label>
+                    Current photograph of the SUFAL beneficiary in front of the house
+                </label>
+                <input type="hidden" id="@nameof(Model.BeneficiaryHouseFrontImageURL)" value="@Model.BeneficiaryHouseFrontImageURL" />
+                <img loading="lazy" src="@(Model.BeneficiaryHouseFrontImageURL)" height="450" style="width: 100%;" />
+            </div>
+        }
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label style="display: block;">
+				1.13. GPS Location of the Household
+                <span style="color:red;">*</span>
+            </label>
+			<div 
+				id="googleMap"
+				class="img-thumbnail"
+				style="border:0; width: 100%;height: 450px;">
+			</div>
+        </div>
+
+        <div class="from-group col-md-6 location">
+            <label class="control-label" style="margin-top: 20px;">
+				Latitude
+                <span style="color:red;">*</span>
+            </label>
+            <input class="form-control" type="number" id="BeneficiaryLatitude" name="BeneficiaryLatitude" value="@Model.BeneficiaryLatitude" min="-180" max="180" placeholder="Enter Latitude" />
+
+            <label class="control-label mt-2">
+                Longitude
+                <span style="color:red;">*</span>
+            </label>
+            <input class="form-control" type="number" id="BeneficiaryLongitude" name="BeneficiaryLongitude" value="@Model.BeneficiaryLongitude" min="-180" max="180" placeholder="Enter Longitude" />
+
+            <label class="control-label mt-2">
+                Altitude
+            </label>
+            <input class="form-control" type="number" id="BeneficiaryAltitude" name="BeneficiaryAltitude" value="@Model.BeneficiaryAltitude" min="-1240" max="60000" placeholder="Enter Altitude" />
+
+            <label class="control-label mt-2">
+                Precision
+            </label>
+            <input class="form-control" type="number" id="BeneficiaryPrecision" name="BeneficiaryPrecision" value="@Model.BeneficiaryPrecision" placeholder="Enter Precision" />
+
+			<button class="btn btn-sm btn-primary mt-2" id="getCurrentLocation">Set Current Location</button>
+        </div>
+    </div>
+</form>
+
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2pqCdLJFor5DL1TSLXdNdhVObR1E08Fo&callback=initMap&id=@DateTime.UtcNow.ToString("yyyyMMddHHmmss")"></script>
+<script>
+    var map = null;
+	function initMap() {
+		const bdLatLng = { lng: 90.3563, lat: 23.6850, };
+		const mapProp = {
+			center: bdLatLng,
+			zoom: 5,
+		};
+		map = new google.maps.Map(document.getElementById('googleMap'), mapProp);
+
+		let infoWindow = new google.maps.InfoWindow({
+			content: "Click the map to get Lat/Lng!",
+			position: bdLatLng,
+		});
+		infoWindow.open(map);
+
+		map.addListener("click", (mapsMouseEvent) => {
+			// Close the current InfoWindow.
+			infoWindow.close();
+			// Create a new InfoWindow.
+			infoWindow = new google.maps.InfoWindow({
+				position: mapsMouseEvent.latLng,
+			});
+			infoWindow.setContent(
+				JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+			);
+			infoWindow.open(map);
+
+			$("#BeneficiaryLatitude").val(mapsMouseEvent.latLng.lat());
+			$("#BeneficiaryLongitude").val(mapsMouseEvent.latLng.lng());
+			$("#BeneficiaryAltitude").val();
+			$("#BeneficiaryPrecision").val();
+		});
+	}
+
+	$("#getCurrentLocation").on("click", function(event) {
+		event.preventDefault();
+
+		var current = $(this);
+		current.text("Getting location...");
+
+		navigator.geolocation.getCurrentPosition(
+			function(position) {
+				$("#BeneficiaryLatitude").val(position.coords.latitude);
+				$("#BeneficiaryLongitude").val(position.coords.longitude);
+				$("#BeneficiaryAltitude").val(position.coords.altitude);
+				$("#BeneficiaryPrecision").val(position.coords.altitudeAccuracy);
+
+				current.text("Set Current Location");
+			},
+			function() {
+				current.text("Set Current Location");
+			},
+		);
+	})
+</script>
+
+<script>
+    // Load dropdown data only once
+    $("[href='#GeneralInformation']").one("click", function () {
+    })
+
+    $("#IsPermanentSameAsPresent").on("change", function () {
+        var isPermanentSameAsPresent = $(this).is(':checked');
+
+        if (isPermanentSameAsPresent != true)
+            $("#PermanentAddress").show();
+        else
+            $("#PermanentAddress").hide();
+    });
+    $("#IsPermanentSameAsPresent").trigger("change");
+
+    //// Present address
+    $("#PresentDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentDistrictId = $("#PresentDistrictId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListDistrictByDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentDistrictId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentDistrictId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+
+    $("#PresentDistrictId").change(function () {
+        var selectedItem = $(this).val();
+        var PresentUpazillaId = $("#PresentUpazillaId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUpazillaByDistrict",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+	$("#PresentUpazillaId").change(function () {
+        var selectedItem = $(this).val();
+		var PresentUpazillaId = $("#PresentUnionNewId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUnionByUpazilla",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+    //// Permanent address
+    $("#PermanentDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var PermanentDistrictId = $("#PermanentDistrictId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListDistrictByDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PermanentDistrictId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PermanentDistrictId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+
+    $("#PermanentDistrictId").change(function () {
+        var selectedItem = $(this).val();
+        var PermanentUpazillaId = $("#PermanentUpazillaId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUpazillaByDistrict",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PermanentUpazillaId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PermanentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+	$("#PermanentUpazillaId").change(function () {
+        var selectedItem = $(this).val();
+		var PresentUpazillaId = $("#PermanentUnionNewId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUnionByUpazilla",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+</script>

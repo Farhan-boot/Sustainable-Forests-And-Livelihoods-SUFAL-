@@ -1,0 +1,890 @@
+@using PTSL.GENERIC.Web.Core.Helper.Enum;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Reforestation.ReplantationVM
+@inject IHttpContextAccessor Accessor
+@{
+    ViewBag.Title = "Create New Replantation Information";
+
+    var newRaisedIdString = Accessor.HttpContext?.Session.GetString("newRaisedId");
+    long.TryParse(newRaisedIdString, out var newRaisedId);
+}
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+    .plantation_images_container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 10px;
+        row-gap: 5px;
+    }
+
+    .plantation_image_item {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-remove {
+        background-color: #fc544b !important;
+        border-color: #fc544b !important;
+        color: white;
+    }
+
+        .btn-remove:hover {
+            color: white;
+        }
+
+    .border-btm {
+        margin-bottom: 0 !important;
+        border-bottom: 1px solid #646967;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/Replantation/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Create New Replantation Information
+        </h4>
+        <button class="ml-auto reset btn btn-sm" onclick="resetFromData('#Form')">
+            <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z"
+                      fill="currentColor" />
+            </svg>
+            Reset
+        </button>
+    </div>
+
+    <!form @@submit.prevent x-cloak x-data="replantation" id="Form" class="card-body mt-2">
+    <input type="hidden" id="@nameof(Model.NewRaisedPlantationId)" name="@nameof(Model.NewRaisedPlantationId)"
+           value="@newRaisedId" />
+
+        @await Html.PartialAsync("partials/_PlantationInformation.cshtml", ViewBag.NewRaisedDetails as
+    PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.NewRaisedPlantationVM)
+
+    <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+            @await Html.PartialAsync("partials/_ReplantationInformation.cshtml", Model)
+    </div>
+
+    <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+        <partial name="partials/_InspectionDetails.cshtml" />
+    </div>
+
+    <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+        <partial name="partials/_CostInformation.cshtml" />
+    </div>
+
+    <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+        <partial name="partials/_LaborInformation.cshtml" />
+    </div>
+
+    <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+        <partial name="partials/_PBSABeneficiary.cshtml" />
+    </div>
+
+    <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="">
+        <partial name="partials/_DamageInformation.cshtml" />
+    </div>
+
+    <div class="d-flex justify-content-end py-2">
+        <button x-on:click="SubmitForm" type="button" id="submit-btn" class="btn btn-sm btn-green save">
+            Save
+        </button>
+    </div>
+    </!form>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('replantation', () => ({
+            init() {
+                this.LoadAllDropdowns();
+                this.InitializeNewNursery();
+                this.InitializeInspectionDetails();
+                this.InitializeLaborInformation();
+
+                this.NewPlantationSocialForestryBeneficiaryMaps = this.GeneratePlantationSocialForestryBeneficiaryMaps(null, this.getRandomString());
+                this.PlantationSocialForestryBeneficiaryMaps.push(this.NewPlantationSocialForestryBeneficiaryMaps);
+                this.InitializeSocialForestryBeneficiary();
+            },
+
+            getRandomString() {
+                return window.crypto.getRandomValues(new Uint32Array(1)).toString();
+            },
+
+            async LoadAllDropdowns() {
+                let [
+                    plantationType,
+                    plantationUnit,
+                    projectType,
+                    plantationTopography,
+                    costType,
+                    designation,
+                    financialYear,
+
+                    nurseryInformation,
+                    genders,
+                    ethnicity,
+                    laborCostType,
+                    plantationCauseOfDamage,
+                ] = await Promise.all([
+                    fetch("/PlantationType/List").then(response => response.json()),
+                    fetch("/PlantationUnit/List").then(response => response.json()),
+                    fetch("/ProjectType/List").then(response => response.json()),
+                    fetch("/PlantationTopography/List").then(response => response.json()),
+                    fetch("/CostType/List").then(response => response.json()),
+                    fetch("/SocialForestryDesignation/List").then(response => response.json()),
+                    fetch("/FinancialYear/List").then(response => response.json()),
+
+                    fetch("/NurseryInformation/List").then(response => response.json()),
+                    fetch("/Dropdown/GetGenderMfEnumList").then(response => response.json()),
+                    fetch("/Dropdown/GetEthnicityList").then(response => response.json()),
+                    fetch("/LaborCostType/List").then(response => response.json()),
+                    fetch("/PlantationCauseOfDamage/List").then(response => response.json()),
+                ]);
+
+                if (costType) {
+                    const x = costType.Data?.map(x => ({ value: x.Id, label: x.LabelName, display: x.Name }));
+                    this.CostInformationDropdowns.cost_type = x;
+                }
+                if (designation) {
+                    this.InspectionDetailsMapDropdowns.designation = designation.Data;
+                }
+                if (nurseryInformation) {
+                    this.ReplantationNurseryInfoDropdowns.Nursery = nurseryInformation.Data;
+                }
+                if (laborCostType) {
+                    this.LaborInformationDropdowns.CostTypes = laborCostType.Data;
+                }
+                if (plantationCauseOfDamage) {
+                    this.ReplantationDamageInfoDropdowns.CauseOfDamage = plantationCauseOfDamage.Data;
+                }
+                if (genders) {
+                    this.SocialForestryBeneficiaryDropdowns.Genders = genders;
+                }
+                if (ethnicity) {
+                    this.SocialForestryBeneficiaryDropdowns.Ethnicities = ethnicity;
+                }
+            },
+
+            ...addInspectionDetailsMap(),
+            ...addCostInformation(),
+
+            // Labor Information
+            ReplantationLaborInfos: [],
+            InitLaborInformation: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+
+                LaborCostTypeId: "",
+                LaborCostDate: "",
+                TotalMale: "",
+                TotalFemale: "",
+                Remarks: "",
+
+                // Display
+                AttachmentDisplay: "",
+                LaborCostTypeLabel: "",
+                LaborCostTypeDisplay: "",
+            },
+            NewLaborInformation: {},
+            InitializeLaborInformation(data = null) {
+                if (data) {
+                    this.NewLaborInformation = {
+                        ...data,
+                        get TotalLabor() {
+                            return getNumber(this.TotalMale) + getNumber(this.TotalFemale);
+                        },
+                        get TotalMalePercentage() {
+                            return Math.round((getNumber(this.TotalMale) / this.TotalLabor) * 100, 2);
+                        },
+                        get TotalFemalePercentage() {
+                            return Math.round((getNumber(this.TotalFemale) / this.TotalLabor) * 100, 2);
+                        },
+                    };
+                }
+                else {
+                    this.NewLaborInformation = {
+                        ...this.InitLaborInformation,
+                        get TotalLabor() {
+                            return getNumber(this.TotalMale) + getNumber(this.TotalFemale);
+                        },
+                        get TotalMalePercentage() {
+                            return Math.round((getNumber(this.TotalMale) / this.TotalLabor) * 100, 2);
+                        },
+                        get TotalFemalePercentage() {
+                            return Math.round((getNumber(this.TotalFemale) / this.TotalLabor) * 100, 2);
+                        },
+                    };
+                }
+            },
+            SetLaborInformationFileName(event) {
+                const name = getFileName(event.target);
+                this.NewLaborInformation.AttachmentDisplay = name;
+            },
+            LaborInformationDropdowns: {
+                CostTypes: [],
+            },
+            SetCostTypeDisplayForLabor() {
+                const data = this.LaborInformationDropdowns.CostTypes.find(x => x.value == this.NewLaborInformation.LaborCostTypeId);
+                const display = data?.display ?? "";
+                const label = data?.label ?? "";
+
+                this.NewLaborInformation.LaborCostTypeLabel = label;
+                this.NewLaborInformation.LaborCostTypeDisplay = display;
+            },
+            GetCostTypeLabelForLabor(cost_type) {
+                const data = this.LaborInformationDropdowns.CostTypes.find(x => x.Id == cost_type);
+                const label = data?.Name ?? "";
+
+                return label;
+            },
+            AddLaborInformation() {
+                let hasError = 0;
+
+                for (const key of Object.keys(LaborInformationFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.SetCostTypeDisplayForLabor();
+
+                if (this.NewLaborInformation.IsUpdating) {
+                    this.ReplantationLaborInfos[this.NewLaborInformation.UpdateIndex] = { ...this.NewLaborInformation, IsUpdating: false };
+                } else {
+                    this.ReplantationLaborInfos.push(this.NewLaborInformation);
+                }
+
+                this.InitializeLaborInformation();
+
+                clearFileInput("cost_attachment_id");
+            },
+            RemoveLaborInformation(data) {
+                this.ReplantationLaborInfos.splice(this.ReplantationLaborInfos.indexOf(data), 1);
+            },
+            EditLaborInformation(data, index) {
+                let editData = { ...data, IsUpdating: true, UpdateIndex: index };
+                this.InitializeLaborInformation(editData);
+            },
+
+
+            // Nursery
+            ReplantationNurseryInfos: [],
+            InitialReplantationNurseryInfo: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+
+                NurseryInformationId: "",
+                NurseryRaisedSeedlingInformationId: "",
+                NumberOfSeedlingPlanted: "",
+                Remarks: "",
+
+                // Display
+                NurseryInformationDisplay: "",
+                SpeciesNameDisplay: "",
+                AvailableSeedling: "",
+            },
+            NewReplantationNurseryInfo: {},
+            InitializeNewNursery() {
+                this.NewReplantationNurseryInfo = { ...this.InitialReplantationNurseryInfo };
+            },
+            ReplantationNurseryInfoDropdowns: {
+                Nursery: [],
+                SeedlingInformation: [],
+            },
+            GetNurserySpeciesNames() {
+                fetch(`/NurseryRaisedSeedlingInformation/GetSeedlingByNurseryId/${this.NewReplantationNurseryInfo.NurseryInformationId}`)
+                    .then(x => x.json())
+                    .then(data => {
+                        this.ReplantationNurseryInfoDropdowns.SeedlingInformation = data.Data;
+                    });
+            },
+            SetAvailableSeedling() {
+                const seedlingId = this.NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId;
+                const seedlingRaised = this.ReplantationNurseryInfoDropdowns
+                    .SeedlingInformation
+                    .find(x => x.Id == seedlingId)
+                    ?.SeedlingRaised ?? "0";
+
+                this.NewReplantationNurseryInfo.AvailableSeedling = seedlingRaised;
+            },
+
+            AddReplantationNurseryInfo() {
+                let hasError = 0;
+
+                for (const key of Object.keys(NurseryFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.SetNurseryInformationDisplay();
+
+                if (this.NewReplantationNurseryInfo.IsUpdating) {
+                    this.ReplantationNurseryInfos[this.NewReplantationNurseryInfo.UpdateIndex] = { ...this.NewReplantationNurseryInfo, IsUpdating: false };
+                } else {
+                    this.ReplantationNurseryInfos.push(this.NewReplantationNurseryInfo);
+                }
+
+                this.InitializeNewNursery();
+            },
+            RemoveReplantationNurseryInfo(data) {
+                this.ReplantationNurseryInfos.splice(this.ReplantationNurseryInfos.indexOf(data), 1);
+            },
+            EditReplantationNurseryInfo(data, index) {
+                this.NewReplantationNurseryInfo = { ...data, UpdateIndex: index, IsUpdating: true };
+            },
+            SetNurseryInformationDisplay() {
+                const nurseryInfo = this.ReplantationNurseryInfoDropdowns
+                    .Nursery
+                    .find(x => x.Id == this.NewReplantationNurseryInfo.NurseryInformationId)
+                    ?.NurseryName ?? "";
+
+                const speciesInfo = this.ReplantationNurseryInfoDropdowns
+                    .SeedlingInformation
+                    .find(x => x.Id == this.NewReplantationNurseryInfo.NurseryRaisedSeedlingInformationId)
+                    ?.SpeciesName ?? "";
+
+                this.NewReplantationNurseryInfo.NurseryInformationDisplay = nurseryInfo;
+                this.NewReplantationNurseryInfo.SpeciesNameDisplay = speciesInfo;
+            },
+
+
+            // Beneficiary
+            PlantationSocialForestryBeneficiaryMaps: [],
+            NewPlantationSocialForestryBeneficiaryMaps: {},
+            InitPlantationSocialForestryBeneficiaryMaps: {
+                Id: 0,
+                IsUpdating: false,
+
+                PBSAGroupId: "",
+                CheckIfPBSAIsSigned: false,
+                AgreementUploadFileUrl: "",
+                SocialForestryBeneficiary: [],
+                // Display
+            },
+            NewSocialForestryBeneficiary: {},
+            InitSocialForestryBeneficiary: {
+                BeneficiaryName: "",
+                Gender: "",
+                NID: "",
+                MobileNumber: "",
+                EthnicityId: "",
+                Address: "",
+
+                // Display
+                GenderDisplay: "",
+                EthnicityDisplay: "",
+            },
+            SocialForestryBeneficiaryDropdowns: {
+                Genders: [],
+                Ethnicities: [],
+            },
+            InitializeSocialForestryBeneficiary() {
+                this.NewSocialForestryBeneficiary = { ...this.InitSocialForestryBeneficiary };
+            },
+            GeneratePlantationSocialForestryBeneficiaryMaps(data = null, pbasaId = null) {
+                if (data) {
+                    return {
+                        ...data,
+                        PBSAGroupId: pbasaId ?? data.pbasaId,
+                        get TotalBeneficiary() {
+                            return this.SocialForestryBeneficiary.length;
+                        },
+                        get TotalMale() {
+                            return this.SocialForestryBeneficiary.filter(x => x.Gender == @((int)GenderMf.Male)).length;
+                        },
+                        get TotalFemale() {
+                            return this.SocialForestryBeneficiary.filter(x => x.Gender == @((int)GenderMf.Female)).length;
+                        },
+                        get TotalMalePercentage() {
+                            return Math.round((getNumber(this.TotalMale) / this.TotalBeneficiary) * 100, 2);
+                        },
+                        get TotalFemalePercentage() {
+                            return Math.round((getNumber(this.TotalFemale) / this.TotalBeneficiary) * 100, 2);
+                        },
+                    };
+                }
+                else {
+                    return {
+                        ...this.InitPlantationSocialForestryBeneficiaryMaps,
+                        PBSAGroupId: pbasaId ?? data.pbasaId,
+                        get TotalBeneficiary() {
+                            return this.SocialForestryBeneficiary.length;
+                        },
+                        get TotalMale() {
+                            return this.SocialForestryBeneficiary.filter(x => x.Gender == @((int)GenderMf.Male)).length;
+                        },
+                        get TotalFemale() {
+                            return this.SocialForestryBeneficiary.filter(x => x.Gender == @((int)GenderMf.Female)).length;
+                        },
+                        get TotalMalePercentage() {
+                            return Math.round((getNumber(this.TotalMale) / this.TotalBeneficiary) * 100, 2);
+                        },
+                        get TotalFemalePercentage() {
+                            return Math.round((getNumber(this.TotalFemale) / this.TotalBeneficiary) * 100, 2);
+                        },
+                    };
+                }
+            },
+            AddPlantationSocialForestryBeneficiaryMaps() {
+                const newPBSAGroup = this.GeneratePlantationSocialForestryBeneficiaryMaps(null, this.getRandomString());
+                newPBSAGroup.SocialForestryBeneficiary = [];
+                this.PlantationSocialForestryBeneficiaryMaps.push(newPBSAGroup);
+
+                clearFileInput("pbsa_agreement_file");
+            },
+            AddPlantationSocialForestryBeneficiary() {
+                let hasError = 0;
+
+                for (const key of Object.keys(BeneficiaryFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.PlantationSocialForestryBeneficiaryMaps
+                    .find(x => x.PBSAGroupId == this.currentPBSAId)
+                    .SocialForestryBeneficiary
+                    .push(this.NewSocialForestryBeneficiary);
+
+                this.InitializeSocialForestryBeneficiary();
+            },
+            EditPlantationSocialForestryBeneficiary(pbsaId, beneficiaryIdnex) {
+                this.PlantationSocialForestryBeneficiaryMaps
+                    .find(x => x.PBSAGroupId == pbsaId)
+                    .SocialForestryBeneficiary[beneficiaryIdnex];
+
+                this.InitializeSocialForestryBeneficiary();
+            },
+
+
+            // Damage Information
+            ReplantationDamageInfos: [],
+            InitReplantationDamageInfo: {
+                Id: 0,
+                IsUpdating: false,
+                UpdateIndex: null,
+
+                DateOfOccurrence: "",
+                PlantationCauseOfDamageId: "",
+                DamageDescription: "",
+                InspectedByAuthority: "",
+                DamageUrl: "",
+                InspectionReportUrl: "",
+                ActionTaken: "",
+
+                // Display
+                CauseOfDamageDisplay: "",
+                DamageDisplay: "",
+                InspectionReportDisplay: "",
+            },
+            NewReplantationDamageInfo: {},
+            InitializeReplantationDamageInfos(data = null) {
+                if (data) {
+                    this.NewReplantationDamageInfo = {
+                        ...data,
+                    };
+                }
+                else {
+                    this.NewReplantationDamageInfo = {
+                        ...this.InitReplantationDamageInfo,
+                    };
+                }
+            },
+            SetReplantationDamageInfoDamageFileName(event) {
+                const name = getFileName(event.target);
+                this.NewReplantationDamageInfo.DamageDisplay = name;
+            },
+            SetReplantationDamageInfoInspectionReportFileName(event) {
+                const name = getFileName(event.target);
+                this.NewReplantationDamageInfo.InspectionReportDisplay = name;
+            },
+            ReplantationDamageInfoDropdowns: {
+                CauseOfDamage: [],
+            },
+            SetReplantationDamageInfoCauseOfDamageDisplay() {
+                const data = this.ReplantationDamageInfoDropdowns.CauseOfDamage.find(x => x.Id == this.NewReplantationDamageInfo.PlantationCauseOfDamageId);
+                const display = data?.Name ?? "";
+
+                this.NewReplantationDamageInfo.CauseOfDamageDisplay = display;
+            },
+            AddReplantationDamageInfo() {
+                let hasError = 0;
+
+                for (const key of Object.keys(ReplantationDamageInfoFormValidation)) {
+                    const inputElement = $(`#Form input[name=${key}], #Form select[name=${key}]`);
+
+                    if (!inputElement) ++hasError;
+                    if (!inputElement.valid()) ++hasError;
+                }
+
+                if (hasError > 0) return;
+
+                this.SetReplantationDamageInfoCauseOfDamageDisplay();
+
+                if (this.NewReplantationDamageInfo.IsUpdating) {
+                    this.ReplantationDamageInfos[this.NewReplantationDamageInfo.UpdateIndex] = { ...this.NewReplantationDamageInfo, IsUpdating: false };
+                } else {
+                    this.ReplantationDamageInfos.push(this.NewReplantationDamageInfo);
+                }
+
+                this.InitializeReplantationDamageInfos();
+
+                clearFileInput("damage_image");
+                clearFileInput("inspection_report_file");
+            },
+            RemoveReplantationDamageInfo(data) {
+                this.ReplantationDamageInfos.splice(this.ReplantationDamageInfos.indexOf(data), 1);
+            },
+            EditReplantationDamageInfo(data, index) {
+                let editData = { ...data, IsUpdating: true, UpdateIndex: index };
+                this.InitializeReplantationDamageInfos(editData);
+            },
+
+            // Modal
+            isSocialForestryModalOpen: false,
+            openModal() {
+                this.isSocialForestryModalOpen = true;
+            },
+            closeSocialForestryModal() {
+                this.isSocialForestryModalOpen = false;
+            },
+            socialForestryTabCurrentTab: 0,
+
+            currentPBSAId: null,
+            openModalForPBSA(pbsaId) {
+                this.currentPBSAId = pbsaId;
+                this.openModal();
+            },
+
+            // Submit form
+            SubmitForm() {
+                const obj = {
+                    FinancialYearId: $("#FinancialYearId").val(),
+                    RotationYears: $("#RotationYears").val(),
+                    PlantationTypeId: $("#PlantationTypeId").val(),
+                    PlantationArea: $("#PlantationArea").val(),
+
+                    SocialForestryManagementCommitteeFormed: this.SocialForestryManagementCommitteeFormed,
+                    FundManagementSubCommitteeFormed: this.FundManagementSubCommitteeFormed,
+                    AdvisoryCommitteeFormed: this.AdvisoryCommitteeFormed,
+                    PlantationJournalUploadUrl: this.PlantationJournalUploadUrl,
+                    MonitoringReportUrl: this.MonitoringReportUrl,
+                    Remarks: this.Remarks,
+
+                    ReplantationNurseryInfos: this.ReplantationNurseryInfos,
+                    ReplantationInspectionMaps: this.ReplantationInspectionMaps,
+                    ReplantationCostInfos: this.ReplantationCostInfos,
+                    ReplantationLaborInfos: this.ReplantationLaborInfos,
+                    ReplantationSocialForestryBeneficiaryMaps: this.ReplantationSocialForestryBeneficiaryMaps,
+                    ReplantationDamageInfos: this.ReplantationDamageInfos,
+                };
+
+                const formData = new FormData();
+
+                objectToFormData(obj, formData);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Replantation/Create",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        $(".loader").fadeOut("fast");
+
+                        if (data.RedirectUrl) {
+                            window.location.href = data.RedirectUrl;
+                            return;
+                        }
+
+                        if (data.Success) {
+                            swal(
+                                'Success',
+                                data.Message,
+                                'success'
+                            );
+                        } else {
+                            swal(
+                                'Failed',
+                                data.Message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $(".loader").fadeOut("fast");
+
+                        swal(
+                            'Failed',
+                            'Unexpected Error Occured',
+                            'error'
+                        );
+                    }
+                });
+            }
+        }));
+    });
+</script>
+
+<script>
+    /* Helpers */
+    function getNumber(value) {
+        if (!value) return 0;
+
+        value = parseFloat(value);
+        value = isNaN(value) ? 0 : value;
+
+        return value;
+    }
+
+    function getFileUrl(imageFileElement) {
+        const [file] = imageFileElement?.files ?? [];
+        if (file) {
+            return URL.createObjectURL(file);
+        }
+
+        return null;
+    }
+
+    function getFileName(imageFileElement) {
+        const [file] = imageFileElement?.files ?? [];
+        if (file) {
+            return file.name;
+        }
+
+        return null;
+    }
+
+    function clearFileInput(inputId) {
+        const inputElement = document.getElementById(inputId);
+
+        if (inputElement) {
+            const newInput = document.createElement(inputElement.tagName);
+            newInput.id = inputId;
+
+            for (let i = 0; i < inputElement.attributes.length; i++) {
+                const attr = inputElement.attributes[i];
+                newInput.setAttribute(attr.name, attr.value);
+            }
+
+            inputElement.parentNode.replaceChild(newInput, inputElement);
+        }
+    }
+
+    function objectToFormData(dataObject, formData, parentKey) {
+        for (var key in dataObject) {
+            if (dataObject.hasOwnProperty(key)) {
+                var propName = parentKey ? `${parentKey}[${key}]` : key;
+
+                if (typeof dataObject[key] === 'object' && !Array.isArray(dataObject[key])) {
+                    // Nested object, recursively convert it
+                    objectToFormData(dataObject[key], formData, propName);
+                } else if (Array.isArray(dataObject[key])) {
+                    // Array of objects, loop through and convert each item
+                    dataObject[key].forEach(function (item, index) {
+                        var arrayKey = `${propName}[${index}]`;
+                        objectToFormData(item, formData, arrayKey);
+                    });
+                } else {
+                    // Regular key-value pair
+                    formData.append(propName, dataObject[key]);
+                }
+            }
+        }
+    }
+</script>
+
+<script>
+    $(document).ready();
+
+    $(".submit-btn").on("click", function () {
+        if ($("#Form").valid()) {
+            $(".loader").fadeIn("slow");
+        }
+    });
+
+
+    const dateMustBeGreaterThanStartDateFuncxx = date => {
+        debugger;
+
+        var available = getNumber($("#Form input[name=Nursery_AvailableSeedling]").val());
+        var planted = getNumber($("#Form input[name=Nursery_SeedlingPlanted]").val());
+
+
+        return available >= planted;
+    }
+
+    $.validator.addMethod(
+        'mustBeGreaterThanAvailablexx',
+        function (value, element, requiredValue) {
+            return dateMustBeGreaterThanStartDateFuncxx(value);
+        },
+        'Raised must be greater than available.'
+    );
+
+
+    const NurseryFormValidation = {
+        ReplantationNurseryInfos_NurseryInformationId: {
+            required: true
+        },
+        ReplantationNurseryInfos_NurseryRaisedSeedlingInformationId: {
+            required: true
+        },
+        ReplantationNurseryInfos_NumberOfSeedlingPlanted: {
+            required: true,
+            min: 1,
+        },
+    };
+
+    const ConcernedOfficialFormValidation = {
+        Concerned_OfficialName: {
+            required: true
+        },
+        Concerned_Designation: {
+            required: true
+        },
+        Concerned_MobileNumber: {
+            required: true
+        },
+        /*
+        Concerned_Email: {
+            required: true
+        },
+        */
+    };
+
+    const InspectionDetailsMapFormValidation = {
+        Inspection_OfficialName: {
+            required: true
+        },
+        Inspection_Designation: {
+            required: true
+        },
+    };
+
+    const CostInformationFormValidation = {
+        Cost_CostType: {
+            required: true
+        },
+        Cost_DateOfCost: {
+            required: true
+        },
+        Cost_Amount: {
+            required: true,
+            min: 1,
+        },
+    };
+
+    const BeneficiaryFormValidation = {
+        Beneficiary_Name: {
+            required: true
+        },
+        Beneficiary_Gender: {
+            required: true
+        },
+        Beneficiary_NID: {
+            required: true,
+        },
+        Beneficiary_MobileNumber: {
+            required: true,
+        },
+        /*
+        Beneficiary_Ethnicity: {
+            required: true,
+        },
+        Beneficiary_Address: {
+            required: true,
+        },
+        */
+    };
+
+    const LaborInformationFormValidation = {
+        Labor_CostType: {
+            required: true
+        },
+        Labor_CostDate: {
+            required: true
+        },
+        Labor_MaleNo: {
+            required: true,
+            min: 0,
+        },
+        Labor_FemaleNo: {
+            required: true,
+            min: 0,
+        },
+    };
+
+    const ReplantationDamageInfoFormValidation = {
+        Damage_DateOfOccurrence: {
+            required: true
+        },
+        Damage_Description: {
+            required: true
+        },
+        Damage_CauseOfDamage: {
+            required: true,
+        },
+    };
+
+    $("#Form").validate({
+        rules: {
+            ForestCircleId: {
+                required: true
+            },
+            ForestDivisionId: {
+                required: true
+            },
+            ForestRangeId: {
+                required: true
+            },
+            ForestBeatId: {
+                required: true
+            },
+            FcvVcfType: {
+                required: true
+            },
+            ForestFcvVcfId: {
+                required: true
+            },
+            DistrictId: {
+                required: true
+            },
+            DivisionId: {
+                required: true
+            },
+            UpazillaId: {
+                required: true
+            },
+            UnionId: {
+                required: true
+            },
+            ...ConcernedOfficialFormValidation,
+            ...InspectionDetailsMapFormValidation,
+            ...CostInformationFormValidation,
+            ...BeneficiaryFormValidation,
+            ...LaborInformationFormValidation,
+            ...ReplantationDamageInfoFormValidation
+        },
+    });
+</script>

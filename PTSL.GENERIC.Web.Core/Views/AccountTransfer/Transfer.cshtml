@@ -1,0 +1,603 @@
+﻿@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.AccountManagement.AccountTransferVM
+@{
+    ViewBag.Title = "Account Transfer";
+    var Message = ViewBag.Message;
+
+    var fromAccountId = ViewBag.FromAccountId as List<BankAccountsInformationVM>;
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+    label {
+        margin-bottom: 0.2rem;
+    }
+    ._select2_option {
+        line-height: 20px;
+    }
+    ._select2_option span {
+        font-weight: 300;
+    }
+    ._select2_option span:first-child {
+        font-weight: 500;
+    }
+    .border-btm {
+        margin-bottom: 0 !important;
+        border-bottom: 1px solid #646967;
+    }
+
+    #FromAccountId-error {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		left: 15px;
+	}
+    #ToAccountId-error {
+		display: block;
+		position: absolute;
+		bottom: 0;
+        top: 100%;
+	}
+
+    .btn-remove {
+        background-color: #fc544b !important;
+        border-color: #fc544b !important;
+        color: white;
+    }
+
+    .btn-remove:hover {
+        color: white;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/AccountTransfer/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Account Transfer
+        </h4>
+        <button class="ml-auto reset btn btn-sm" onclick="resetFromData('#Form')">
+            <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z" fill="currentColor" />
+            </svg>
+            Reset
+        </button>
+    </div>
+
+    <!form @@submit.prevent x-cloak x-data="transfer_details" id="Form" class="card-body mt-2">
+		<div class="p-2 green-card" style="border-radius: 5px;">
+			<div class="row custom forest-location">
+				<div class="col-6 p-1">
+					@await Html.PartialAsync(
+					"~/Views/Shared/_ForestAdministration.cshtml",
+					(
+					ViewBag.ForestCircleId as SelectList,
+					ViewBag.ForestDivisionId as SelectList,
+					ViewBag.ForestRangeId as SelectList,
+					ViewBag.ForestBeatId as SelectList,
+					ViewBag.ForestFcvVcfId as SelectList
+					)
+					)
+				</div>
+
+				<div class="col-6 p-1">
+                    <fieldset class="p-2">
+                        <legend class="float-none w-auto">Committee</legend>
+                        <div class="row">
+                            <div class="col-6 pr-1">
+                                <label class="m-0">Committee Type</label>
+                                @Html.DropDownList("CommitteeTypeId", null, "Select Committee Type", htmlAttributes: new { @class = "" })
+                            </div>
+                            <div class="col-6 pl-1">
+                                <label class="m-0">Committee</label>
+                                @Html.DropDownList("CommitteeId", null, "Select Committee", htmlAttributes: new { @class = "" })
+                            </div>
+                        </div>
+                    </fieldset>
+				</div>
+			</div>
+		</div>
+
+        <div class="p-2 custom green-card mt-2" style="border-radius: 5px;" id="LoanInfo">
+			<fieldset class="p-2 col-12">
+				<legend class="float-none w-auto mb-0">Transfer Information</legend>
+                <p class="mb-2">Current available account balance: <span id="CurrentAccountAvailableBalance"></span></p>
+                <input id="CurrentAccountAvailableBalanceHiddenInput" type="hidden" />
+                <div class="row">
+					<div class="col-md-3 col-sm-12 pr-1">
+						<label>
+                            From Account
+							<span style="color:red;">*</span>
+						</label>
+                        <select id="@nameof(Model.FromAccountId)" name="@nameof(Model.FromAccountId)" required>
+                        </select>
+					</div>
+					<div class="col-md-3 col-sm-12 px-1">
+						<label>
+                            To Account
+							<span style="color:red;">*</span>
+						</label>
+                        <select id="@nameof(Model.ToAccountId)" name="@nameof(Model.ToAccountId)" required>
+                            <!option value="">Select To Account</!option>
+                        </select>
+					</div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Financial Year
+                            <span style="color:red;">*</span>
+                        </label>
+                        @Html.DropDownList("FinancialYearId", null, "Select Financial Year", htmlAttributes: new { @class = "" })
+                    </div>
+                    <div class="col-md-3 col-sm-12 pl-1">
+                        <label>
+                            Total Transfer Amount
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="number"
+                               id="@nameof(Model.TransferAmount)"
+                               name="@nameof(Model.TransferAmount)"
+                               value=""
+                               min="0"
+                               placeholder="Enter total transfer amount"
+                               x-model="total_transfer_details_should_be"
+                               disabled
+                               required />
+                    </div>
+				</div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Transfer Date
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input type="date"
+                               name="@nameof(Model.TransferDate)"
+                               value="@Model.TransferDate"
+                               placeholder="Enter transfer date"
+                               required />
+                    </div>
+                </div>
+
+                <div class="mt-3 border-btm" style="display: flex; justify-content: space-between">
+                    <p class="m-0">Add Account Transfer Details</p>
+                    <input type="hidden" id="total_transfer_details_added_id" />
+                    <p class="m-0" x-text="'Added: ' + total_transfer_details_added + '৳' + ', Remaining: ' + (total_transfer_details_should_be - total_transfer_details_added) + '৳'"></p>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Source of Fund
+                            <span style="color:red;">*</span>
+                        </label>
+                        @Html.DropDownList("SourceOfFundId", null, "Select Source Of Fund", htmlAttributes: new {  })
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Purpose
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input id="Purpose" type="text" name="Purpose" placeholder="Enter purpose" />
+                    </div>
+                    <div class="col-md-3 col-sm-12 px-1">
+                        <label>
+                            Transfer details amount
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input id="TransferDetailsAmount" type="number" name="TransferDetailsAmount" placeholder="Enter details amount" />
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between;" id="add-details-container">
+                    <p class="m-0" x-show="error_message" x-text="error_message" style="color: red;"></p>
+                    <button @@click="add_details" style="margin-left: auto;" type="button" class="btn btn-sm btn-green save">Add Details</button>
+                </div>
+
+                <p class="mt-3 border-btm">Transfer Details</p>
+                <div id="show-details">
+                    <table x-show="transfer_details_data.length > 0" id="transfer_details_table" class="table table-sm">
+                        <thead>
+                            <th>SL</th>
+                            <th>Source of Fund</th>
+                            <th>Purpose</th>
+                            <th>Details amount</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                            <template x-for="(data, index) in transfer_details_data" :key="index">
+                                <tr>
+                                    <td x-text="++index"></td>
+                                    <td x-text="data.SourceOfFundIdUI"></td>
+                                    <td x-text="data.Purpose"></td>
+                                    <td x-text="data.TransferDetailsAmount" class="TransferDetailsAmount"></td>
+                                    <td><button @@click="remove_details(data)" type="button" class="btn btn-sm btn-remove">Remove</button></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                    <p x-show="transfer_details_data.length == 0">No details added yet</p>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-3 col-sm-12 pr-1">
+                        <label>
+                            Description
+                        </label>
+                        <br />
+                        <textarea name="@nameof(Model.Remarks)" class="form-control" style="width: 100%;" placeholder="Enter description">@Model.Remarks</textarea>
+                    </div>
+                </div>
+			</fieldset>
+		</div>
+
+        <div class="d-flex justify-content-end py-2">
+            <button @@click="submit_form" type="button" id="submit-btn" class="btn btn-sm btn-green save">
+                Save
+            </button>
+        </div>
+    </!form>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('transfer_details', () => ({
+            transfer_details_data: [],
+            total_transfer_details_added: 0,
+            total_transfer_details_should_be: 0,
+            error_message: "",
+
+            add_details() {
+                if (!$("#SourceOfFundId").val() || !$("#Purpose").val() || !$("#TransferDetailsAmount").val()) { 
+                    this.error_message = "Please fill all 'Add Account Transfer Details' options"
+                    this.remove_error_message();
+                    return;
+                }
+
+                let totalTransferAmount = getNumber($("#TransferAmount").val());
+                let transferDetailsAmount = getNumber($("#TransferDetailsAmount").val());
+
+                const totaltransferDetailsAmount = this.transfer_details_data.reduce((accumulator, product) => {
+                    return accumulator + product.TransferDetailsAmount;
+                }, 0);
+                if (totaltransferDetailsAmount + transferDetailsAmount > totalTransferAmount) {
+                    this.error_message = "Transfer details amount can not be greater than Total Transfer Amount"
+                    this.remove_error_message();
+
+                    return;
+                }
+
+                this.error_message = "";
+                this.total_transfer_details_added += transferDetailsAmount;
+
+                this.transfer_details_data.push({
+                    SourceOfFundId: getNumber($("#SourceOfFundId").val()),
+                    SourceOfFundIdUI: $("#SourceOfFundId option:selected").text(),
+                    Purpose: $("#Purpose").val(),
+                    TransferDetailsAmount: transferDetailsAmount,
+                });
+
+                $("#SourceOfFundId").val("");
+                $("#Purpose").val("");
+                $("#TransferDetailsAmount").val("");
+            },
+
+            remove_error_message() {
+                setTimeout(() => {
+                    this.error_message = "";
+                }, 3000);
+            },
+
+            remove_details(details) {
+                this.total_transfer_details_added -= details.TransferDetailsAmount;
+                this.transfer_details_data.splice(this.transfer_details_data.indexOf(details), 1);
+                this.error_message = "";
+            },
+
+            submit_form() {
+                if (!$("#Form").valid()) {
+                    return;
+                }
+
+                let transferAmount = this.total_transfer_details_should_be;
+                let totalTransferDetailsAdded = this.total_transfer_details_added;
+                if (totalTransferDetailsAdded != transferAmount) {
+                    swal(
+                        'Validation error',
+                        "'Total Transfer Amount' is not equal to total 'Add Account Transfer Details' amount",
+                        'error'
+                    );
+
+                    return;
+                }
+
+                const formData = new FormData(document.getElementById("Form"));
+                const data = Object.fromEntries(formData);
+                data.AccountTransferDetails = this.transfer_details_data;
+
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "/AccountTransfer/Transfer",
+                    data: data,
+                    success: function (data) {
+                        if (!data.Success) {
+                            swal(
+                                'Error occurred',
+                                data.Message,
+                                'error'
+                            );
+                            return;
+                        }
+
+                        window.location.href = "/AccountTransfer/Index";
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                    }
+                });
+
+                console.log(data);
+                return;
+
+                $(".loader").fadeIn("slow");
+            }
+        }))
+    })
+
+    document.addEventListener("DOMContentLoaded", function () {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Accounts/GetCurrentUserAccounts",
+            success: function (data) {
+                if (Array.isArray(data.Data)) {
+                    var data = data.Data.map(x => {
+                        return {
+                            id: x.Account?.Id,
+                            text: x.Account?.AccountNumber,
+                            BankAccountName: x.Account?.BankAccountName,
+                            BranchName: x.Account?.BranchName,
+                        }
+                    });
+                    data = [{
+                        id: "",
+                        text: "Choose",
+                    }, ...data];
+                    $('#FromAccountId').empty();
+
+                    var optionTemplate = function (option) {
+                        return $(
+                            `
+                                <div class="d-flex flex-column _select2_option">
+                                    <span>${option.text}</span>
+                                    <span>Account Name: ${option.BankAccountName}</span>
+                                    <span>Branch Name: ${option.BranchName}</span>
+                                </div>
+                                `
+                        );
+                    };
+
+                    var selectionTemplate = function (option) {
+                        return $(
+                            `<span>${option.text}</span>`
+                        );
+                    };
+
+                    $('#FromAccountId').select2({
+                        data,
+                        placeholder: 'Select To Account',
+                        templateResult: optionTemplate,
+                        templateSelection: selectionTemplate
+                    });
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+</script>
+
+<script>
+    function getNumber(value) { 
+        value = parseFloat(value);
+        value = isNaN(value) ? 0 : value;
+
+        return value;
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#FcvVcfType").trigger("change");
+    });
+
+    $("#Form").validate({
+        rules: {
+            FromAccountId: {
+				required: true,
+            },
+            ToAccountId: {
+				required: true,
+                musNotBeEqualWithFromAccountId: true
+            },
+            TransferAmount: {
+				required: true
+            },
+            FinancialYearId: {
+				required: true
+            },
+            TransferDate: {
+				required: true,
+                dateMustBePreviousFromNow: true,
+            },
+        },
+    });
+
+    const dateMustBePreviousFromNowFunc = date => {
+        const inputDate = new Date(date);
+        const currentDate = new Date();
+
+        inputDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+        return inputDate <= currentDate;
+    }
+    $.validator.addMethod(
+        'dateMustBePreviousFromNow',
+        function (value, element, requiredValue) {
+            return dateMustBePreviousFromNowFunc(value);
+        },
+        'Date must not be future from current date.'
+    );
+    $.validator.addMethod(
+        'musNotBeEqualWithFromAccountId',
+        function (value, element, requiredValue) {
+            const x = $("#FromAccountId").val()
+            debugger;
+            return value != x;
+        },
+        'To Account and From Account must not be equal'
+    );
+
+    $("#FromAccountId").on("change", function () {
+        const currentFromAccountId = $(this).val();
+        $("#TransferAmount").prop("disabled", true);
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Accounts/GetCurrentBalance",
+            data: { "id": currentFromAccountId },
+            success: function (data) {
+                if (currentFromAccountId && data.Data) { 
+                    $("#CurrentAccountAvailableBalance").text(data.Data.CurrentAvailableBalanceDisplay);
+                    $("#CurrentAccountAvailableBalanceHiddenInput").val(data.Data.CurrentAvailableBalance);
+                    $("#TransferAmount").prop("max", data.Data.CurrentAvailableBalance);
+                    $("#TransferAmount").prop("disabled", false);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+
+    $("#FcvVcfType").on("change", function () {
+        const fcvVcfTypeId = $(this).val();
+        const committeeTypeConfigurationId = $("#CommitteeTypeId");
+
+        $("#CommitteeTypeId").trigger("change");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteeTypeConfigurationByFcvOrVcfId",
+            data: { "id": fcvVcfTypeId },
+            success: function (data) {
+                committeeTypeConfigurationId.html('<option value="">Select Committee Type</option>');
+                $.each(data.Data, function (id, option) {
+                    committeeTypeConfigurationId.append($('<option></option>').val(option.Id).html(option.CommitteeTypeName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+
+    $("#CommitteeTypeId").on("change", function () {
+        const committeeTypeConfigurationId = Number($(this).val());
+        const committeesConfigurationId = $("#CommitteeId");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/CommitteeManagement/GetCommitteesConfigurationByCommitteeTypeConfigurationId",
+            data: { "id": committeeTypeConfigurationId },
+            success: function (data) {
+                committeesConfigurationId.html('<option value="">Select Committee</option>');
+                $.each(data.Data, function (id, option) {
+                    committeesConfigurationId.append($('<option></option>').val(option.Id).html(option.CommitteeName));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+
+    $(document).on("change", "#ForestCircleId, #ForestDivisionId, #ForestRangeId, #ForestBeatId, #ForestFcvVcfId, #CommitteeId, #CommitteeTypeId", function () {
+        const data = {
+            ForestCircleId: $("#ForestCircleId").val() || 0,
+            ForestDivisionId: $("#ForestDivisionId").val() || 0,
+            ForestRangeId: $("#ForestRangeId").val() || 0,
+            ForestBeatId: $("#ForestBeatId").val() || 0,
+            ForestFcvVcfId: $("#ForestFcvVcfId").val() || 0,
+            CommitteeTypeId: $("#CommitteeTypeId").val() || 0,
+            CommitteeId: $("#CommitteeId").val() || 0,
+        };
+
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "/Accounts/IndexFilterJson",
+            data: data,
+            success: function (data) {
+                if (Array.isArray(data.Data)) {
+                    var data = data.Data.map(x => {
+                        return {
+                            id: x.Id,
+                            text: x.AccountNumber,
+                            BankAccountName: x.BankAccountName,
+                            BranchName: x.BranchName,
+                        }
+                    });
+                    data = [{
+                        id: "",
+                        text: "Choose",
+                    }, ...data];
+                    $('#ToAccountId').empty();
+
+                    var optionTemplate = function (option) {
+                        return $(
+                            `
+                                <div class="d-flex flex-column _select2_option">
+                                    <span>${option.text}</span>
+                                    <span>Account Name: ${option.BankAccountName}</span>
+                                    <span>Branch Name: ${option.BranchName}</span>
+                                </div>
+                                `
+                        );
+                    };
+
+                    var selectionTemplate = function (option) {
+                        return $(
+                            `<span>${option.text}</span>`
+                        );
+                    };
+
+                    $('#ToAccountId').select2({
+                        data,
+                        placeholder: 'Select To Account',
+                        templateResult: optionTemplate,
+                        templateSelection: selectionTemplate
+                    });
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+
+    $("#FromAccountId").on("change", function () {
+        $(this).valid();
+    });
+    $("#ToAccountId").on("change", function () {
+        $(this).valid();
+    });
+</script>

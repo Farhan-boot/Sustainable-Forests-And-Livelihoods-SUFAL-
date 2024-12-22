@@ -1,0 +1,323 @@
+﻿@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.Common
+@model string
+
+@{
+    var className = string.IsNullOrEmpty(Model) ? "" : $".{Model} ";
+
+    var forestCircleSelectList = new SelectList("");
+    var forestDivisionSelectList = new SelectList("");
+    var forestRangeSelectList = new SelectList("");
+    var forestBeatSelectList = new SelectList("");
+    var forestFcvVcfSelectList = new SelectList("");
+
+    var presentDivisionSelectList = new SelectList("");
+    var presentDistrictSelectList = new SelectList("");
+    var presentUpazillaSelectList = new SelectList("");
+}
+
+<div class="row custom @Model">
+    <div class="col-6 p-1">
+        <fieldset class="p-2">
+            <legend class="float-none w-auto">Forest Administrative Unit</legend>
+            <div class="row">
+                <div class="col-6 pr-1">
+					<label class="m-0">Forest Circle</label>
+                    @Html.DropDownList("ForestCircleId", forestCircleSelectList, "Select Forest Circle", htmlAttributes: new { @id = "" })
+                </div>
+                <div class="col-6 pl-1">
+					<label class="m-0">Forest Division</label>
+                    @Html.DropDownList("ForestDivisionId", forestDivisionSelectList, "Select Forest Division", htmlAttributes: new { @id = "" })
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-6 pr-1">
+					<label class="m-0">Forest Range/SFNTC</label>
+					@Html.DropDownList("ForestRangeId", forestRangeSelectList, "Select Forest Range/SFNTC", htmlAttributes: new { @id = "" })
+                </div>
+                <div class="col-6 pl-1">
+					<label class="m-0">Forest Beat/Camp/SFPC</label>
+					@Html.DropDownList("ForestBeatId", forestBeatSelectList, "Select Forest Beat/Camp/SFPC", htmlAttributes: new { @id = "" })
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-6 pr-1">
+                    <label>
+                        FCV/VCF Type
+                    </label>
+                    @Html.DropDownList("FcvVcfType", null, "Select FCV/VCF Type", htmlAttributes: new { @id = "" })
+                </div>
+                <div class="col-6 pl-1">
+					<label class="m-0">Forest FCV/VCF</label>
+                    @Html.DropDownList("ForestFcvVcfId", forestFcvVcfSelectList, "Select Forest FCV/VCF", htmlAttributes: new { @id = "" })
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="col-6 p-1">
+        <fieldset class="p-2">
+            <legend class="float-none w-auto">Civil Administrative Unit</legend>
+            <div class="row">
+                <div class="col-6 pr-1">
+					<label class="m-0">Division</label>
+                    @Html.DropDownList("PresentDivisionId", presentDivisionSelectList, "Select Division", htmlAttributes: new { @id = "" })
+                </div>
+                <div class="col-6 pl-1">
+					<label class="m-0">District</label>
+                    @Html.DropDownList("PresentDistrictId", presentDistrictSelectList, "Select District", htmlAttributes: new { @id = "" })
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-6 pr-1">
+					<label class="m-0">Upazilla</label>
+                    @Html.DropDownList("PresentUpazillaId", presentUpazillaSelectList, "Select Upazilla", htmlAttributes: new { @id = "" })
+                </div>
+                <div class="col-6 pl-1">
+					<label class="m-0">Union</label>
+					@Html.DropDownList("PresentUnionId", presentUpazillaSelectList, "Select Union", htmlAttributes: new { @id = "" })
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListAllForestCircles",
+            success: function (data) {
+                var ForestCircleId = $("@(className)select[name=ForestCircleId]");
+                ForestCircleId.html('<option value="">Choose Forest Circle</option>');
+                $.each(data, function (id, option) {
+                    ForestCircleId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListAllDivisions",
+            success: function (data) {
+                var PresentDivisionId = $("@(className)select[name=PresentDivisionId]");
+				PresentDivisionId.html('<option value="">Choose Division</option>');
+                $.each(data, function (id, option) {
+                    PresentDivisionId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("@(className)select[name=ForestCircleId]").change(function () {
+        var selectedItem = $(this).val();
+        var forestDivisonList = $("@(className)select[name=ForestDivisionId]");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestDivisionByForestCircle",
+            data: { "id": selectedItem },
+            success: function (data) {
+				forestDivisonList.html('<option value="">Choose Forest Division</option>');
+                $.each(data, function (id, option) {
+                    forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestDivisonList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("@(className)select[name=ForestDivisionId]").change(function () {
+        var selectedItem = $(this).val();
+        var forestRangeList = $("@(className)select[name=ForestRangeId]");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        loadNgoBasedOnForestDivision(selectedItem);
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestRangeByForestDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+				forestRangeList.html('<option value="">Choose Forest Range</option>');
+                $.each(data, function (id, option) {
+                    forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestRangeList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("@(className)select[name=ForestRangeId]").change(function () {
+        var selectedItem = $(this).val();
+        var forestBeatList = $("@(className)select[name=ForestBeatId]");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestBeatByForestRange",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestBeatList.html('<option value="">Choose Forest Beat</option>');
+                $.each(data, function (id, option) {
+                    forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestBeatList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("@(className)select[name=ForestBeatId]").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("@(className)select[name=ForestFcvVcfId]");
+        var FcvVcfType = $("@(className)select[name=FcvVcfType]").val();
+		debugger;
+		if (selectedItem == "" || selectedItem == null || FcvVcfType == "" | FcvVcfType == null) {
+			return true;
+		}
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListByForestBeatAndType",
+            data: { "beatId": selectedItem, "type": FcvVcfType },
+            success: function (data) {
+                forestFcvVcfList.html('<option value="">Choose Forest FCV/VCF</option>');
+                $.each(data, function (id, option) {
+                    forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestFcvVcfList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+	$("@(className)select[name=FcvVcfType]").change(function () {
+		$("@(className)select[name=ForestBeatId]").trigger("change");
+	});
+
+    $("@(className)select[name=PresentDivisionId]").change(function () {
+        var selectedItem = $(this).val();
+        var PresentDistrictId = $("@(className)select[name=PresentDistrictId]");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListDistrictByDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentDistrictId.html('<option value="">Choose Division</option>');
+                $.each(data, function (id, option) {
+                    PresentDistrictId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentDistrictId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+
+    $("@(className)select[name=PresentDistrictId]").change(function () {
+        var selectedItem = $(this).val();
+        var PresentUpazillaId = $("@(className)select[name=PresentUpazillaId]");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUpazillaByDistrict",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose Upazilla</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    });
+	$("@(className)select[name=PresentUpazillaId]").change(function () {
+        var selectedItem = $(this).val();
+		var PresentUpazillaId = $("@(className)select[name=PresentUnionId]");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListUnionByUpazilla",
+            data: { "id": selectedItem },
+            success: function (data) {
+                PresentUpazillaId.html('<option value="">Choose Union</option>');
+                $.each(data, function (id, option) {
+                    PresentUpazillaId.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                PresentUpazillaId.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+				//
+            }
+        });
+    });
+
+    function loadNgoBasedOnForestDivision(divisionId) {
+        const NgoId = $("#NgoId");
+
+        if (NgoId.length > 0) {
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/Ngo/ListByForestDivisions",
+                data: { "divisions": [divisionId] },
+                success: function (data) {
+                    NgoId.html('<option value="">Choose..</option>');
+                    $.each(data, function (id, option) {
+                        NgoId.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    NgoId.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        }
+    }
+</script>

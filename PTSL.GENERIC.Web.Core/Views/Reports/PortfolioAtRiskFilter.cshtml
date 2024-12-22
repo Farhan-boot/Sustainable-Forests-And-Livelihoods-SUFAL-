@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Portfolio At Risk";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Portfolio At Risk</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="PortfolioAtRisk" asp-controller="Reports" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_ForestAdministration.cshtml",
+                            (
+                            ViewBag.ForestCircleId as SelectList,
+                            ViewBag.ForestDivisionId as SelectList,
+                            ViewBag.ForestRangeId as SelectList,
+                            ViewBag.ForestBeatId as SelectList,
+                            ViewBag.ForestFcvVcfId as SelectList
+                            )
+                            )
+                        </div>
+
+                        <div class="col-6 p-1">
+                            @await Html.PartialAsync(
+                            "~/Views/Shared/_CivilAdministration.cshtml",
+                            (
+                            ViewBag.DivisionId as SelectList,
+                            ViewBag.DistrictId as SelectList,
+                            ViewBag.UpazillaId as SelectList,
+                            ViewBag.UnionId as SelectList
+                            )
+                            )
+                        </div>
+                    </div>
+
+                    <div class="row custom">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Other Information</legend>
+                                <div class="row" style="padding-right: 10px;">
+                                    <div class="col pr-1">
+                                        <label class="m-0">Form Date</label>
+                                        <input type="date" id="FormDate" value="" name="FormDate" placeholder="Enter Form Date" required />
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">To Date</label>
+                                        <input type="date" id="ToDate" value="" name="ToDate" placeholder="Enter To Date" required />
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save">Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

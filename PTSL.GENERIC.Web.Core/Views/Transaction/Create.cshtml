@@ -1,0 +1,741 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.TransactionMangement.TransactionVM
+@{
+    ViewBag.Title = "Create New Transaction";
+    var Message = ViewBag.Message;
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+    div.ms-options li label input {
+        margin-right: 8px !important;
+        margin-top: 5px !important;
+    }
+
+    #FundTypeId-error {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 15px;
+    }
+
+    label {
+        margin-bottom: 0.2rem;
+    }
+    ._select2_option {
+        line-height: 20px;
+    }
+    ._select2_option span {
+        font-weight: 300;
+    }
+    ._select2_option span:first-child {
+        font-weight: 500;
+    }
+
+    .transaction_container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .transaction_item {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+
+    fieldset {
+        padding: 15px;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 5px;
+    }
+
+    fieldset legend {
+        width: auto !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/Transaction/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Create New Transaction
+        </h4>
+        <button class="ml-auto reset btn btn-sm" onclick="resetFromData('#Form')">
+            <svg class="rotate180z" width="16" height="16" viewBox="0 0 32 32">
+                <path d="M25.95 7.65l.005-.004c-.092-.11-.197-.206-.293-.312c-.184-.205-.367-.41-.563-.603c-.139-.136-.286-.262-.43-.391c-.183-.165-.366-.329-.558-.482c-.16-.128-.325-.247-.49-.367c-.192-.14-.385-.277-.585-.406a13.513 13.513 0 0 0-.533-.324q-.308-.179-.625-.341c-.184-.094-.37-.185-.56-.27c-.222-.1-.449-.191-.678-.28c-.19-.072-.378-.145-.571-.208c-.246-.082-.498-.15-.75-.217c-.186-.049-.368-.102-.556-.143c-.29-.063-.587-.107-.883-.15c-.16-.023-.315-.056-.476-.073A12.933 12.933 0 0 0 6 7.703V4H4v8h8v-2H6.811A10.961 10.961 0 0 1 16 5a11.111 11.111 0 0 1 1.189.067c.136.015.268.042.403.061c.25.037.501.075.746.128c.16.035.315.08.472.121c.213.057.425.114.633.183c.164.054.325.116.486.178c.193.074.384.15.57.235c.162.072.32.15.477.23q.268.136.526.286c.153.09.305.18.453.276c.168.11.33.224.492.342c.14.102.282.203.417.312c.162.13.316.268.47.406c.123.11.248.217.365.332c.167.164.323.338.479.512A10.993 10.993 0 1 1 5 16H3a13 13 0 1 0 22.95-8.35z" fill="currentColor" />
+            </svg>
+            Reset
+        </button>
+    </div>
+    <div class="card-body">
+
+        <!form @@submit.prevent id="Form" x-cloak x-data="transaction">
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label>
+                    Forest Circle
+                    <span style="color:red;">*</span>
+                </label>
+                <select x-model="new_data.ForestCircleId" id="@nameof(Model.ForestCircleId)" name="@nameof(Model.ForestCircleId)" class="form-control" required>
+                    <!option value="">Select Forest Circle</!option>
+                    @foreach (var item in ViewBag.ForestCircleId)
+                    {
+                        <!option value="@item.Id">@item.Name</!option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    Forest Division
+                    <span style="color:red;">*</span>
+                </label>
+                <select x-model="new_data.ForestDivisionId" id="@nameof(Model.ForestDivisionId)" name="@nameof(Model.ForestDivisionId)" class="form-control" required>
+                    <!option value="">Select Forest Division</!option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 position-relative">
+                <label>
+                    Fund Type
+                    <span style="color:red;">*</span>
+                </label>
+                <select x-model="new_data.FundTypeId" class="form-control" name="FundTypeId" id="FundTypeId" required x-on:change="load_section">
+                    <!option value="">Select Fund Type</!option>
+                    <template x-for="(item, index) in dropdowns.fund_types" :key="item.Id">
+                        <!option :value="item.Id" x-text="item.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    Financial Year
+                    <span style="color:red;">*</span>
+                </label>
+                <select x-model="new_data.FinancialYearId" id="@nameof(Model.FinancialYearId)" name="@nameof(Model.FinancialYearId)" class="form-control" required>
+                    <!option value="">Select Financial Year</!option>
+                        @foreach (var item in ViewBag.FinancialYearId)
+                        {
+                        <!option value="@item.Id">@item.Name</!option>
+                        }
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label>
+                    From Date
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="new_data.FromDate" type="date" class="form-control" id="@nameof(Model.FromDate)" name="@nameof(Model.FromDate)" value="@Model.FromDate" placeholder="Enter from date" />
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    To Date
+                    <span style="color:red;">*</span>
+                </label>
+                <input x-model="new_data.ToDate" type="date" class="form-control" id="@nameof(Model.ToDate)" name="@nameof(Model.ToDate)" value="@Model.ToDate" placeholder="Enter to date" />
+            </div>
+            <div class="form-group col-md-3">
+                <label>
+                    Account
+                    <span style="color:red;">*</span>
+                </label>
+                <select class="form-control" id="@nameof(Model.AccountId)" name="@nameof(Model.AccountId)"></select>
+            </div>
+        </div>
+
+        <p class="mb-2 mt-3">Current available account balance: <span id="CurrentAccountAvailableBalance"></span></p>
+        <input type="hidden" id="CurrentAccountAvailableBalanceTK" />
+
+        <h6 class="mt-4">Add Expense</h6>
+        <div id="FundTarget">
+
+            <!-- CDF -->
+            <div x-show="IsCDF == true">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Month
+                            <span style="color:red;">*</span>
+                        </label>
+                        <select x-model="new_data.ExpenseMonth" class="form-control" name="ExpenseMonth">
+                            <!option value="">Month</!option>
+                            <template x-for="(item, index) in dropdowns.months" :key="item.Id">
+                                <!option :value="item.Id" x-text="item.Name" :selected="new_data.ExpenseMonth == item.Id"></!option>
+                            </template>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Forest Range
+                            <span style="color:red;">*</span>
+                        </label>
+                        <select x-model="new_data.ForestRangeId" class="form-control" name="ForestRangeId" id="ForestRangeId">
+                            <!option>Select Forest Range</!option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Forest Beat
+                            <span style="color:red;">*</span>
+                        </label>
+                        <select x-model="new_data.ForestBeatId" class="form-control" name="ForestBeatId" id="ForestBeatId">
+                            <!option>Select Forest Beat</!option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Forest FCV/VCF
+                            <span style="color:red;">*</span>
+                        </label>
+                        <select x-model="new_data.ForestFcvVcfId" class="form-control" name="ForestFcvVcfId" id="ForestFcvVcfId">
+                            <!option>Select Forest FCV/VCF</!option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Year
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input x-model="new_data.ExpenseYear" type="number" min="1700" max="5000" name="ExpenseYear" class="form-control fund-expense" placeholder="Enter year" />
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p x-show="new_data.ExpenseDetailsForCDFs.length > 0" x-text="'Total scheme: ' + new_data.ExpenseDetailsForCDFs.length + '. ' + 'Total expense: ' + totalCDFExpense + '. ' + 'Available: ' + totalRemainingBalanceForCDF"></p>
+                    <button type="button" x-on:click="AddScheme" class="btn btn-sm btn-primary">Add Scheme</button>
+                </div>
+
+                <div>
+                    <template x-for="(data, index) in new_data.ExpenseDetailsForCDFs" :key="index">
+                        <fieldset class="">
+                            <legend x-text="++index"></legend>
+
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label>
+                                        Expense Scheme
+                                        <span style="color:red;">*</span>
+                                    </label>
+                                    <input type="text" class="form-control fund-expense" x-model="data.ExpenseScheme" placeholder="Enter scheme" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>
+                                        Amount
+                                        <span style="color:red;">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        class="form-control fund-expense"
+                                        x-on:change="SetExpenseAmount($el, index)"
+                                        :value="data.ExpenseAmount"
+                                        placeholder="Enter amount" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>
+                                        Date
+                                        <span style="color:red;">*</span>
+                                    </label>
+                                    <input type="date" class="form-control fund-expense" x-model="data.ExpenseDate" placeholder="Enter date" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Remarks</label>
+                                    <input class="form-control fund-expense" x-model="data.Remarks" placeholder="Enter remarks" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label>File</label>
+                                    <input class="cdfFile" type="file" class="form-control fund-expense" placeholder="Enter file" />
+                                </div>
+                                <div class="form-group col-md-9 text-right">
+                                    <button type="button" x-on:click="removeCDF(data)" class="btn btn-sm btn-danger">Remove</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Not CDF -->
+            <div x-show="IsCDF == false">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Month
+                            <span style="color:red;">*</span>
+                        </label>
+                        <select x-model="new_data.ExpenseMonth" class="form-control" name="ExpenseMonth">
+                            <!option value="">Month</!option>
+                            <template x-for="(item, index) in dropdowns.months" :key="item.Id">
+                                <!option :value="item.Id" x-text="item.Name" :selected="new_data.ExpenseMonth == item.Id"></!option>
+                            </template>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="m-0">
+                            Expense
+                            <span style="color:red;">*</span>
+                        </label>
+                        <input x-model="new_data.TotalExpense"
+                               type="number"
+                               min="0"
+                               max=""
+                               id="TotalExpense"
+                               name="TotalExpense"
+                               class="form-control fund-expense"
+                               placeholder="Enter Expense Amount" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="transaction_container mt-3">
+                <button @@click="add_transaction_file" type="button" class="btn btn-sm btn-primary">Add Image/Attachment</button>
+
+                <div class="transaction_item mt-2" x-show="transaction_files.length > 0">
+                    <template x-for="(data, index) in transaction_files" :key="data">
+                        <div class="">
+                            <span x-text="++index"></span>
+                            <span><input type="file" :id="data" /></span>
+                            <span><button @@click="remove_transaction_file(data)" type="button" class="btn btn-sm btn-danger">Remove</button></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end py-2">
+            <button x-on:click="submit" type="button" class="btn btn-sm btn-green save submit-btn">Save</button>
+        </div>
+        </!form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('transaction', () => ({
+            init() {
+                fetch("/FundType/GetAll")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (Array.isArray(data.Data)) {
+                            this.dropdowns.fund_types = data.Data;
+                        }
+                    });
+
+                fetch("/Dropdown/GetMonthsEnumList")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            this.dropdowns.months = data;
+                        }
+                    });
+
+                $.ajax({
+                    cache: false,
+                    type: "GET",
+                    url: "/Accounts/GetCurrentUserAccounts",
+                    success: function (data) {
+                        if (Array.isArray(data.Data)) {
+                            var data = data.Data.map(x => {
+                                return {
+                                    id: x.Account?.Id,
+                                    text: x.Account?.AccountNumber,
+                                    BankAccountName: x.Account?.BankAccountName,
+                                    BranchName: x.Account?.BranchName,
+                                }
+                            });
+                            data = [{
+                                id: "",
+                                text: "Choose",
+                            }, ...data];
+                            $('#AccountId').empty();
+
+                            var optionTemplate = function (option) {
+                                return $(
+                                    `
+                                        <div class="d-flex flex-column _select2_option">
+                                            <span>${option.text}</span>
+                                            <span>Account Name: ${option.BankAccountName}</span>
+                                            <span>Branch Name: ${option.BranchName}</span>
+                                        </div>
+                                        `
+                                );
+                            };
+
+                            var selectionTemplate = function (option) {
+                                return $(
+                                    `<span>${option.text}</span>`
+                                );
+                            };
+
+                            $('#AccountId').select2({
+                                data,
+                                placeholder: 'Select To Account',
+                                templateResult: optionTemplate,
+                                templateSelection: selectionTemplate
+                            });
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                    }
+                });
+
+                this.new_data.ExpenseMonth = (new Date().getMonth() + 1);
+            },
+            dropdowns: {
+                fund_types: [],
+                months: [],
+            },
+            new_data: {
+                ToDate: "",
+                FromDate: "",
+                FinancialYearId: "",
+                FundTypeId: "",
+                ForestDivisionId: "",
+                ForestCircleId: "",
+                TotalExpense: "",
+                ExpenseMonth: "",
+                ExpenseDetailsForCDFs: [],
+            },
+            get totalCDFExpense() {
+                const sum = this.new_data.ExpenseDetailsForCDFs.map(x => getNumber(x.ExpenseAmount)).reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue
+                }, 0);
+
+                return sum;
+            },
+            get totalRemainingBalanceForCDF() {
+                return getNumber(document.getElementById("CurrentAccountAvailableBalanceTK").value) - this.totalCDFExpense;
+            },
+            IsCDF: null,
+            SetExpenseAmount(e, index) {
+                const expense = e.valueAsNumber;
+                const availableBalance = getNumber(document.getElementById("CurrentAccountAvailableBalanceTK").value);
+
+                if (availableBalance < (this.totalCDFExpense + expense)) {
+                    this.new_data.ExpenseDetailsForCDFs[index - 1].ExpenseAmount = 0;
+
+                    swal(
+                        'Valiation error',
+                        'Your do not have enough available balance',
+                        'error'
+                    );
+
+                    return;
+                }
+
+                this.new_data.ExpenseDetailsForCDFs[index - 1].ExpenseAmount = expense;
+            },
+            AddScheme() {
+                this.new_data.ExpenseDetailsForCDFs.push({
+                    ExpenseScheme: "",
+                    ExpenseAmount: "",
+                    ExpenseDate: "",
+                    Remarks: "",
+                });
+            },
+            removeCDF(data) {
+                this.new_data.ExpenseDetailsForCDFs.splice(this.new_data.ExpenseDetailsForCDFs.indexOf(data), 1);
+            },
+            load_section() {
+                const data = this.dropdowns.fund_types.find(x => x.Id == this.new_data.FundTypeId);
+                this.IsCDF = data.IsCdf;
+            },
+            submit() {
+                if (!$("#Form").valid()) {
+                    return;
+                }
+
+                debugger;
+
+                $(".loader").fadeIn("slow");
+
+                this.new_data.AccountId = $("#AccountId").val();
+                if (this.IsCDF == true) {
+                    this.new_data.TotalExpense = this.totalCDFExpense;
+                }
+
+                var formData = new FormData();
+                objectToFormData(this.new_data, formData);
+
+                document.querySelectorAll(".transaction_item input[type='file']").forEach(x => {
+                    const file = x.files[0];
+                    if (file) {
+                        formData.append('TransactionDocuments', file);
+                    }
+                });
+                document.querySelectorAll(".cdfFile").forEach(x => {
+                    const file = x.files[0];
+                    if (file) {
+                        formData.append('CDFFiles', file);
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Transaction/Create",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        $(".loader").fadeOut("fast");
+
+                        if (data.RedirectUrl) {
+                            window.location.href = data.RedirectUrl;
+                            return;
+                        }
+
+                        if (data.Success) {
+                            swal(
+                                'Success',
+                                data.Message,
+                                'success'
+                            );
+                        } else {
+                            swal(
+                                'Failed',
+                                data.Message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $(".loader").fadeOut("fast");
+
+                        swal(
+                            'Failed',
+                            'Unexpected Error Occured',
+                            'error'
+                        );
+                    }
+                });
+            },
+
+            // Images
+            transaction_files: [],
+            add_transaction_file() {
+                this.transaction_files.push(self.crypto.randomUUID());
+            },
+            remove_transaction_file(image) {
+                this.transaction_files.splice(this.transaction_files.indexOf(image), 1);
+            },
+        }));
+    });
+
+    function objectToFormData(dataObject, formData, parentKey) {
+        for (var key in dataObject) {
+            if (dataObject.hasOwnProperty(key)) {
+                var propName = parentKey ? `${parentKey}[${key}]` : key;
+
+                if (typeof dataObject[key] === 'object' && !Array.isArray(dataObject[key])) {
+                    // Nested object, recursively convert it
+                    objectToFormData(dataObject[key], formData, propName);
+                } else if (Array.isArray(dataObject[key])) {
+                    // Array of objects, loop through and convert each item
+                    dataObject[key].forEach(function (item, index) {
+                        var arrayKey = `${propName}[${index}]`;
+                        objectToFormData(item, formData, arrayKey);
+                    });
+                } else {
+                    // Regular key-value pair
+                    formData.append(propName, dataObject[key]);
+                }
+            }
+        }
+    }
+
+
+    $("#AccountId").on("change", function () {
+        const currentFromAccountId = $(this).val();
+        //$("#TransferAmount").prop("disabled", true);
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Accounts/GetCurrentBalance",
+            data: { "id": currentFromAccountId },
+            success: function (data) {
+                if (currentFromAccountId && data.Data) {
+                    $("#CurrentAccountAvailableBalance").text(data.Data.CurrentAvailableBalanceDisplay);
+                    $("#CurrentAccountAvailableBalanceTK").val(data.Data.CurrentAvailableBalance);
+                    $("#TotalExpense").prop("max", data.Data.CurrentAvailableBalance);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    });
+</script>
+
+<script>
+    function getNumber(value) { 
+        value = parseFloat(value);
+        value = isNaN(value) ? 0 : value;
+
+        return value;
+    }
+
+    $("#Form").validate({
+        ignore: false,
+        rules: {
+            ForestCircleId: {
+                required: true,
+            },
+            ForestDivisionId: {
+                required: true,
+            },
+            FundTypeId: {
+                required: true,
+            },
+            FinancialYearId: {
+                required: true,
+            },
+            FromDate: {
+                required: true,
+            },
+            ToDate: {
+                required: true,
+                dateMustBeGreaterThanStart: true,
+            },
+            AccountId: {
+                required: true,
+            },
+        },
+    });
+
+    $('#AccountId').on("change", function () {
+        $(this).valid();
+    });
+</script>
+
+<script>
+    $('#FundTypeId').on("change", function () {
+        $(this).valid();
+    });
+
+    const dateMustBeGreaterThanStartDateFunc = date => {
+        var startDate = $("#FromDate").val();
+
+        return (new Date(date)).toISOString() > (new Date(startDate)).toISOString();
+    }
+
+    $.validator.addMethod(
+        'dateMustBeGreaterThanStart',
+        function (value, element, requiredValue) {
+            return dateMustBeGreaterThanStartDateFunc(value);
+        },
+        'Date must be greater than from date.'
+    );
+</script>
+
+<script>
+    $("#ForestCircleId").change(function () {
+        var selectedItem = $(this).val();
+        var forestDivisonList = $("#ForestDivisionId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestDivisionByForestCircle",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestDivisonList.html('<option value="">Choose..</option>');
+                $.each(data, function (id, option) {
+                    forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestDivisonList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+
+    $("#ForestDivisionId").change(function () {
+        var selectedItem = $(this).val();
+        var forestRangeList = $("#ForestRangeId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestRangeByForestDivision",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestRangeList.html('<option value="">Choose Forest Range</option>');
+                $.each(data, function (id, option) {
+                    forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestRangeList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+
+    $("#ForestRangeId").change(function () {
+        var selectedItem = $(this).val();
+        var forestBeatList = $("#ForestBeatId");
+        if (selectedItem == "" || selectedItem == null) {
+            return true;
+        }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListForestBeatByForestRange",
+            data: { "id": selectedItem },
+            success: function (data) {
+                forestBeatList.html('<option value="">Choose Forest Beat</option>');
+                $.each(data, function (id, option) {
+                    forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestBeatList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+
+    $("#ForestBeatId").change(function () {
+        var selectedItem = $(this).val();
+        var forestFcvVcfList = $("#ForestFcvVcfId");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "/Dropdown/ListByForestBeatAndType",
+            data: { "beatId": selectedItem, "type": 0 },
+            success: function (data) {
+                forestFcvVcfList.html('<option value="">Choose Forest FCV/VCF</option>');
+                $.each(data, function (id, option) {
+                    forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+                forestFcvVcfList.prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                //
+            }
+        });
+    });
+</script>

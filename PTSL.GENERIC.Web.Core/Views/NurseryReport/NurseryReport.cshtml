@@ -1,0 +1,347 @@
+﻿@using System.Reflection;
+@model IEnumerable<PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Nursery.SocialForestryReportVM>
+@{
+    ViewBag.Title = "Nursery Information Report";
+}
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="no-print">
+
+                    <form asp-action="NurseryReport" asp-controller="NurseryReport" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                        <div class="row custom">
+                            <div class="col-6 p-1 ">
+                                <fieldset class="p-2 col-12 mb-2">
+                                    <legend class="float-none w-auto">Forest Administrative Unit</legend>
+                                    <div class="row">
+                                        <div class="col-6 pr-1">
+                                            <label class="m-0">Forest Circle</label>
+
+                                            <select id="ForestCircleId" name="ForestCircleId" class="form-control">
+                                                <!option value="">Select Forest Circle</!option>
+                                                @if (ViewBag.ForestCircleId != null)
+                                                {
+                                                    @foreach (var item in ViewBag.ForestCircleId)
+                                                    {
+                                                        <!option value="@item.Id">@item.Name</!option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-6 pl-1">
+                                            <label class="m-0">Forest Division</label>
+
+                                            <select id="ForestDivisionId" name="ForestDivisionId" class="form-control">
+                                                <!option value="">Select Forest Division</!option>
+                                                @if (ViewBag.ForestDivisionId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.ForestDivisionId)
+                                                    {
+                                                        <!option value="@item.Value">@item.Text</!option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6 pr-1">
+                                            <label class="m-0">Forest Range/SFNTC</label>
+
+                                            <select id="ForestRangeId" name="ForestRangeId" class="form-control">
+                                                <!option value="">Select Forest Range/SFNTC</!option>
+                                                @if (ViewBag.ForestRangeId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.ForestRangeId)
+                                                    {
+                                                        <!option value="@item.Text">@item.Value</!option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-6 pl-1">
+                                            <label class="m-0">Forest Beat/Camp/SFPC</label>
+                                            <select id="ForestBeatId" name="ForestBeatId" class="form-control">
+                                                <!option value="">Select Forest Beat/Camp/SFPC</!option>
+                                                @if (ViewBag.ForestBeatId != null)
+                                                {
+
+                                                    @foreach (var item in ViewBag.ForestBeatId)
+                                                    {
+                                                        <!option value="@item.Text">@item.Value</!option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div class="col-6 p-1">
+                                @await Html.PartialAsync(
+                                "~/Views/Shared/_CivilAdministration.cshtml",
+                                (
+                                ViewBag.DivisionId as SelectList,
+                                ViewBag.DistrictId as SelectList,
+                                ViewBag.UpazillaId as SelectList,
+                                ViewBag.UnionId as SelectList
+                                )
+                                )
+                            </div>
+                            <hr />
+                        </div>
+                        <div class="row custom">
+                            <div class="col-md-6">
+                                <select id="FinancialYearId" name="FinancialYearId" class="form-control">
+                                    <!option value="">Select Nursary Raising Year</!option>
+                                    @if (ViewBag.FinancialYearId != null)
+                                    {
+
+                                        @foreach (var item in ViewBag.FinancialYearId)
+                                        {
+                                            <!option value="@item.Id">@item.Name</!option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            @* Nursary Name  *@
+                            <div class="col-md-6">
+                                <select id="NurseryName" name="NurseryName" class="form-control">
+                                    <!option value="">Select Nursary Nursery Name</!option>
+                                    @if (ViewBag.NurseryList != null)
+                                    {
+
+                                        @foreach (var item in ViewBag.NurseryList)
+                                        {
+                                            <!option value="@item.Id">@item.NurseryName</!option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-end mt-2">
+                            <button type="submit" class="btn btn-sm btn-green save">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card" id="reportView">
+                    @if (Model.Count() > 0)
+                    {
+                        <div class="card-header report_header no-print">
+                            <div>
+                                <h5>Nursary Information</h5>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="printReport()">Print</button>
+                            </div>
+                        </div>
+                        <div class="card-body mt-3">
+
+                            <table class=" reportTable" id="tableExport_filter" style="width:100%; overflow-x:auto">
+                                <thead class="mt-4">
+                                    <tr>
+                                        <th colspan="13">
+                                            <div class="reportTableHeader">
+                                                <img src="/img/login/bd-govt.png" width="60" height="60" style="box-shadow: none;" />
+                                                <h3 class="font-weight-normal">Sustainable Forests & Livelihoods (SUFAL)</h3>
+                                                <h5>Nursary Information</h5>
+                                                <p class="font-16">Reporting date: @DateTime.Now.ToUIDateString()</p>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>Forest Circle</th>
+                                        <th>Forest Division</th>
+                                        <th>Forest Range</th>
+                                        <th>Forest Beat</th>
+                                        <th>Division</th>
+                                        <th>District</th>
+                                        <th>Upazilla</th>
+                                        <th>Union</th>
+                                        <th>Nursary Name</th>
+                                        <th>Establishment Date</th>
+                                        <th>Species Name</th>
+                                        <th>Total Seedling</th>
+                                    </tr>
+
+
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int i = 1;
+                                        int j = 1;
+
+                                    }
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="border border-1">
+                                            <td>@(i++)</td>
+                                            <td>@item.NurseryInformation?.ForestCircle?.Name</td>
+                                            <td>@item.NurseryInformation?.ForestDivision?.Name</td>
+                                            <td>@item.NurseryInformation?.ForestRange?.Name</td>
+                                            <td>@item.NurseryInformation?.ForestBeat?.Name</td>
+                                            <td>@item.NurseryInformation?.Division?.Name</td>
+                                            <td>@item.NurseryInformation?.District?.Name</td>
+                                            <td>@item.NurseryInformation?.Upazilla?.Name</td>
+                                            <td>@item.NurseryInformation?.Union?.Name</td>
+                                            <td>@item.NurseryInformation?.NurseryName</td>
+                                            <td>@item.NurseryInformation?.EstablishmentDate</td>
+                                            <td>
+                                                @if (item.NurseryInformation?.NurseryRaisedSeedlingInformation != null && item.NurseryInformation?.NurseryRaisedSeedlingInformation.Count() > 0)
+                                                {
+
+                                                    @foreach (var nursaryInfo in item.NurseryInformation?.NurseryRaisedSeedlingInformation)
+                                                    {
+                                                        <p>@nursaryInfo?.SpeciesName</p>
+
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+
+                                                @if (item.NurseryInformation?.NurseryRaisedSeedlingInformation != null && item.NurseryInformation?.NurseryRaisedSeedlingInformation.Count() > 0)
+                                                {
+
+                                                    @foreach (var nursaryInfo in item.NurseryInformation?.NurseryRaisedSeedlingInformation)
+                                                    {
+                                                        
+                                                                <p>@nursaryInfo?.SeedlingRaised</p>
+                                                            
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("~/Views/Shared/_DataTables.cshtml")
+
+<script>
+    $(document).ready(function () {
+
+        $('#tableExport_filter').DataTable({
+            pageLength: 10,
+            dom: 'Blfrtip',
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            buttons: ['excel', 'pdf']
+        });
+
+        $("#ForestCircleId").change(function () {
+            var selectedItem = $(this).val();
+            var forestDivisonList = $("#ForestDivisionId");
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListForestDivisionByForestCircle",
+                data: { "id": selectedItem },
+                success: function (data) {
+                    forestDivisonList.html('<option value="">Choose Forest Division</option>');
+                    $.each(data, function (id, option) {
+                        forestDivisonList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestDivisonList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+
+        $("#ForestDivisionId").change(function () {
+            var selectedItem = $(this).val();
+            var forestRangeList = $("#ForestRangeId");
+            if (selectedItem == "" || selectedItem == null) {
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListForestRangeByForestDivision",
+                data: { "id": selectedItem },
+                success: function (data) {
+                    forestRangeList.html('<option value="">Choose Forest Range</option>');
+                    $.each(data, function (id, option) {
+                        forestRangeList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestRangeList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+
+        $("#ForestRangeId").change(function () {
+            var selectedItem = $(this).val();
+            var forestBeatList = $("#ForestBeatId");
+            if (selectedItem == "" || selectedItem == null) {
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListForestBeatByForestRange",
+                data: { "id": selectedItem },
+                success: function (data) {
+                    forestBeatList.html('<option value="">Choose Forest Beat</option>');
+                    $.each(data, function (id, option) {
+                        forestBeatList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestBeatList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+
+        $("#ForestBeatId").change(function () {
+            var selectedItem = $(this).val();
+            var forestFcvVcfList = $("#ForestFcvVcfId");
+            var FcvVcfType = $("#FcvVcfType").val();
+
+            if (selectedItem == "" || selectedItem == null || FcvVcfType == "" | FcvVcfType == null) {
+                return true;
+            }
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/Dropdown/ListByForestBeatAndType",
+                data: { "beatId": selectedItem, "type": FcvVcfType },
+                success: function (data) {
+                    forestFcvVcfList.html('<option value="">Choose Forest FCV/VCF</option>');
+                    $.each(data, function (id, option) {
+                        forestFcvVcfList.append($('<option></option>').val(option.Id).html(option.Name));
+                    });
+                    forestFcvVcfList.prop("disabled", false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                }
+            });
+        });
+    });
+</script>

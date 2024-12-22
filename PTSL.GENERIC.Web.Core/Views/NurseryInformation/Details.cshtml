@@ -1,0 +1,310 @@
+﻿@using PTSL.GENERIC.Web.Core.Helper;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Nursery;
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Nursery.NurseryInformationVM;
+@{
+    ViewBag.Title = "Nursary Information Detatils";
+}
+
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+        overflow: hidden;
+    }
+
+        fieldset legend {
+            width: auto;
+        }
+
+    .hr {
+        position: relative;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+        .hr:after {
+            content: "";
+            height: 1px;
+            position: absolute;
+            width: 100%;
+            background: grey;
+            top: 50%;
+            margin-left: 10px;
+        }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/NurseryInformation/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Nursary Information Detatils
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>Forest Administrative Unit</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Circle: <b>@(Model.ForestCircle?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Division: <b>@(Model.ForestDivision?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Range: <b>@(Model.ForestRange?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Beat: <b>@(Model.ForestBeat?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Fcv/Vcf: <b>@(Model.ForestFcvVcf?.Name)</b></label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Civil Administrative Unit</legend>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Circle: <b>@(Model.Division?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Division: <b>@(Model.District?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Range: <b>@(Model.Upazilla?.Name)</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Forest Beat: <b>@(Model.Union?.Name)</b></label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Nursary Raising Information</legend>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 col-lg-6">
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Name of Nursary: <b>@Model.NurseryName</b></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Nursary Raising Year: <b>@Model.FinancialYear?.Name</b></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Seedling Raising Target: <b>@(Model.SeedlingRaisingTargetNumber) </b></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Name of Project: <b>@Model.ProjectType.Name</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Establishment Date: <b>@(Model.EstablishmentDate.ToShortDateString())</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Sanction No: <b>@(Model.SanctionNo)</b></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Nursary Type: <b>@(Model.NurseryType?.Name)</b></label>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Nursary Location: <b>@(Model.Location)</b></label>
+                        </div>
+
+                        <div>
+                            <h6>GPS Location of the Household</h6>
+
+                            <div class="form-group">
+                                <label style="font-size:15px;">Latitude: <b>@(Model.LocationLat)</b></label>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:15px;">Longitude: <b>@(Model.LocationLon)</b></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Totoal Number of Beds: <b>@(Model.TotalNumberOfBed)</b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;">Number of Seedling Per Bed: <b>@(Model.NumberOfSeedlingsPerBed)</b></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size:15px;">Nursary Raising Sector: <b>@(Model.NurseryRaisingSector?.Name)</b></label>
+
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Nursary Pictures & Documents</legend>
+                <div class="row" style="padding: 0px 10px;">
+                    <div class="form-group col-md-2" style="padding: 0 !important;">
+                        <label>
+                            Nursary Image
+                        </label>
+                        <img id="NursaryImage" src="@(string.IsNullOrEmpty(Model.NursaryImageFilePath) ? "/img/profile.webp" : Model.NursaryImageFilePath)" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@Model.NursaryImageFilePath" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.NursaryImageFilePath))">Download</a>
+                    </div>
+                    <div class="form-group col-md-2" style="padding: 0 !important;">
+                        <label>
+                            Nursary Layout Image
+                        </label>
+                        <img src="@Model.NursaryLayoutFilePath" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@Model.NursaryLayoutFilePath" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.NursaryLayoutFilePath))">Download</a>
+                    </div>
+                    <div class="form-group col-md-2" style="padding: 0 !important;">
+                        <label>
+                            Nursary Journal File
+                        </label>
+                        <img src="@Model.NursaryJournalFilePath" style="height: 200px;" class="img-thumbnail form-control" alt="...">
+                        <a class="btn btn-sm btn-secondary mt-2" href="@Model.NursaryJournalFilePath" download="@(FilePathHelper.GetFileNameWithExtensionFromUrl(Model.NursaryJournalFilePath))">Download</a>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Seedling Information</legend>
+                @{
+                    var memberIndex = 0;
+                    var seedlingInfos = Model.NurseryRaisedSeedlingInformation ?? new List<NurseryRaisedSeedlingInformationVM>();
+                }
+                @foreach (var member in seedlingInfos)
+                {
+                    memberIndex++;
+
+                    if (memberIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@memberIndex</h5>
+
+
+                    <div class="form-group">
+                        <label style="font-size:15px;">Species Name: <b>@(member.SpeciesName)</b></label>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Scientific Name: <b>@(member.ScientificName)</b></label>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Raised Seedling Number: <b>@(member.SeedlingRaised)</b></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;">Remarks: <b>@(member.Remarks)</b></label>
+                    </div>
+
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Concerned Officials</legend>
+                @{
+                    var officialIndex = 0;
+                    var concernedOfficials = Model.ConcernedOfficialMap ?? new List<ConcernedOfficialMapVM>();
+                }
+                @foreach (var official in concernedOfficials)
+                {
+                    officialIndex++;
+
+                    if (officialIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@officialIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Official Name: <b>@(official.ConcernedOfficial?.OfficialName)</b></label>
+                        </div>
+                        <div class="form-group col-md-6" style="display: none;">
+                            <label style="font-size:15px;">Designation: <b>@(official.ConcernedOfficial?.Designation?.Name)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Mobile No: <b>@(official.ConcernedOfficial.MobileNo)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Email: <b>@(official.ConcernedOfficial.EmailAddress)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Inspection Details</legend>
+                @{
+                    var inspectionDetailIndex = 0;
+                    var inspectionDetails = Model.InspectionDetailsMap ?? new List<InspectionDetailsMapVM>();
+                }
+                @foreach (var inspectionDetail in inspectionDetails)
+                {
+                    inspectionDetailIndex++;
+
+                    if (inspectionDetailIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@inspectionDetailIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Official Name: <b>@(inspectionDetail.InspectionDetails?.OfficialName)</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Designation: <b>@(inspectionDetail.InspectionDetails?.SocialForestryDesignation?.Name)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Comments: <b>@(inspectionDetail.InspectionDetails?.Comments)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+
+            <fieldset>
+                <legend>Cost Informations</legend>
+                @{
+                    var constInformationsIndex = 0;
+                    var constInformations = Model.CostInformations ?? new List<NurseryCostInformationVM>();
+                }
+                @foreach (var constInformation in constInformations)
+                {
+                    constInformationsIndex++;
+
+                    if (constInformationsIndex != 1)
+                    {
+                        <hr />
+                    }
+
+                    <h5>@constInformationsIndex</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Cost Date: <b>@(constInformation.CostDate.ToShortDateString())</b></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Cost Ammount: <b>@(constInformation.CostAmount)</b></label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label style="font-size:15px;">Remarks: <b>@(constInformation.Remarks)</b></label>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+        </div>
+    </div>
+</div>
+

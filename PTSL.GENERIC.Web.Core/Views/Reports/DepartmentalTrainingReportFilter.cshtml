@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Departmental Training Report";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-md-10">
+                    <h4>Departmental Training Report</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="DepartmentalTrainingReport" asp-controller="Reports" class="mb-4 green-card p-2" style="border-radius: 5px;">
+                    <div class="row custom">
+                        <div class="col-12 p-1">
+                            <fieldset class="p-2">
+                                <legend class="float-none w-auto">Basic Information</legend>
+                                <div class="row">
+                                    <div class="col pr-1">
+                                        <label class="m-0">Financial Year</label>
+                                        @Html.DropDownList("FinancialYearId", null, "Select Financial Year", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">Event Type</label>
+                                        @Html.DropDownList("EventTypeId", null, "Select Event Type", htmlAttributes: new { })
+                                    </div>
+                                    <div class="col px-1">
+                                        <label class="m-0">From Start Date</label>
+                                        <input type="date" id="StartDate" value="@(ViewBag.StartDate is DateTime ? ((DateTime)ViewBag.StartDate).ToUIDateString() : null)" name="StartDate" placeholder="Enter start date" />
+                                    </div>
+                                    <div class="col pl-1">
+                                        <label class="m-0">To End Date</label>
+                                        <input type="date" id="EndDate" value="@(ViewBag.EndDate is DateTime ? ((DateTime)ViewBag.EndDate).ToUIDateString() : null)" name="EndDate" placeholder="Enter end date" />
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-sm btn-green save">Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

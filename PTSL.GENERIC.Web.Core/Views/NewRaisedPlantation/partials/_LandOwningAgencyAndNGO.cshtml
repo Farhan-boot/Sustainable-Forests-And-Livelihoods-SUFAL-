@@ -1,0 +1,52 @@
+﻿<div class="col-6 p-1">
+    <fieldset class="p-2 col-12">
+        <legend class="float-none w-auto">Land owning agency</legend>
+        <div class="row col-md-6">
+            <label>
+                Land Owning Agency <span style="color: red;">*</span>
+            </label>
+            <select id="Plantation_LandOwningAgencyId"
+                    name="LandOwningAgencyId"
+                    x-model="LandOwningAgencyId"
+                    required>
+                <!option value="">Select land owning agency</!option>
+                <template x-for="item in LandOwningAndNGODropdowns.Agency">
+                    <!option :value="item.Id" x-text="item.Name"></!option>
+                </template>
+            </select>
+        </div>
+    </fieldset>
+</div>
+<div class="col-6 p-1">
+    <fieldset class="p-2 col-12">
+        <legend class="float-none w-auto">NGO Information</legend>
+        <div class="row col-md-6">
+            <label>
+                NGO
+            </label>
+            <select id="Plantation_SocialForestryNgoId"
+                    name="SocialForestryNgoId"
+                    x-model="SocialForestryNgoId"
+                    required>
+                <!option value="">Select NGO</!option>
+                <template x-for="item in LandOwningAndNGODropdowns.Ngo">
+                    <!option :value="item.Id" x-text="item.Name"></!option>
+                </template>
+            </select>
+        </div>
+    </fieldset>
+</div>
+
+<script>
+    function setupLandOwningAndCivilLocation() {
+        return {
+            LandOwningAgencyId: "",
+            SocialForestryNgoId: "",
+
+            LandOwningAndNGODropdowns: {
+                Agency: [],
+                Ngo: [],
+            },
+        }
+    }
+</script>

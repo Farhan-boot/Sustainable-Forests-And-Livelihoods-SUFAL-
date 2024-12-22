@@ -1,0 +1,119 @@
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Cutting.CuttingPlantationVM;
+
+<fieldset class="p-2 col-12">
+    <legend class="float-none w-auto">Information of felled Plantation</legend>
+
+    <div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Felling Year
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="FinancialYearId" x-model="FinancialYearId" name="FinancialYearId" required="">
+                    <!option value="">Select Feeling Year</!option>
+                    @foreach (var item in ViewBag.FinancialYearId)
+                    {
+                        <!option @(Model.FinancialYearId == item.Id ? "selected": "") value="@item.Id" @(Model.FinancialYearId == item.Id ? "selected" : "")>
+                            @item.Name
+                        </!option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Rotation No
+                </label>
+                <input type="text" id="RotationNo" x-model="RotationNo" name="RotationNo" placeholder="Enter rotation no" disabled />
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Total Number Of Lots
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="TotalNumberOfLots" x-model="TotalNumberOfLots" name="TotalNumberOfLots" placeholder="Enter total number of lots" required="">
+            </div>
+            <div class="col-md-3 pl-1">
+            </div>
+        </div>
+
+        <div class="mt-3">Produced Quantity</div>
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Timber
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="ProducedTimber" x-model="ProducedTimber" name="ProducedTimber" placeholder="Enter timber" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Timber Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="ProducedTimberUnitId" x-model="ProducedTimberUnitId" name="ProducedTimberUnitId" required="">
+                    <!option value="">Select Unit</!option>
+                    <template x-for="data in LotWiseSellingInformationDropdowns.Units">
+                        <!option :selected="data.Id == ProducedTimberUnitId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Pole
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="ProducedPole" x-model="ProducedPole" name="ProducedPole" placeholder="Enter pole" required="">
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Pole Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="ProducedPoleUnitId" x-model="ProducedPoleUnitId" name="ProducedPoleUnitId" required="">
+                    <!option value="">Select Unit</!option>
+                    <template x-for="data in LotWiseSellingInformationDropdowns.Units">
+                        <!option :selected="data.Id == ProducedPoleUnitId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 pr-1">
+                <label>
+                    Fuel Wood
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="ProducedFuelWood" x-model="ProducedFuelWood" name="ProducedFuelWood" placeholder="Enter fuel wood" required="">
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Fuel wood Unit
+                    <span style="color:red;">*</span>
+                </label>
+                <select id="ProducedFuelWoodUnitId" x-model="ProducedFuelWoodUnitId" name="ProducedFuelWoodUnitId" required="">
+                    <!option value="">Select Unit</!option>
+                    <template x-for="data in LotWiseSellingInformationDropdowns.Units">
+                        <!option :selected="data.Id == ProducedFuelWoodUnitId" :value="data.Id" x-text="data.Name"></!option>
+                    </template>
+                </select>
+            </div>
+            <div class="col-md-3 px-1">
+                <label>
+                    Number Of Sold Lots
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="NumberOfSoldLots" x-model="NumberOfSoldLots" name="NumberOfSoldLots" placeholder="Enter Number Of Sold Lots" required="">
+            </div>
+            <div class="col-md-3 pl-1">
+                <label>
+                    Remaining Number Of Lots
+                    <span style="color:red;">*</span>
+                </label>
+                <input type="number" id="RemainingNumberOfLots" x-model="RemainingNumberOfLots" name="RemainingNumberOfLots" placeholder="Remaining Number Of Lots" readonly>
+            </div>
+        </div>
+    </div>
+
+</fieldset>

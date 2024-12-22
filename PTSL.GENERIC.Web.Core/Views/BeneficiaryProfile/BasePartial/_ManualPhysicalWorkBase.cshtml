@@ -1,0 +1,78 @@
+﻿@model List<PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.ManualPhysicalWorkVM>
+
+@{ var index = 0; }
+
+@foreach (var manual in Model)
+{
+    index++;
+
+    <div class="card ManualPhysicalWorkChild" data-id="@index">
+        <input class="Id" type="hidden" value="@manual.Id" />
+        <div class="card-body mt-3">
+            <h5 class="d-inline-block">@index</h5>
+            <button type="button" class="remove-item btn btn-danger btn-sm float-right" onclick="RemoveManualPhysicalWork(@index, @manual.Id)">x</button>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Income Source
+                    </label>
+                    <select class="form-control ManualIncomeSourceTypeId" name="ManualIncomeSourceTypeId[]">
+                        <option value="">Choose..</option>
+                        @foreach (var item in ViewBag.ManualIncomeSourceTypeId)
+                        {
+                            <!option value="@item.Id" @(manual.ManualIncomeSourceTypeId == item.Id ? "selected" : "")>@item.Name</!option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        No.of Male
+                    </label>
+                    <input type="number" min="0" class="form-control NoOfMale" name="NoOfMale" value="@(manual.Id == 0 ? "" : manual.NoOfMale)" placeholder="No of male">
+                </div>
+                <div class="form-group col-md-3">
+                    <label>
+                        No. of Female
+                    </label>
+                    <input type="number" min="0" class="form-control NoOfFemale" name="NoOfFemale" value="@(manual.Id == 0 ? "" : manual.NoOfFemale)" placeholder="No of female">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        No. of month active
+                    </label>
+                    <input type="number" min="0" class="form-control NoOfActiveMonth" name="NoOfActiveMonth" value="@(manual.Id == 0 ? "" : manual.NoOfActiveMonth)" placeholder="No of active month">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Avg No of person days active/month
+                    </label>
+                    <input type="number" min="0" class="form-control AvgNoPersonActivePerMonth" name="AvgNoPersonActivePerMonth" value="@(manual.Id == 0 ? "" : manual.AvgNoPersonActivePerMonth)" placeholder="Average no of active month">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Average daily income (tk)
+                    </label>
+                    <input type="number" min="0" class="form-control AvgDailyIncome" name="AvgDailyIncome" value="@(manual.Id == 0 ? "" : manual.AvgDailyIncome)" placeholder="Average daily income">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>
+                        Total person days in last 12 months:
+                    </label>
+                    <input type="number" min="0" class="form-control TotalPerson" name="TotalPerson" value="@(manual.Id == 0 ? "" : manual.TotalPerson)" placeholder="Total person" readonly>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>
+                        Annual income:
+                    </label>
+                    <input type="number" class="form-control TotalAnnualIncome" name="TotalAnnualIncome" value="@(manual.Id == 0 ? "" : manual.TotalAnnualIncome)" placeholder="Annual income" readonly>
+                </div>
+            </div>
+        </div> <!-- card body end -->
+    </div>
+}

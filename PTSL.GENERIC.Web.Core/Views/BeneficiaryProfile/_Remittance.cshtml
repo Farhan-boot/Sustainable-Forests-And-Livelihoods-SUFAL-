@@ -1,0 +1,90 @@
+﻿@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.Beneficiary.SurveyVM
+
+<form id="Remittance" class="collapse">
+    <h5 class="">7. Access to finance of the households during last 12 months</h5>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7.1. Personal savings of all household members (as of now) (tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.PersonalSavingsOfAllMembers)" name="@nameof(Model.PersonalSavingsOfAllMembers)" value="@(Model.Id == 0 ? "" : Model.PersonalSavingsOfAllMembers)" min="0" placeholder="Enter Personal savings of all household members" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                7.2. Household share in any group savings (TK)
+            </label>
+            <input type="number" class="form-control @nameof(Model.HouseShareInSavings)" name="@nameof(Model.HouseShareInSavings)" value="@(Model.Id == 0 ? "" : Model.HouseShareInSavings)" min="0" placeholder="Enter Household share in any group savings" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7.3. Borrowing from Bank (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.BorrowedFromBank)" name="@nameof(Model.BorrowedFromBank)" value="@(Model.Id == 0 ? "" : Model.BorrowedFromBank)" min="0" placeholder="Enter Brrowing from Bank" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                7.4. Borrowing from NGO (Tk) e.g. Grameen Bank
+            </label>
+            <input type="number" class="form-control @nameof(Model.BorrowedFromNGO)" name="@nameof(Model.BorrowedFromNGO)" value="@(Model.Id == 0 ? "" : Model.BorrowedFromNGO)" min="0" placeholder="Enter Borrowing from NGO" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7.5. Grants from NGO (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.GrantsFromNGO)" name="@nameof(Model.GrantsFromNGO)" value="@(Model.Id == 0 ? "" : Model.GrantsFromNGO)" min="0" placeholder="Enter Grants from NGO (Tk)" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                7.6. Grants from GoB (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.GrantsFromGob)" name="@nameof(Model.GrantsFromGob)" value="@(Model.Id == 0 ? "" : Model.GrantsFromGob)" min="0" placeholder="Enter Grants from GoB (Tk)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7.7. Borrowing from Co-operatives (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.BorrowedFromCoOperatives)" name="@nameof(Model.BorrowedFromCoOperatives)" value="@(Model.Id == 0 ? "" : Model.BorrowedFromCoOperatives)" min="0" placeholder="Enter Borrowing from Co-operatives (Tk)" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+				7.8. Borrowing from Mahajon/Non relatives (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.BorrowedFromNonRelatives)" name="@nameof(Model.BorrowedFromNonRelatives)" value="@(Model.Id == 0 ? "" : Model.BorrowedFromNonRelatives)" min="0" placeholder="Enter Borrowing from Mahajon/Non relatives (Tk)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7.9. Borrowing from Relatives/Friends (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.BorrowedFromRelatives)" name="@nameof(Model.BorrowedFromRelatives)" value="@(Model.Id == 0 ? "" : Model.BorrowedFromRelatives)" min="0" placeholder="Enter Borrowing from Relatives/Friends (Tk)" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                7.10. Sale of products/assets (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.SaleOfProducts)" name="@nameof(Model.SaleOfProducts)" value="@(Model.Id == 0 ? "" : Model.SaleOfProducts)" min="0" placeholder="Enter Sale of products/assets (Tk)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>
+                7.11. Others (please specify)
+            </label>
+            <input type="text" class="form-control @nameof(Model.OtherFinanceName)" name="@nameof(Model.OtherFinanceName)" value="@Model.OtherFinanceName" placeholder="Enter Others" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>
+                7.11. Others ammount (Tk)
+            </label>
+            <input type="number" class="form-control @nameof(Model.OtherFinanceAmount)" name="@nameof(Model.OtherFinanceAmount)" value="@(Model.Id == 0 ? "" : Model.OtherFinanceAmount)" min="0" placeholder="Others amount" />
+        </div>
+    </div>
+</form>
+

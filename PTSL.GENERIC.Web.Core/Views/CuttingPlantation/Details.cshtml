@@ -1,0 +1,268 @@
+@using PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Cutting;
+@model PTSL.GENERIC.Web.Core.Model.EntityViewModels.SocialForestry.Cutting.CuttingPlantationVM
+@{
+    ViewBag.Title = "Details of Cutting Plantation";
+}
+<style>
+    fieldset {
+        padding: 0px 15px;
+        border: 1px solid gray;
+        overflow: hidden;
+    }
+
+        fieldset legend {
+            width: auto;
+        }
+
+    .hr {
+        position: relative;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+        .hr:after {
+            content: "";
+            height: 1px;
+            position: absolute;
+            width: 100%;
+            background: grey;
+            top: 50%;
+            margin-left: 10px;
+        }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <a href="/CuttingPlantation/Index" class="mr-1 back">
+                <svg width="20" height="20" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="m14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" />
+                </svg>
+            </a>
+            Details of Cutting Plantation
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <fieldset>
+            <legend>Forest Administrative Unit</legend>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Circle: <b>@Model?.NewRaisedPlantation?.ForestCircle?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Division: <b>@Model?.NewRaisedPlantation?.ForestDivision?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Range/SFNTC: <b>@Model?.NewRaisedPlantation?.ForestRange?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Forest Beat/Camp/SFPC: <b>@Model?.NewRaisedPlantation?.ForestBeat?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Zone/Area: <b>@Model?.NewRaisedPlantation?.ZoneOrArea?.Name</b></label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Civil Administrative Unit</legend>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil Division: <b>@Model?.NewRaisedPlantation?.Division?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil District: <b>@Model?.NewRaisedPlantation?.District?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil Upazilla: <b>@Model?.NewRaisedPlantation?.Upazilla?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Civil Union: <b>@Model?.NewRaisedPlantation?.Union?.Name</b></label>
+            </div>
+        </fieldset>
+
+
+        <fieldset>
+            <legend>NGO Information</legend>
+            <div class="form-group">
+                <label style="font-size:15px;">NGO: <b>@Model?.NewRaisedPlantation?.SocialForestryNgo?.Name</b></label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Cutting Information</legend>
+            <div class="form-group">
+                <label style="font-size:15px;">Felling Year: <b>@Model?.FinancialYear?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Rotation No: <b>@Model?.RotationNoDisplay</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Total Number Of Lots: <b>@Model?.TotalNumberOfLots</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Timber: <b>@Model?.ProducedTimber</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Timber Unit: <b>@Model?.ProducedTimberUnit?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Pole: <b>@Model?.ProducedPole</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Pole Unit: <b>@Model?.ProducedPoleUnit?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Fuel Wood: <b>@Model?.ProducedFuelWood</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Fuel wood Unit: <b>@Model?.ProducedFuelWoodUnit?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Number Of Sold Lots: <b>@Model?.NumberOfSoldLots</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Remaining Number Of Lots: <b>@Model?.RemainingNumberOfLots</b></label>
+            </div>
+
+            <div class="form-group">
+                <label style="font-size:15px;">Plantation Image: <b><img src="@Model?.NewRaisedPlantation?.PlantationImage" /></b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Nursery Image: <b><img src="@Model?.NewRaisedPlantation?.NurseryImage" /></b></label>
+            </div>
+
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Marking Information</legend>
+
+            <div class="form-group">
+                <label style="font-size:15px;">Total Tree Marked: <b>@Model.TotalTreeMarked</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Marking Cost: <b>@Model.MarkingCost</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Marked Timber: <b>@Model.MarkedTimber @(Model.MarkedTimberUnit?.Name)</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Marked Pole: <b>@Model.MarkedPole</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Marked Pole Unit: <b>@Model.MarkedPoleUnit?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Marked Fuel Wood: <b>@Model.MarkedFuelWood</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Marked Fuel Wood Unit: <b>@Model.MarkedFuelWoodUnit?.Name</b></label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend> Information of cutting plantation</legend>
+
+            <div class="form-group">
+                <label style="font-size:15px;">Cutting Year: <b>@Model.FinancialYear?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Rotation Number: <b>@Model.RotationNo</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Produced Timber: <b>@Model.ProducedTimber</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Produced Timber Unit: <b>@Model.ProducedTimberUnit?.Name</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Produced Pole: <b>@Model.ProducedPole</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Produced Pole Unit: <b>@Model.ProducedPoleUnit?.Name</b></label>
+            </div>
+
+            <div class="form-group">
+                <label style="font-size:15px;">Produced Fuel Wood: <b>@Model.ProducedFuelWood</b></label>
+            </div>
+            <div class="form-group">
+                <label style="font-size:15px;">Produced Fuel Wood Unit: <b>@Model.ProducedFuelWoodUnit?.Name</b></label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend> Lot Wise Selling Information</legend>
+            @{
+                var index = 0;
+                var sellingList = Model.LotWiseSellingInformation ?? new List<LotWiseSellingInformationVM>();
+
+            }
+            @foreach (var item in sellingList)
+            {
+                index++;
+                if (index != 1)
+                {
+                    <hr />
+                }
+                <h5>@index</h5>
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Number: <b>@item.LotNumber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Cutting Order Date: <b>@(item.CuttingOrderDate.ToShortDateString())</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Tender Notification: <b>@item.TenderNotificationInformation</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Contractor Name: <b>@item.ContractorName</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Contractor Mobile No: <b>@item.ContractorMobileNumber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Contractor NID:<b>@item.ContractorNID</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Contractor Address: <b>@item.ContractorAddress </b></label>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Wise Timber: <b>@item.LotWiseTimber</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Wise Timber Unit: <b>@item.LotWiseTimberUnit?.Name</b></label>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Wise Pole: <b>@item.LotWisePole</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Wise PoleUnit: <b>@item.LotWisePoleUnit?.Name</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Wise Fuel Wood: <b>@item.LotWiseFuelWood</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Sale Value of Lot: <b>@item.SaleValueOfLot</b></label>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-size:15px;">Sale Value of Vat Percentage: <b>@item.SaleValueOfVatPercentage</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Sale Value of Tax Percentage: <b>@item.SaleValueOfTaxPercentage</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Lot Sale Value of Vat Percentage: <b>@item.TotalSaleValue</b></label>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:15px;">Sale Sale Value of Vat Percentage: <b>@item.TotalVatAndTax</b></label>
+                </div>
+
+            }
+
+        </fieldset>
+
+
+    </div>
+</div>
